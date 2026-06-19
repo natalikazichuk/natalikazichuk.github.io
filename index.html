@@ -2704,7 +2704,7 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
 .mt-choice-btn:disabled{cursor:not-allowed}
 .mt-choice-btn.mt-sel-ok{background:#2e7d32}
 .mt-choice-btn.mt-sel-bad{background:#c62828}
-.mt-num-input{width:140px;max-width:60vw;text-align:center;background:#2d2060;color:#fff;border:2px solid #5040A0;border-radius:12px;padding:14px 8px;font-size:24px;font-weight:700;outline:none;-moz-appearance:textfield}
+.mt-num-input{width:140px;max-width:60vw;text-align:center;background:#2d2060;color:#fff;border:2px solid #5040A0;border-radius:12px;padding:14px 8px;font-size:24px;font-weight:700;outline:none;appearance:textfield;-moz-appearance:textfield}
 .mt-num-input::-webkit-inner-spin-button{-webkit-appearance:none}
 .mt-feedback{margin-top:14px;text-align:center;font-size:20px;font-weight:700}
 .mt-result-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
@@ -2844,7 +2844,7 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
     const root=document.getElementById("math-test-root");
 
     const choicesHtml=q.type==="choice"
-      ? `<div class="mt-choices">${q.choices.map(c=>`<button class="mt-choice-btn" onclick="window._mtSubmit(${JSON.stringify(String(c))},this)">${c}</button>`).join("")}</div>`
+      ? `<div class="mt-choices">${q.choices.map((c,i)=>`<button class="mt-choice-btn" onclick="window._mtSubmitIdx(${i},this)">${c}</button>`).join("")}</div>`
       : `<div style="display:flex;justify-content:center"><input class="mt-num-input" id="mt-num-input" type="number" inputmode="numeric" placeholder="?" autocomplete="off"></div>`;
 
     root.innerHTML=`
@@ -2886,6 +2886,12 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
       };
     }
   }
+
+  window._mtSubmitIdx=function(idx,btn){
+    const q=mtQuestions[mtIdx];
+    if(!q||!q.choices) return;
+    window._mtSubmit(q.choices[idx],btn);
+  };
 
   window._mtSubmit=function(ans,btn){
     if(mtFeedback) return;
