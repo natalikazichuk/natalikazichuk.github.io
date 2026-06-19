@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест: Віднімання</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f4f3ee;
+    --bg-success: #eaf3de;
+    --bg-danger: #fcebeb;
+    --text: #1a1a1a;
+    --text-secondary: #6b6a64;
+    --text-success: #27500a;
+    --text-danger: #791f1f;
+    --text-warning: #854f0b;
+    --text-info: #185fa5;
+    --border: rgba(0,0,0,0.13);
+    --radius-md: 8px;
+    --radius-lg: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg-secondary: #2c2c2a;
+      --bg-success: #173404;
+      --bg-danger: #501313;
+      --text: #f1efe8;
+      --text-secondary: #b4b2a9;
+      --text-success: #c0dd97;
+      --text-danger: #f7c1c1;
+      --text-warning: #fac775;
+      --text-info: #85b7eb;
+      --border: rgba(255,255,255,0.16);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .header .emoji { font-size: 28px; }
+  .header h1 { font-size: 17px; font-weight: 600; margin: 0; }
+  .header p { font-size: 13px; color: var(--text-secondary); margin: 2px 0 0; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  button {
+    font-family: inherit;
+    font-size: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  button:hover { background: var(--bg-secondary); }
+  button:active { transform: scale(0.98); }
+  .level-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px;
+    min-height: 100px;
+    text-align: left;
+  }
+  .level-num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .level-title { font-weight: 600; font-size: 14px; }
+  .level-sub { font-size: 12px; color: var(--text-secondary); }
+  .badge-timed { font-size: 11px; color: var(--text-warning); }
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .timer-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-warning);
+    font-weight: 600;
+  }
+  .problem-card {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 28px 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .problem-card.big p { font-size: 30px; font-weight: 600; margin: 0; }
+  .problem-card.word p { font-size: 16px; font-weight: 500; margin: 0; line-height: 1.6; }
+  .answer-row { display: flex; gap: 8px; }
+  input[type="number"] {
+    flex: 1;
+    height: 42px;
+    font-size: 16px;
+    font-family: inherit;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    color: var(--text);
+    padding: 0 12px;
+  }
+  input[type="number"]:focus { outline: 2px solid var(--text-info); }
+  .answer-row button { padding: 0 18px; font-weight: 600; white-space: nowrap; }
+  .feedback-card {
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .feedback-card p.expr { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+  .feedback-card .status { font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .feedback-card .hint { font-size: 13px; color: var(--text-secondary); margin: 8px 0 0; }
+  .result-box { text-align: center; padding: 4px 0; }
+  .medal { font-size: 44px; }
+  .result-kicker { font-size: 13px; color: var(--text-secondary); margin: 14px 0 2px; }
+  .result-badge { font-size: 21px; font-weight: 600; margin: 0 0 4px; }
+  .result-sub { font-size: 13px; color: var(--text-secondary); margin: 0 0 24px; }
+  .result-actions { display: flex; gap: 8px; }
+  .result-actions button { flex: 1; padding: 12px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="root"></div>
+</div>
+
+<script>
+(function(){
+  const root = document.getElementById('root');
+  function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+  const levelsMeta = [
+    {id:1, title:'Рівень 1', subtitle:'Числа до 10', timed:false, badge:'Новачок мінусування'},
+    {id:2, title:'Рівень 2', subtitle:'Числа до 20', timed:false, badge:'Учень мінусування'},
+    {id:3, title:'Рівень 3', subtitle:'Числа до 50', timed:false, badge:'Знавець мінусування'},
+    {id:4, title:'Рівень 4', subtitle:'Числа до 100', timed:false, badge:'Розумник мінусування'},
+    {id:5, title:'Рівень 5', subtitle:'Двоцифрові числа', timed:false, badge:'Спеціаліст мінусування'},
+    {id:6, title:'Рівень 6', subtitle:'Перехід через десяток', timed:false, badge:'Майстер позичання'},
+    {id:7, title:'Рівень 7', subtitle:'Трицифрові числа', timed:false, badge:'Профі трицифрових чисел'},
+    {id:8, title:'Рівень 8', subtitle:'Задачі на віднімання', timed:false, badge:"Розв'язувач задач"},
+    {id:9, title:'Рівень 9', subtitle:'Приклади на час', timed:true, perTime:12, badge:'Швидкісний рахівник'},
+    {id:10, title:'Рівень 10', subtitle:'Майстер мінусування', timed:true, perTime:20, badge:'Математик мінусування'}
+  ];
+
+  const counts = {1:10,2:10,3:10,4:10,5:10,6:10,7:10,8:8,9:10,10:10};
+
+  const templates = [
+    (a,b)=>`У Марійки було ${a} яблук. Вона з'їла ${b} яблук. Скільки яблук залишилось?`,
+    (a,b)=>`На дереві сиділо ${a} пташок. ${b} пташок полетіло. Скільки пташок залишилось на дереві?`,
+    (a,b)=>`У класі було ${a} учнів. ${b} учнів пішли на екскурсію. Скільки учнів залишилось у класі?`,
+    (a,b)=>`Мама спекла ${a} тістечок. Сім'я з'їла ${b} тістечок за вечерю. Скільки тістечок залишилось?`,
+    (a,b)=>`У саду росло ${a} квітів. ${b} квітів зів'яли. Скільки квітів залишилось у саду?`,
+    (a,b)=>`Петрик мав ${a} цукерок. Він віддав ${b} цукерок другу. Скільки цукерок залишилось у Петрика?`,
+    (a,b)=>`У гаражі стояло ${a} машин. ${b} машин виїхали. Скільки машин залишилось у гаражі?`,
+    (a,b)=>`На клумбі росло ${a} тюльпанів. Садівник зрізав ${b} тюльпанів для букета. Скільки тюльпанів залишилось на клумбі?`
+  ];
+
+  function genSimple(max){
+    const a = randInt(Math.max(3, Math.round(max*0.3)), max);
+    const b = randInt(1, a-1);
+    return {text:`${a} - ${b}`, answer:a-b};
+  }
+  function genTwoDigit(){
+    const a = randInt(21,99), b = randInt(10,a-1);
+    return {text:`${a} - ${b}`, answer:a-b};
+  }
+  function genBorrow(){
+    const a2 = randInt(2,9), a1 = randInt(0,8);
+    const b1 = randInt(a1+1,9), b2 = randInt(1,a2-1);
+    const a = a2*10+a1, b = b2*10+b1;
+    return {text:`${a} - ${b}`, answer:a-b};
+  }
+  function genThreeDigit(){
+    const a = randInt(200,899), b = randInt(100,a-1);
+    return {text:`${a} - ${b}`, answer:a-b};
+  }
+  function genHard(){
+    const a = randInt(300,950), b = randInt(120,a-1);
+    return {text:`${a} - ${b}`, answer:a-b};
+  }
+  function genWordProblem(){
+    const a = randInt(8,30), b = randInt(1,a-1);
+    const t = templates[randInt(0,templates.length-1)];
+    return {text:t(a,b), answer:a-b, isWord:true};
+  }
+
+  function generateProblems(id){
+    const n = counts[id];
+    const arr = [];
+    for(let i=0;i<n;i++){
+      let p;
+      if(id===1) p=genSimple(10);
+      else if(id===2) p=genSimple(20);
+      else if(id===3) p=genSimple(50);
+      else if(id===4) p=genSimple(100);
+      else if(id===5) p=genTwoDigit();
+      else if(id===6) p=genBorrow();
+      else if(id===7) p=genThreeDigit();
+      else if(id===8) p=genWordProblem();
+      else if(id===9) p=genSimple(100);
+      else p=genHard();
+      arr.push(p);
+    }
+    return arr;
+  }
+
+  let state = {screen:'menu'};
+
+  function clearAllTimers(){
+    if(state.timerId){ clearInterval(state.timerId); state.timerId=null; }
+    if(state.feedbackTimer){ clearTimeout(state.feedbackTimer); state.feedbackTimer=null; }
+  }
+
+  function startLevel(id){
+    clearAllTimers();
+    const meta = levelsMeta.find(l=>l.id===id);
+    state = {screen:'quiz', levelId:id, problems:generateProblems(id), index:0, timeLeft:meta.timed?meta.perTime:0, timerId:null, feedbackTimer:null};
+    render();
+    if(meta.timed) startTimer();
+  }
+
+  function startTimer(){
+    if(state.timerId) clearInterval(state.timerId);
+    state.timerId = setInterval(()=>{
+      state.timeLeft--;
+      if(state.timeLeft<=0){ submitAnswer(true); }
+      else {
+        const el = document.getElementById('timer-val');
+        if(el) el.textContent = state.timeLeft;
+      }
+    },1000);
+  }
+
+  function submitAnswer(timeout){
+    const input = document.getElementById('answer-input');
+    const val = timeout ? null : (input ? parseInt(input.value,10) : null);
+    const correct = state.problems[state.index].answer;
+    const isCorrect = !timeout && val===correct;
+    clearAllTimers();
+    state.lastGiven = val;
+    state.lastTimeout = timeout;
+    state.screen = isCorrect ? 'correct' : 'wrong';
+    render();
+    if(isCorrect){
+      state.feedbackTimer = setTimeout(advanceAfterCorrect, 700);
+    } else {
+      state.feedbackTimer = setTimeout(()=>{ startLevel(state.levelId); }, 1900);
+    }
+  }
+
+  function advanceAfterCorrect(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    state.index++;
+    if(state.index>=state.problems.length){ state.screen='result'; render(); return; }
+    state.screen='quiz';
+    if(meta.timed) state.timeLeft = meta.perTime;
+    render();
+    if(meta.timed) startTimer();
+    const input = document.getElementById('answer-input');
+    if(input) input.focus();
+  }
+
+  function nextLevel(){ const id = Math.min(10, state.levelId+1); startLevel(id); }
+  function restart(){ clearAllTimers(); state={screen:'menu'}; render(); }
+  function handleKey(e){ if(e.key==='Enter') submitAnswer(false); }
+
+  window.__app = {startLevel, submitAnswer, nextLevel, restart, handleKey};
+
+  function render(){
+    if(state.screen==='menu') renderMenu();
+    else if(state.screen==='quiz') renderQuiz();
+    else if(state.screen==='correct') renderCorrect();
+    else if(state.screen==='wrong') renderWrong();
+    else renderResult();
+  }
+
+  function renderMenu(){
+    root.innerHTML = `
+      <div class="header">
+        <span class="emoji">➖</span>
+        <div>
+          <h1>Тест: віднімання</h1>
+          <p>Обери рівень складності</p>
+        </div>
+      </div>
+      <div class="grid">
+        ${levelsMeta.map(l=>`
+          <button class="level-card" onclick="window.__app.startLevel(${l.id})">
+            <span class="level-num">${l.id}</span>
+            <span class="level-title">${l.title}</span>
+            <span class="level-sub">${l.subtitle}</span>
+            ${l.timed?'<span class="badge-timed">⏱ на час</span>':''}
+          </button>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderQuiz(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const p = state.problems[state.index];
+    root.innerHTML = `
+      <div class="top-row">
+        <span>${meta.title} · ${meta.subtitle}</span>
+        <span>${state.index+1} / ${state.problems.length}</span>
+      </div>
+      ${meta.timed?`<div class="timer-row">⏱ <span id="timer-val">${state.timeLeft}</span> с</div>`:''}
+      <div class="problem-card ${p.isWord?'word':'big'}">
+        <p>${p.text}</p>
+      </div>
+      <div class="answer-row">
+        <input id="answer-input" type="number" placeholder="Твоя відповідь" onkeydown="window.__app.handleKey(event)" />
+        <button onclick="window.__app.submitAnswer(false)">Перевірити</button>
+      </div>
+    `;
+    setTimeout(()=>{ const i=document.getElementById('answer-input'); if(i) i.focus(); },0);
+  }
+
+  function renderCorrect(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const p = state.problems[state.index];
+    root.innerHTML = `
+      <div class="top-row">
+        <span>${meta.title} · ${meta.subtitle}</span>
+        <span>${state.index+1} / ${state.problems.length}</span>
+      </div>
+      <div class="feedback-card" style="background:var(--bg-success);">
+        <p class="expr">${p.text} = ${p.answer}</p>
+        <div class="status" style="color:var(--text-success);">✅ Правильно!</div>
+      </div>
+    `;
+  }
+
+  function renderWrong(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const p = state.problems[state.index];
+    root.innerHTML = `
+      <div class="top-row">
+        <span>${meta.title} · ${meta.subtitle}</span>
+        <span>${state.index+1} / ${state.problems.length}</span>
+      </div>
+      <div class="feedback-card" style="background:var(--bg-danger);">
+        <p class="expr">${p.text} = ${p.answer}</p>
+        <div class="status" style="color:var(--text-danger);">❌ ${state.lastTimeout?'Час вийшов':'Неправильно ('+(state.lastGiven??'—')+')'}</div>
+        <p class="hint">Рівень починається знову…</p>
+      </div>
+    `;
+  }
+
+  function renderResult(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const isLast = state.levelId===10;
+    root.innerHTML = `
+      <div class="result-box">
+        <div class="medal">🏅</div>
+        <p class="result-kicker">Ти отримав звання</p>
+        <p class="result-badge">«${meta.badge}»</p>
+        <p class="result-sub">${meta.title} пройдено без жодної помилки</p>
+        <div class="result-actions">
+          ${isLast?`<button onclick="window.__app.restart()">До меню</button>`
+          :`<button onclick="window.__app.nextLevel()">Наступний рівень</button>
+            <button onclick="window.__app.restart()">До меню</button>`}
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

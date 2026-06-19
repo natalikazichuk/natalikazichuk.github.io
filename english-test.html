@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест: Англійська A1</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f4f3ee;
+    --bg-success: #eaf3de;
+    --bg-danger: #fcebeb;
+    --text: #1a1a1a;
+    --text-secondary: #6b6a64;
+    --text-success: #27500a;
+    --text-danger: #791f1f;
+    --text-warning: #854f0b;
+    --text-info: #185fa5;
+    --border: rgba(0,0,0,0.13);
+    --radius-md: 8px;
+    --radius-lg: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg-secondary: #2c2c2a;
+      --bg-success: #173404;
+      --bg-danger: #501313;
+      --text: #f1efe8;
+      --text-secondary: #b4b2a9;
+      --text-success: #c0dd97;
+      --text-danger: #f7c1c1;
+      --text-warning: #fac775;
+      --text-info: #85b7eb;
+      --border: rgba(255,255,255,0.16);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .header .emoji { font-size: 28px; }
+  .header h1 { font-size: 17px; font-weight: 600; margin: 0; }
+  .header p { font-size: 13px; color: var(--text-secondary); margin: 2px 0 0; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  button {
+    font-family: inherit;
+    font-size: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  button:hover { background: var(--bg-secondary); }
+  button:active { transform: scale(0.98); }
+  .level-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px;
+    min-height: 100px;
+    text-align: left;
+  }
+  .level-num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .level-title { font-weight: 600; font-size: 14px; }
+  .level-sub { font-size: 12px; color: var(--text-secondary); }
+  .badge-timed { font-size: 11px; color: var(--text-warning); }
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .timer-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-warning);
+    font-weight: 600;
+  }
+  .problem-card {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 28px 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .problem-card .direction { font-size: 13px; color: var(--text-secondary); margin: 0 0 10px; font-weight: 600; }
+  .problem-card .word { font-size: 30px; font-weight: 600; margin: 0; }
+  .answer-row { display: flex; gap: 8px; }
+  input[type="text"] {
+    flex: 1;
+    height: 42px;
+    font-size: 16px;
+    font-family: inherit;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    color: var(--text);
+    padding: 0 12px;
+  }
+  input[type="text"]:focus { outline: 2px solid var(--text-info); }
+  .answer-row button { padding: 0 18px; font-weight: 600; white-space: nowrap; }
+  .feedback-card {
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .feedback-card p.expr { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+  .feedback-card .status { font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .feedback-card .hint { font-size: 13px; color: var(--text-secondary); margin: 8px 0 0; }
+  .result-box { text-align: center; padding: 4px 0; }
+  .medal { font-size: 44px; }
+  .result-kicker { font-size: 13px; color: var(--text-secondary); margin: 14px 0 2px; }
+  .result-badge { font-size: 21px; font-weight: 600; margin: 0 0 4px; }
+  .result-sub { font-size: 13px; color: var(--text-secondary); margin: 0 0 24px; }
+  .result-actions { display: flex; gap: 8px; }
+  .result-actions button { flex: 1; padding: 12px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="root"></div>
+</div>
+
+<script>
+(function(){
+  const root = document.getElementById('root');
+  function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){ const j=randInt(0,i); const t=a[i]; a[i]=a[j]; a[j]=t; }
+    return a;
+  }
+
+  const wordLists = {
+    1: [ {en:"one", ua:"один"}, {en:"two", ua:"два"}, {en:"three", ua:"три"}, {en:"four", ua:"чотири"}, {en:"five", ua:"п'ять"}, {en:"six", ua:"шість"}, {en:"seven", ua:"сім"}, {en:"eight", ua:"вісім"}, {en:"nine", ua:"дев'ять"}, {en:"ten", ua:"десять"} ],
+    2: [ {en:"red", ua:"червоний"}, {en:"blue", ua:"синій"}, {en:"green", ua:"зелений"}, {en:"yellow", ua:"жовтий"}, {en:"black", ua:"чорний"}, {en:"white", ua:"білий"}, {en:"orange", ua:"помаранчевий"}, {en:"pink", ua:"рожевий"}, {en:"purple", ua:"фіолетовий"}, {en:"brown", ua:"коричневий"} ],
+    3: [ {en:"mother", ua:"мама"}, {en:"father", ua:"тато"}, {en:"sister", ua:"сестра"}, {en:"brother", ua:"брат"}, {en:"son", ua:"син"}, {en:"daughter", ua:"донька"}, {en:"grandmother", ua:"бабуся"}, {en:"grandfather", ua:"дідусь"}, {en:"aunt", ua:"тітка"}, {en:"uncle", ua:"дядько"} ],
+    4: [ {en:"dog", ua:"собака"}, {en:"cat", ua:"кіт"}, {en:"bird", ua:"птах"}, {en:"fish", ua:"риба"}, {en:"horse", ua:"кінь"}, {en:"cow", ua:"корова"}, {en:"pig", ua:"свиня"}, {en:"sheep", ua:"овечка"}, {en:"mouse", ua:"миша"}, {en:"rabbit", ua:"кролик"} ],
+    5: [ {en:"bread", ua:"хліб"}, {en:"milk", ua:"молоко"}, {en:"water", ua:"вода"}, {en:"apple", ua:"яблуко"}, {en:"banana", ua:"банан"}, {en:"egg", ua:"яйце"}, {en:"cheese", ua:"сир"}, {en:"meat", ua:"м'ясо"}, {en:"rice", ua:"рис"}, {en:"sugar", ua:"цукор"} ],
+    6: [ {en:"shirt", ua:"сорочка"}, {en:"dress", ua:"плаття"}, {en:"shoes", ua:"взуття"}, {en:"hat", ua:"шапка"}, {en:"jacket", ua:"куртка"}, {en:"socks", ua:"шкарпетки"}, {en:"trousers", ua:"штани"}, {en:"skirt", ua:"спідниця"}, {en:"coat", ua:"пальто"}, {en:"gloves", ua:"рукавички"} ],
+    7: [ {en:"house", ua:"будинок"}, {en:"room", ua:"кімната"}, {en:"door", ua:"двері"}, {en:"window", ua:"вікно"}, {en:"table", ua:"стіл"}, {en:"chair", ua:"стілець"}, {en:"bed", ua:"ліжко"}, {en:"kitchen", ua:"кухня"}, {en:"garden", ua:"сад"}, {en:"wall", ua:"стіна"} ],
+    8: [ {en:"head", ua:"голова"}, {en:"hand", ua:"рука"}, {en:"leg", ua:"нога"}, {en:"eye", ua:"око"}, {en:"ear", ua:"вухо"}, {en:"nose", ua:"ніс"}, {en:"mouth", ua:"рот"}, {en:"hair", ua:"волосся"}, {en:"foot", ua:"стопа"}, {en:"tooth", ua:"зуб"} ],
+    9: [ {en:"go", ua:"йти"}, {en:"eat", ua:"їсти"}, {en:"drink", ua:"пити"}, {en:"sleep", ua:"спати"}, {en:"run", ua:"бігти"}, {en:"jump", ua:"стрибати"}, {en:"read", ua:"читати"}, {en:"write", ua:"писати"}, {en:"play", ua:"грати"}, {en:"swim", ua:"плавати"} ]
+  };
+
+  const levelsMeta = [
+    {id:1, title:'Рівень 1', subtitle:'Числа 1-10', timed:false, badge:'Новачок англійської'},
+    {id:2, title:'Рівень 2', subtitle:'Кольори', timed:false, badge:'Знавець кольорів'},
+    {id:3, title:'Рівень 3', subtitle:'Родина', timed:false, badge:'Знавець родини'},
+    {id:4, title:'Рівень 4', subtitle:'Тварини', timed:false, badge:'Друг тварин'},
+    {id:5, title:'Рівень 5', subtitle:'Їжа', timed:false, badge:'Гурман англійської'},
+    {id:6, title:'Рівень 6', subtitle:'Одяг', timed:false, badge:'Модник англійської'},
+    {id:7, title:'Рівень 7', subtitle:'Дім', timed:false, badge:'Господар англійської'},
+    {id:8, title:'Рівень 8', subtitle:'Частини тіла', timed:false, badge:'Знавець тіла'},
+    {id:9, title:'Рівень 9', subtitle:'Дієслова, на час', timed:true, perTime:10, badge:'Швидкий перекладач'},
+    {id:10, title:'Рівень 10', subtitle:'Майстер англійської', timed:true, perTime:15, badge:'Майстер англійської A1'}
+  ];
+
+  function makeProblem(pair, forceDir){
+    const dir = forceDir || (Math.random()<0.5 ? 'en-ua' : 'ua-en');
+    if(dir==='en-ua'){
+      return {prompt:pair.en, answer:pair.ua, direction:'Переклади українською:'};
+    } else {
+      return {prompt:pair.ua, answer:pair.en, direction:'Translate into English:'};
+    }
+  }
+
+  function generateProblems(id){
+    if(id<=9){
+      return shuffle(wordLists[id]).map(p=>makeProblem(p));
+    }
+    let pool = [];
+    for(let i=1;i<=9;i++) pool = pool.concat(wordLists[i]);
+    return shuffle(pool).slice(0,10).map(p=>makeProblem(p,'ua-en'));
+  }
+
+  function normalize(s){
+    if(s===null || s===undefined) return '';
+    let t = s.toString().trim().toLowerCase();
+    t = t.replace(/^(a |an |the )/,'');
+    t = t.replace(/[.,!?]/g,'');
+    return t;
+  }
+
+  let state = {screen:'menu'};
+
+  function clearAllTimers(){
+    if(state.timerId){ clearInterval(state.timerId); state.timerId=null; }
+    if(state.feedbackTimer){ clearTimeout(state.feedbackTimer); state.feedbackTimer=null; }
+  }
+
+  function startLevel(id){
+    clearAllTimers();
+    const meta = levelsMeta.find(l=>l.id===id);
+    state = {screen:'quiz', levelId:id, problems:generateProblems(id), index:0, timeLeft:meta.timed?meta.perTime:0, timerId:null, feedbackTimer:null};
+    render();
+    if(meta.timed) startTimer();
+  }
+
+  function startTimer(){
+    if(state.timerId) clearInterval(state.timerId);
+    state.timerId = setInterval(()=>{
+      state.timeLeft--;
+      if(state.timeLeft<=0){ submitAnswer(true); }
+      else {
+        const el = document.getElementById('timer-val');
+        if(el) el.textContent = state.timeLeft;
+      }
+    },1000);
+  }
+
+  function submitAnswer(timeout){
+    const input = document.getElementById('answer-input');
+    const val = timeout ? null : (input ? input.value : null);
+    const p = state.problems[state.index];
+    const isCorrect = !timeout && normalize(val)===normalize(p.answer);
+    clearAllTimers();
+    state.lastGiven = val;
+    state.lastTimeout = timeout;
+    state.screen = isCorrect ? 'correct' : 'wrong';
+    render();
+    if(isCorrect){
+      state.feedbackTimer = setTimeout(advanceAfterCorrect, 700);
+    } else {
+      state.feedbackTimer = setTimeout(()=>{ startLevel(state.levelId); }, 2200);
+    }
+  }
+
+  function advanceAfterCorrect(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    state.index++;
+    if(state.index>=state.problems.length){ state.screen='result'; render(); return; }
+    state.screen='quiz';
+    if(meta.timed) state.timeLeft = meta.perTime;
+    render();
+    if(meta.timed) startTimer();
+    const input = document.getElementById('answer-input');
+    if(input) input.focus();
+  }
+
+  function nextLevel(){ const id = Math.min(10, state.levelId+1); startLevel(id); }
+  function restart(){ clearAllTimers(); state={screen:'menu'}; render(); }
+  function handleKey(e){ if(e.key==='Enter') submitAnswer(false); }
+
+  window.__app = {startLevel, submitAnswer, nextLevel, restart, handleKey};
+
+  function render(){
+    if(state.screen==='menu') renderMenu();
+    else if(state.screen==='quiz') renderQuiz();
+    else if(state.screen==='correct') renderCorrect();
+    else if(state.screen==='wrong') renderWrong();
+    else renderResult();
+  }
+
+  function renderMenu(){
+    root.innerHTML = `
+      <div class="header">
+        <span class="emoji">🔤</span>
+        <div>
+          <h1>Тест: англійська A1</h1>
+          <p>Обери рівень складності</p>
+        </div>
+      </div>
+      <div class="grid">
+        ${levelsMeta.map(l=>`
+          <button class="level-card" onclick="window.__app.startLevel(${l.id})">
+            <span class="level-num">${l.id}</span>
+            <span class="level-title">${l.title}</span>
+            <span class="level-sub">${l.subtitle}</span>
+            ${l.timed?'<span class="badge-timed">⏱ на час</span>':''}
+          </button>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderQuiz(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const p = state.problems[state.index];
+    root.innerHTML = `
+      <div class="top-row">
+        <span>${meta.title} · ${meta.subtitle}</span>
+        <span>${state.index+1} / ${state.problems.length}</span>
+      </div>
+      ${meta.timed?`<div class="timer-row">⏱ <span id="timer-val">${state.timeLeft}</span> с</div>`:''}
+      <div class="problem-card">
+        <p class="direction">${p.direction}</p>
+        <p class="word">${p.prompt}</p>
+      </div>
+      <div class="answer-row">
+        <input id="answer-input" type="text" placeholder="Твоя відповідь" autocomplete="off" onkeydown="window.__app.handleKey(event)" />
+        <button onclick="window.__app.submitAnswer(false)">Перевірити</button>
+      </div>
+    `;
+    setTimeout(()=>{ const i=document.getElementById('answer-input'); if(i) i.focus(); },0);
+  }
+
+  function renderCorrect(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const p = state.problems[state.index];
+    root.innerHTML = `
+      <div class="top-row">
+        <span>${meta.title} · ${meta.subtitle}</span>
+        <span>${state.index+1} / ${state.problems.length}</span>
+      </div>
+      <div class="feedback-card" style="background:var(--bg-success);">
+        <p class="expr">${p.prompt} &rarr; ${p.answer}</p>
+        <div class="status" style="color:var(--text-success);">✅ Правильно!</div>
+      </div>
+    `;
+  }
+
+  function renderWrong(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const p = state.problems[state.index];
+    root.innerHTML = `
+      <div class="top-row">
+        <span>${meta.title} · ${meta.subtitle}</span>
+        <span>${state.index+1} / ${state.problems.length}</span>
+      </div>
+      <div class="feedback-card" style="background:var(--bg-danger);">
+        <p class="expr">${p.prompt} &rarr; ${p.answer}</p>
+        <div class="status" style="color:var(--text-danger);">❌ ${state.lastTimeout?'Час вийшов':'Неправильно ('+(state.lastGiven||'—')+')'}</div>
+        <p class="hint">Рівень починається знову…</p>
+      </div>
+    `;
+  }
+
+  function renderResult(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const isLast = state.levelId===10;
+    root.innerHTML = `
+      <div class="result-box">
+        <div class="medal">🏅</div>
+        <p class="result-kicker">Ти отримав звання</p>
+        <p class="result-badge">«${meta.badge}»</p>
+        <p class="result-sub">${meta.title} пройдено без жодної помилки</p>
+        <div class="result-actions">
+          ${isLast?`<button onclick="window.__app.restart()">До меню</button>`
+          :`<button onclick="window.__app.nextLevel()">Наступний рівень</button>
+            <button onclick="window.__app.restart()">До меню</button>`}
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
