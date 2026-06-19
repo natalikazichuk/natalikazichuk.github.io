@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn &amp; Play: Мій Світ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#AEE3F4;
+    --sky-bottom:#EAF7DD;
+    --grass-a:#8FCB6B;
+    --grass-b:#7BBA57;
+    --wood:#7C4A26;
+    --wood-dark:#5E371C;
+    --parchment:#FBEFD0;
+    --parchment-edge:#E3CB8E;
+    --ink:#3A2A1E;
+    --gold:#FFC94A;
+    --gold-dark:#E0A93B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+    background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 60%);
+    font-family:'Nunito', sans-serif;
+    color:var(--ink);
+  }
+
+  /* ── TOP BAR ── */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 20px;
+    background:rgba(255,255,255,.35);
+    backdrop-filter:blur(6px);
+    border-bottom:2px solid var(--parchment-edge);
+    flex-shrink:0;
+  }
+  .topbar-title{
+    font-family:'Fredoka',sans-serif;
+    font-size:1.6rem;
+    color:var(--wood-dark);
+    text-shadow:1px 2px 0 rgba(255,255,255,.5);
+  }
+  .topbar-sub{
+    font-size:.8rem;
+    opacity:.7;
+    margin-top:1px;
+  }
+  .topbar-legend{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    font-size:.78rem;
+    opacity:.85;
+  }
+  .topbar-legend span{display:inline-flex;align-items:center;gap:4px}
+  .btn-back{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--wood);color:#fff;
+    border:none;border-radius:10px;padding:8px 16px;
+    font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;
+    cursor:pointer;text-decoration:none;
+    transition:background .15s;
+  }
+  .btn-back:hover{background:var(--wood-dark)}
+
+  /* ── MAIN LAYOUT ── */
+  .main{
+    flex:1;
+    display:flex;
+    gap:0;
+    overflow:hidden;
+    min-height:0;
+  }
+
+  /* ── MAP PANEL ── */
+  .map-panel{
+    flex:1;
+    display:flex;
+    align-items:stretch;
+    padding:12px;
+    min-width:0;
+  }
+  .map-frame{
+    background:var(--wood);
+    border:5px solid var(--wood-dark);
+    border-radius:18px;
+    padding:8px;
+    width:100%;
+    box-shadow:0 10px 28px rgba(0,0,0,.25);
+  }
+  .map-inner{
+    border-radius:12px;
+    overflow:hidden;
+    background:linear-gradient(180deg,#cfe8ec 0%,var(--grass-a) 8%);
+    height:100%;
+  }
+  svg#board{
+    display:block;
+    width:100%;
+    height:100%;
+  }
+
+  /* ── SIDE PANEL ── */
+  .side-panel{
+    width:280px;
+    flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    padding:12px 12px 12px 0;
+    gap:12px;
+  }
+  .info-card{
+    background:var(--parchment);
+    border:3px solid var(--parchment-edge);
+    border-radius:16px;
+    padding:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,.12);
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .info-icon{font-size:44px;line-height:1;text-align:center}
+  .info-title{
+    font-family:'Fredoka',sans-serif;
+    font-size:1.2rem;
+    color:var(--wood-dark);
+    text-align:center;
+  }
+  .info-desc{
+    font-size:.88rem;
+    line-height:1.5;
+    text-align:center;
+    flex:1;
+  }
+  .info-desc.hint{font-style:italic;opacity:.65}
+  .monster-card{
+    background:rgba(255,255,255,.55);
+    border:2px solid var(--parchment-edge);
+    border-radius:14px;
+    padding:12px;
+    font-size:.78rem;
+    text-align:center;
+  }
+  .monster-card-title{font-weight:800;font-size:.8rem;margin-bottom:6px;color:var(--wood-dark)}
+  .monster-list{display:flex;gap:6px;justify-content:center;font-size:1.3rem}
+
+  /* ── HEX STYLES ── */
+  .hex{stroke:rgba(0,0,0,.12);stroke-width:1.2}
+  .hex.building{cursor:pointer;stroke:rgba(0,0,0,.28);stroke-width:1.8;transition:filter .15s}
+  .hex.building:hover{filter:brightness(1.12)}
+  .hex.building.selected{stroke:var(--gold);stroke-width:3;filter:drop-shadow(0 0 8px rgba(255,201,74,.9))}
+  .building-icon{font-size:20px;pointer-events:none;text-anchor:middle;dominant-baseline:central}
+  .monster-icon{font-size:18px;text-anchor:middle;dominant-baseline:central;animation:bob 2.4s ease-in-out infinite}
+  .monster-group{pointer-events:none;transition:transform 1.05s cubic-bezier(.45,0,.2,1)}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  @media(prefers-reduced-motion:reduce){
+    .monster-icon{animation:none}
+    .monster-group{transition:none}
+  }
+
+  /* ── MOBILE ── */
+  @media(max-width:640px){
+    .main{flex-direction:column}
+    .side-panel{width:100%;padding:0 12px 12px;flex-direction:row}
+    .info-card{flex:1}
+    .monster-card{width:100px;flex-shrink:0}
+    .topbar-legend{display:none}
+    .map-panel{min-height:55vw;max-height:60vh}
+  }
+</style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">🗺️ Мій Світ</div>
+      <div class="topbar-sub">12×12 гексів · натисни на будівлю</div>
+    </div>
+    <div class="topbar-legend">
+      <span>🏛️ Знання</span>
+      <span>📚 Бібліотека</span>
+      <span>🎭 Мистецтва</span>
+      <span>🏆 Арена</span>
+      <span>🖼️ Музей</span>
+      <span>🎯 Школа</span>
+    </div>
+    <a class="btn-back" href="index.html">← Назад</a>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- MAP -->
+    <div class="map-panel">
+      <div class="map-frame">
+        <div class="map-inner">
+          <svg id="board" xmlns="http://www.w3.org/2000/svg"
+            aria-label="Гексова карта Мій Світ із будівлями та монстрами"></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDE -->
+    <div class="side-panel">
+      <div class="info-card">
+        <div class="info-icon" id="infoIcon">🗺️</div>
+        <div class="info-title" id="infoTitle">Обери будівлю</div>
+        <div class="info-desc hint" id="infoDesc">Клікни по будь-якій кольоровій будівлі на карті, щоб прочитати про неї.</div>
+      </div>
+      <div class="monster-card">
+        <div class="monster-card-title">👾 Монстри на полі</div>
+        <div class="monster-list" id="monsterList"></div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+(function(){
+  const COLS = 12, ROWS = 12;
+  const GRASS_A = '#8FCB6B', GRASS_B = '#7BBA57';
+
+  const buildings = [
+    {col:5,row:5,icon:'🏛️',name:'Будівля Знань',
+      desc:'10 рівнів кімнат: Математика, Українська мова, Англійська, Логіка та предмети старшої школи. Тут прокачуються навчальні навички героя.',color:'#6E84E0'},
+    {col:2,row:3,icon:'📚',name:'Бібліотека',
+      desc:'Полиці та шафи з прочитаними книжками — особиста колекція знань героя.',color:'#B8763E'},
+    {col:9,row:2,icon:'🎭',name:'Дім Мистецтв',
+      desc:'Медалі, грамоти та виступи — досягнення героя у творчості.',color:'#C76FB8'},
+    {col:8,row:9,icon:'🏆',name:'Арена Спорту',
+      desc:'Спортивні успіхи та перемоги героя.',color:'#3FB6A8'},
+    {col:3,row:9,icon:'🖼️',name:'Музей Слави',
+      desc:'Справжні фотографії з освітньої частини платформи.',color:'#E0A93B'},
+    {col:6,row:1,icon:'🎯',name:'Підготовка до школи',
+      desc:'Тренажери для прокачки всіх навичок героя перед новим рівнем.',color:'#E08B3B'}
+  ];
+  const monsterEmojis = ['👾','🐲','👹','🦖','🐍'];
+  const buildingMap = {};
+  buildings.forEach(b => buildingMap[b.col+','+b.row] = b);
+
+  // Responsive SIZE — fill available space
+  function calcSize(){
+    const vw = window.innerWidth;
+    const sideW = vw > 640 ? 280 + 24 : 0;
+    const topH = 56;
+    const availW = vw - sideW - 40;
+    const availH = window.innerHeight - topH - 40;
+    const sizeByW = availW / (1.5 * (COLS - 1) + 2 + 0.1);
+    const sizeByH = availH / (Math.sqrt(3) * (ROWS - 1 + 0.5) + 2 + 0.1);
+    return Math.max(18, Math.min(sizeByW, sizeByH));
+  }
+
+  const ns = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs){
+    const e = document.createElementNS(ns, tag);
+    for(const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  function hexCenter(col, row, S){
+    return {
+      x: S * 1.5 * col + S + 6,
+      y: Math.sqrt(3) * S * (row + 0.5*(col%2)) + S + 6
+    };
+  }
+  function hexPoints(cx, cy, r){
+    const pts=[];
+    for(let i=0;i<6;i++){
+      const a = Math.PI/180*(60*i);
+      pts.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1));
+    }
+    return pts.join(' ');
+  }
+  function neighbors(col,row){
+    const even=col%2===0;
+    const dirs=even?[[0,-1],[0,1],[-1,-1],[-1,0],[1,-1],[1,0]]:[[0,-1],[0,1],[-1,0],[-1,1],[1,0],[1,1]];
+    return dirs.map(([dc,dr])=>[col+dc,row+dr]).filter(([c,r])=>c>=0&&c<COLS&&r>=0&&r<ROWS);
+  }
+
+  const svg = document.getElementById('board');
+  let selectedHex = null;
+  const monsterNodes = {};
+  const monsters = monsterEmojis.map((emoji,i)=>{
+    let c,r;
+    do{c=Math.floor(Math.random()*COLS);r=Math.floor(Math.random()*ROWS);}
+    while(buildingMap[c+','+r]);
+    return {id:'m'+i,emoji,col:c,row:r};
+  });
+
+  // Monster list in side panel
+  const ml = document.getElementById('monsterList');
+  monsters.forEach(m=>{ const s=document.createElement('span'); s.textContent=m.emoji; ml.appendChild(s); });
+
+  function buildBoard(){
+    svg.innerHTML='';
+    const S = calcSize();
+    const W = S*1.5*(COLS-1)+S*2+12;
+    const H = Math.sqrt(3)*S*(ROWS-1+0.5)+S*2+12;
+    svg.setAttribute('viewBox',`0 0 ${W.toFixed(1)} ${H.toFixed(1)}`);
+
+    // Tiles
+    for(let col=0;col<COLS;col++){
+      for(let row=0;row<ROWS;row++){
+        const {x,y}=hexCenter(col,row,S);
+        const key=col+','+row;
+        const b=buildingMap[key];
+        const fill=b?b.color:((col+row)%2===0?GRASS_A:GRASS_B);
+        const hex=el('polygon',{
+          class:'hex'+(b?' building':''),
+          points:hexPoints(x,y,S-1.2),
+          fill,
+          'data-key':key
+        });
+        if(b){
+          hex.setAttribute('tabindex','0');
+          hex.setAttribute('role','button');
+          hex.setAttribute('aria-label',b.name);
+          hex.addEventListener('click',()=>selectBuilding(key,hex));
+          hex.addEventListener('keydown',ev=>{
+            if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();selectBuilding(key,hex);}
+          });
+        }
+        svg.appendChild(hex);
+      }
+    }
+
+    // Building icons
+    buildings.forEach(b=>{
+      const {x,y}=hexCenter(b.col,b.row,S);
+      const t=el('text',{class:'building-icon',x:x.toFixed(1),y:y.toFixed(1),
+        style:`font-size:${Math.round(S*0.65)}px`});
+      t.textContent=b.icon;
+      svg.appendChild(t);
+    });
+
+    // Monsters
+    monsters.forEach(m=>{
+      const {x,y}=hexCenter(m.col,m.row,S);
+      const g=el('g',{class:'monster-group',transform:`translate(${x.toFixed(1)},${y.toFixed(1)})`});
+      const t=el('text',{class:'monster-icon',
+        style:`font-size:${Math.round(S*0.55)}px;animation-duration:${(2+Math.random()).toFixed(2)}s`});
+      t.textContent=m.emoji;
+      g.appendChild(t);
+      svg.appendChild(g);
+      monsterNodes[m.id]=g;
+    });
+  }
+
+  function selectBuilding(key, hexEl){
+    const b=buildingMap[key];
+    if(!b) return;
+    if(selectedHex) selectedHex.classList.remove('selected');
+    hexEl.classList.add('selected');
+    selectedHex=hexEl;
+    document.getElementById('infoIcon').textContent=b.icon;
+    document.getElementById('infoTitle').textContent=b.name;
+    const d=document.getElementById('infoDesc');
+    d.textContent=b.desc;
+    d.classList.remove('hint');
+  }
+
+  function moveMonsters(){
+    const S=calcSize();
+    monsters.forEach(m=>{
+      const opts=neighbors(m.col,m.row).filter(([c,r])=>!buildingMap[c+','+r]);
+      if(!opts.length) return;
+      const [nc,nr]=opts[Math.floor(Math.random()*opts.length)];
+      m.col=nc; m.row=nr;
+      const {x,y}=hexCenter(nc,nr,S);
+      monsterNodes[m.id].setAttribute('transform',`translate(${x.toFixed(1)},${y.toFixed(1)})`);
+    });
+  }
+
+  buildBoard();
+  let resizeTimer;
+  window.addEventListener('resize',()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(buildBoard, 120);
+  });
+  setInterval(moveMonsters, 1500);
+})();
+</script>
+</body>
+</html>

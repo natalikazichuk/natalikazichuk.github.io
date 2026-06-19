@@ -1,0 +1,3086 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SchoolKingdom — Розвиток дітей у грі</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0F1B2D;
+    --navy-mid: #1A2E47;
+    --navy-light: #243B55;
+    --coral: #FF6B47;
+    --coral-light: #FF8A6B;
+    --gold: #FFD166;
+    --mint: #4ECDC4;
+    --mint-light: #E8F9F8;
+    --white: #FFFFFF;
+    --text-light: #94A3B8;
+    --text-mid: #CBD5E1;
+    --success: #6BCB77;
+    --purple: #A78BFA;
+    --danger: #FF6B6B;
+    --brand-red: #E5383B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ====== LANDING PAGE ====== */
+  .landing { display: block; }
+  .app { display: none; }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(15,27,45,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--coral), var(--gold));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  .logo span, .brand-name { color: var(--brand-red); }
+
+  .header-nav { display: flex; gap: 30px; align-items: center; }
+  .header-nav a {
+    color: var(--text-mid);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+  }
+  .header-nav a:hover { color: var(--white); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--coral), #FF8C5A);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 11px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(255,107,71,0.4);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 11px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.14); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 20px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255,107,71,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(78,205,196,0.1) 0%, transparent 60%);
+  }
+
+  .stars-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.3); }
+  }
+
+  .hero-badge {
+    background: rgba(255,209,102,0.15);
+    border: 1px solid rgba(255,209,102,0.3);
+    color: var(--gold);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.08;
+    max-width: 820px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--coral), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-mid);
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 36px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+
+  .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--white);
+    display: block;
+  }
+  .stat-label { font-size: 0.85rem; color: var(--text-light); font-family: 'Inter', sans-serif; }
+
+  /* FEATURES */
+  .section {
+    padding: 80px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    color: var(--coral);
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    color: var(--text-mid);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 520px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .feature-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    padding: 28px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .feature-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255,107,71,0.3);
+  }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 18px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .feature-card p {
+    color: var(--text-mid);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* HOW IT WORKS */
+  .how-section {
+    background: var(--navy-mid);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 80px 60px;
+  }
+
+  .steps-row {
+    display: flex;
+    gap: 0;
+    margin-top: 56px;
+    position: relative;
+  }
+
+  .steps-row::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 80px;
+    right: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,107,71,0.4), transparent);
+  }
+
+  .step {
+    flex: 1;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .step-circle {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--coral), var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin: 0 auto 20px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 8px var(--navy-mid);
+  }
+
+  .step h3 { font-size: 1rem; font-weight: 800; margin-bottom: 8px; }
+  .step p { color: var(--text-mid); font-size: 0.85rem; font-family: 'Inter', sans-serif; line-height: 1.5; }
+
+  /* ROLES */
+  .roles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 48px;
+  }
+
+  .role-card {
+    border-radius: 24px;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .role-card.parent-card {
+    background: linear-gradient(135deg, #1A2E47, #243B55);
+    border: 1px solid rgba(78,205,196,0.2);
+  }
+
+  .role-card.child-card {
+    background: linear-gradient(135deg, #2D1A3A, #3D2550);
+    border: 1px solid rgba(167,139,250,0.2);
+  }
+
+  .role-emoji { font-size: 3rem; margin-bottom: 16px; display: block; }
+  .role-card h3 { font-size: 1.3rem; font-weight: 900; margin-bottom: 12px; }
+  .role-card p { color: var(--text-mid); font-size: 0.9rem; margin-bottom: 20px; font-family: 'Inter', sans-serif; }
+
+  .role-features { list-style: none; }
+  .role-features li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: var(--text-mid);
+    padding: 5px 0;
+    font-family: 'Inter', sans-serif;
+  }
+  .role-features li::before {
+    content: '✓';
+    color: var(--success);
+    font-weight: 800;
+    font-size: 0.8rem;
+    min-width: 16px;
+  }
+
+  /* CTA SECTION */
+  .cta-section {
+    text-align: center;
+    padding: 80px 20px;
+    background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(255,107,71,0.12) 0%, transparent 70%);
+  }
+
+  .cta-section h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; margin-bottom: 16px; }
+  .cta-section p { color: var(--text-mid); font-size: 1rem; margin-bottom: 32px; font-family: 'Inter', sans-serif; }
+
+  /* ====== APP INTERFACE ====== */
+  .app {
+    min-height: 100vh;
+    background: var(--navy);
+  }
+
+  /* AUTH SCREEN */
+  .auth-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .auth-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .auth-title { font-size: 1.6rem; font-weight: 900; margin-bottom: 6px; }
+  .auth-sub { color: var(--text-light); font-size: 0.9rem; margin-bottom: 28px; font-family: 'Inter', sans-serif; }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--coral); }
+  .form-input::placeholder { color: var(--text-light); }
+
+  .form-select {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    cursor: pointer;
+  }
+  .form-select option { background: var(--navy-mid); }
+
+  .auth-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--coral), #FF8C5A);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .auth-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,107,71,0.4); }
+
+  .auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.88rem;
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+  }
+  .auth-switch a { color: var(--coral); cursor: pointer; font-weight: 700; text-decoration: none; }
+
+  /* CHILD LOGIN */
+  .child-auth {
+    text-align: center;
+  }
+
+  .avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .avatar-option {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 16px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .avatar-option:hover, .avatar-option.selected {
+    border-color: var(--coral);
+    background: rgba(255,107,71,0.1);
+  }
+  .avatar-option .emoji { font-size: 2rem; display: block; margin-bottom: 6px; }
+  .avatar-option .name { font-size: 0.8rem; font-weight: 700; color: var(--text-mid); }
+
+  .pin-input {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .pin-digit {
+    width: 52px; height: 56px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 900;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .pin-digit:focus { border-color: var(--coral); }
+
+  /* APP LAYOUT */
+  .app-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    background: var(--navy-mid);
+    border-right: 1px solid rgba(255,255,255,0.07);
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 20px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+    font-weight: 900;
+  }
+
+  .sidebar-logo .logo-icon { width: 32px; height: 32px; font-size: 0.9rem; }
+
+  .nav-section-title {
+    padding: 12px 20px 6px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    font-weight: 700;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 0;
+    color: var(--text-mid);
+    font-weight: 600;
+    font-size: 0.92rem;
+    margin: 1px 8px;
+    border-radius: 10px;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+  .nav-item.active { background: rgba(255,107,71,0.15); color: var(--coral); }
+  .nav-item .nav-icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+  .sidebar-bottom {
+    margin-top: auto;
+    padding: 16px 8px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .family-badge {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 0 8px 8px;
+  }
+  .family-badge .family-name { font-size: 0.85rem; font-weight: 800; }
+  .family-badge .family-id { font-size: 0.72rem; color: var(--text-light); font-family: 'Inter', sans-serif; }
+
+  /* MAIN CONTENT */
+  .main-content {
+    padding: 20px 36px;
+    overflow-y: auto;
+    max-height: 100vh;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .page-title { font-size: 1.5rem; font-weight: 900; }
+  .page-sub { color: var(--text-light); font-size: 0.85rem; font-family: 'Inter', sans-serif; margin-top: 2px; }
+
+  /* CARDS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 10px 10px;
+  }
+
+  .stat-card .sc-label {
+    font-size: 0.62rem;
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 3px;
+  }
+  .stat-card .sc-value {
+    font-size: 1.1rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .stat-card .sc-icon { font-size: 0.95rem; float: none; margin-top: 0; }
+
+  /* CONTENT GRID */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-title-action {
+    font-size: 0.8rem;
+    color: var(--coral);
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  /* TASK ITEMS */
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .task-item:last-child { border-bottom: none; }
+
+  .task-check {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .task-check.done { background: var(--success); border-color: var(--success); }
+  .task-check.done::after { content: '✓'; color: white; font-size: 0.75rem; font-weight: 800; }
+
+  .task-info { flex: 1; }
+  .task-name { font-size: 0.9rem; font-weight: 700; }
+  .task-name.done { text-decoration: line-through; color: var(--text-light); }
+  .task-meta { font-size: 0.78rem; color: var(--text-light); font-family: 'Inter', sans-serif; margin-top: 2px; }
+
+  .task-badge {
+    background: rgba(255,209,102,0.15);
+    color: var(--gold);
+    border-radius: 8px;
+    padding: 3px 10px;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .task-status {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .status-pending { background: rgba(255,209,102,0.15); color: var(--gold); }
+  .status-review { background: rgba(255,107,71,0.15); color: var(--coral); }
+  .status-done { background: rgba(107,203,119,0.15); color: var(--success); }
+
+  /* CHILDREN CARDS */
+  .children-row { display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; }
+
+  .child-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .child-pill:hover, .child-pill.active { border-color: var(--coral); background: rgba(255,107,71,0.1); }
+  .child-pill .cp-avatar { font-size: 1.3rem; }
+  .child-pill .cp-name { font-size: 0.88rem; font-weight: 700; }
+  .child-pill .cp-coins { font-size: 0.75rem; color: var(--gold); font-family: 'Inter', sans-serif; }
+
+  /* WORLD VIEW */
+  .world-card {
+    background: linear-gradient(135deg, #0D2137, #1A3A2A);
+    border: 1px solid rgba(78,205,196,0.2);
+    border-radius: 18px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .world-title { font-size: 0.8rem; color: var(--mint); font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+
+  .world-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .world-cell {
+    aspect-ratio: 1;
+    max-height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .world-cell.unlocked { background: rgba(78,205,196,0.1); border-color: rgba(78,205,196,0.2); }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--coral), var(--gold));
+    transition: width 0.5s ease;
+  }
+
+  /* REWARD STORE */
+  .rewards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .reward-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .reward-item:hover { border-color: var(--gold); background: rgba(255,209,102,0.06); }
+  .reward-item .r-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+  .reward-item .r-name { font-size: 0.82rem; font-weight: 700; margin-bottom: 4px; }
+  .reward-item .r-cost { color: var(--gold); font-size: 0.78rem; font-weight: 800; }
+
+  /* UPLOAD AREA */
+  .upload-area {
+    border: 2px dashed rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .upload-area:hover { border-color: var(--coral); background: rgba(255,107,71,0.05); }
+  .upload-area .u-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+  .upload-area p { color: var(--text-light); font-size: 0.88rem; font-family: 'Inter', sans-serif; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    display: none;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 36px;
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+  }
+
+  .modal-title { font-size: 1.3rem; font-weight: 900; margin-bottom: 20px; }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: rgba(255,255,255,0.08);
+    border: none;
+    color: white;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--navy-light);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 2000;
+    max-width: 320px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast .t-icon { font-size: 1.3rem; }
+
+  /* RATING */
+  .rating-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .rating-item:last-child { border-bottom: none; }
+  .rating-rank {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; }
+  .rank-2 { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); color: #000; }
+  .rank-3 { background: linear-gradient(135deg, #CD7F32, #A0522D); color: #fff; }
+  .rank-other { background: rgba(255,255,255,0.08); color: var(--text-mid); }
+
+  .rating-info { flex: 1; }
+  .rating-name { font-size: 0.92rem; font-weight: 700; }
+  .rating-score { font-size: 0.78rem; color: var(--gold); }
+
+  /* ROLE SWITCHER */
+  .role-switcher {
+    display: flex;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+  }
+  .role-btn {
+    padding: 8px 16px;
+    border-radius: 9px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-mid);
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.15s;
+  }
+  .role-btn.active { background: var(--coral); color: white; }
+
+  /* NOTIFICATION DOT */
+  .notif-dot {
+    width: 8px; height: 8px;
+    background: var(--coral);
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 6px;
+  }
+
+  /* ====== MINI-GAME (вбудовується як тип завдання) ====== */
+  .mg-wrap { max-width: 480px; margin: 0 auto; }
+  .mg-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .mg-header .mg-emoji { font-size: 28px; }
+  .mg-header h2 { font-size: 1.1rem; font-weight: 800; margin: 0; }
+  .mg-header p { font-size: 0.82rem; color: var(--text-light); margin: 2px 0 0; font-family: 'Inter', sans-serif; }
+  .mg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .mg-level-card {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+    padding: 14px; min-height: 90px; text-align: left;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; cursor: pointer; color: white; font-family: 'Nunito', sans-serif;
+    transition: all 0.15s;
+  }
+  .mg-level-card:hover { border-color: var(--coral); background: rgba(255,107,71,0.08); }
+  .mg-level-num {
+    width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.82rem;
+  }
+  .mg-level-title { font-weight: 800; font-size: 0.85rem; }
+  .mg-level-sub { font-size: 0.72rem; color: var(--text-light); }
+  .mg-badge-timed { font-size: 0.7rem; color: var(--gold); font-weight: 700; }
+  .mg-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 0.8rem; color: var(--text-light); font-family: 'Inter', sans-serif; }
+  .mg-timer-row { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; font-size: 0.85rem; color: var(--gold); font-weight: 800; }
+  .mg-problem-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 28px 20px; margin-bottom: 18px; text-align: center; }
+  .mg-problem-card.mg-big p { font-size: 1.9rem; font-weight: 800; margin: 0; }
+  .mg-problem-card.mg-word p { font-size: 1rem; font-weight: 600; margin: 0; line-height: 1.6; color: var(--text-mid); font-family: 'Inter', sans-serif; }
+  .mg-answer-row { display: flex; gap: 8px; }
+  .mg-answer-row input[type="number"] {
+    flex: 1; height: 46px; font-size: 1rem; font-family: 'Nunito', sans-serif;
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; background: rgba(255,255,255,0.05);
+    color: white; padding: 0 14px; outline: none;
+  }
+  .mg-answer-row input[type="number"]:focus { border-color: var(--coral); }
+  .mg-answer-row button { padding: 0 20px; font-weight: 800; white-space: nowrap; }
+  .mg-feedback-card { border-radius: 18px; padding: 22px 20px; margin-bottom: 18px; text-align: center; }
+  .mg-feedback-card p.mg-expr { font-size: 1.3rem; font-weight: 800; margin: 0 0 8px; }
+  .mg-feedback-card .mg-status { font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Inter', sans-serif; }
+  .mg-full-btn { width: 100%; padding: 13px; font-weight: 800; }
+  .mg-result-box { text-align: center; }
+  .mg-trophy { font-size: 42px; }
+  .mg-result-title { font-size: 1.15rem; font-weight: 800; margin: 10px 0 4px; }
+  .mg-result-sub { font-size: 0.82rem; color: var(--text-light); margin: 0 0 22px; font-family: 'Inter', sans-serif; }
+  .mg-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
+  .mg-stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; }
+  .mg-stat-label { font-size: 0.78rem; color: var(--text-light); margin: 0 0 4px; font-family: 'Inter', sans-serif; }
+  .mg-stat-value { font-size: 1.5rem; font-weight: 800; margin: 0; }
+  .mg-result-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .mg-result-actions button { flex: 1; padding: 12px; font-weight: 800; min-width: 140px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .header { padding: 16px 20px; }
+    .header-nav { display: none; }
+    .section { padding: 60px 20px; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .roles-grid { grid-template-columns: 1fr; }
+    .how-section { padding: 60px 20px; }
+    .steps-row { flex-direction: column; gap: 24px; }
+    .steps-row::before { display: none; }
+    .app-layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main-content { padding: 20px; }
+    .stats-row { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .stat-card { padding: 8px 6px; border-radius: 10px; }
+    .stat-card .sc-label { font-size: 0.55rem; letter-spacing: 0.02em; }
+    .stat-card .sc-value { font-size: 0.95rem; }
+    .stat-card .sc-icon { font-size: 0.85rem; }
+    .content-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== LANDING PAGE ====== -->
+<div class="landing" id="landing">
+
+  <!-- Header -->
+  <header class="header">
+    <a class="logo" href="#">
+      <div class="logo-icon">⚡</div>
+      <span class="brand-name">SchoolKingdom</span>
+    </a>
+    <button class="btn-secondary" onclick="showAuth('login')">Увійти</button>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="stars-bg" id="starsBg"></div>
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center">
+      <div class="hero-badge">🚀 Ранній доступ</div>
+      <h1>Навчання, яке <em>захоплює</em> вашу дитину</h1>
+      <p>SchoolKingdom перетворює щоденний розвиток дітей на захопливу пригоду. Завдання, бали, нагороди та власний світ — все в одному місці для всієї родини.</p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="showAuth('register')" style="font-size:1.05rem;padding:14px 32px">🏠 Створити сім'ю</button>
+        <button class="btn-secondary" onclick="showAuth('login')" style="font-size:1.05rem;padding:14px 32px">Увійти в кабінет</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">3</span>
+          <span class="stat-label">хвилини на старт</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">під ваш контроль</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">∞</span>
+          <span class="stat-label">завдань для дітей</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <div class="how-section">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-tag">Як це працює</div>
+      <h2 class="section-title">Від реєстрації до першого завдання за 3 хвилини</h2>
+      <div class="steps-row">
+        <div class="step">
+          <div class="step-circle">🏠</div>
+          <h3>Створіть сім'ю</h3>
+          <p>Зареєструйтесь і отримайте унікальний Family ID для вашої родини.</p>
+        </div>
+        <div class="step">
+          <div class="step-circle">👧</div>
+          <h3>Додайте дітей</h3>
+          <p>Кожна дитина отримує аватар і PIN-код для входу. Просто та безпечно.</p>
+        </div>
+        <div class="step">
+          <div class="step-circle">📋</div>
+          <h3>Задайте завдання</h3>
+          <p>Оберіть із готового списку або складіть власні завдання для кожної дитини.</p>
+        </div>
+        <div class="step">
+          <div class="step-circle">⭐</div>
+          <h3>Нараховуйте бали</h3>
+          <p>Перевіряйте роботи і нараховуйте монети. Діти витрачають їх на нагороди.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roles -->
+  <section class="section">
+    <div class="section-tag">Ролі</div>
+    <h2 class="section-title">Для кожного — своя роль</h2>
+    <div class="roles-grid">
+      <div class="role-card parent-card">
+        <span class="role-emoji">👨‍👩‍👧</span>
+        <h3>Батьки</h3>
+        <p>Повний контроль над навчанням. Ви задаєте завдання, перевіряєте та нагороджуєте.</p>
+        <ul class="role-features">
+          <li>Створення та керування завданнями</li>
+          <li>Перевірка виконаних робіт</li>
+          <li>Нарахування монет і балів</li>
+          <li>Магазин нагород під вашим контролем</li>
+          <li>Статистика та рейтинг дітей</li>
+          <li>Запрошення другого батька/репетитора</li>
+        </ul>
+      </div>
+      <div class="role-card child-card">
+        <span class="role-emoji">🧒</span>
+        <h3>Діти</h3>
+        <p>Виконуй завдання, заробляй монети і розвивай свій власний унікальний світ!</p>
+        <ul class="role-features">
+          <li>Перегляд і виконання завдань</li>
+          <li>Завантаження фото та відео</li>
+          <li>Накопичення монет</li>
+          <li>Магазин нагород</li>
+          <li>Рейтинг серед братів та сестер</li>
+          <li>Розвиток власного цифрового світу</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ====== AUTH MODAL ====== -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+
+    <!-- PARENT LOGIN -->
+    <div id="loginForm">
+      <div class="auth-title">👋 Вхід до SchoolKingdom</div>
+      <div class="auth-sub">Введіть дані вашого акаунта</div>
+      <div class="form-group">
+        <label>Email</label>
+        <input class="form-input" type="email" placeholder="mama@email.com" id="loginEmail">
+      </div>
+      <div class="form-group">
+        <label>Пароль</label>
+        <input class="form-input" type="password" placeholder="••••••••" id="loginPass">
+      </div>
+      <button class="auth-btn" onclick="doLogin()">Увійти</button>
+      <div class="auth-switch">Немає акаунта? <a onclick="switchForm('register')">Зареєструватись</a></div>
+      <div class="auth-switch" style="margin-top:8px">Вхід для дитини: <a onclick="switchForm('child')">Дитячий кабінет</a></div>
+    </div>
+
+    <!-- PARENT REGISTER -->
+    <div id="registerForm" style="display:none">
+      <div class="auth-title">🏠 Створити сім'ю</div>
+      <div class="auth-sub">Крок 1 з 2 — Ваші дані</div>
+      <div class="form-group">
+        <label>Ваше ім'я</label>
+        <input class="form-input" type="text" placeholder="Наприклад: Оксана" id="regName">
+      </div>
+      <div class="form-group">
+        <label>Роль у сім'ї</label>
+        <select class="form-select" id="regRole">
+          <option value="mama">👩 Мама</option>
+          <option value="tato">👨 Тато</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input class="form-input" type="email" placeholder="email@example.com" id="regEmail">
+      </div>
+      <div class="form-group">
+        <label>Пароль</label>
+        <input class="form-input" type="password" placeholder="Мінімум 8 символів" id="regPass">
+      </div>
+      <button class="auth-btn" onclick="doRegister()">Створити сім'ю →</button>
+      <div class="auth-switch">Вже є акаунт? <a onclick="switchForm('login')">Увійти</a></div>
+    </div>
+
+    <!-- CHILD LOGIN -->
+    <div id="childForm" style="display:none" class="child-auth">
+      <div class="auth-title">👋 Привіт!</div>
+      <div class="auth-sub" style="text-align:center">Вибери свій аватар і введи PIN</div>
+      <div class="avatar-grid">
+        <div class="avatar-option" onclick="selectAvatar(this, 'Сашко')" >
+          <span class="emoji">🦁</span>
+          <span class="name">Сашко</span>
+        </div>
+        <div class="avatar-option" onclick="selectAvatar(this, 'Олечка')">
+          <span class="emoji">🦋</span>
+          <span class="name">Олечка</span>
+        </div>
+        <div class="avatar-option" onclick="selectAvatar(this, 'Володя')">
+          <span class="emoji">🐬</span>
+          <span class="name">Володя</span>
+        </div>
+      </div>
+      <div class="pin-input">
+        <input class="pin-digit" maxlength="1" type="password" oninput="pinNext(this, null)">
+        <input class="pin-digit" maxlength="1" type="password" oninput="pinNext(this, null)">
+        <input class="pin-digit" maxlength="1" type="password" oninput="pinNext(this, null)">
+        <input class="pin-digit" maxlength="1" type="password" oninput="pinNext(this, null)">
+      </div>
+      <button class="auth-btn" onclick="doChildLogin()">Увійти ⚡</button>
+      <div class="auth-switch"><a onclick="switchForm('login')">← Вхід для батьків</a></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ====== APP INTERFACE ====== -->
+<div class="app" id="appInterface">
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <span class="brand-name">SchoolKingdom</span>
+      </div>
+
+      <div id="parentNav" style="display:block">
+        <div class="nav-section-title">Кабінет</div>
+        <div class="nav-item active" onclick="showPage('dashboard', this)">
+          <span class="nav-icon">📊</span> Головна
+        </div>
+        <div class="nav-item" onclick="showPage('tasks', this)">
+          <span class="nav-icon">📋</span> Завдання
+          <span class="notif-dot"></span>
+        </div>
+        <div class="nav-item" onclick="showPage('review', this)">
+          <span class="nav-icon">📸</span> Перевірка робіт
+        </div>
+        <div class="nav-item" onclick="showPage('rewards', this)">
+          <span class="nav-icon">🎁</span> Нагороди
+        </div>
+        <div class="nav-item" onclick="showPage('rating', this)">
+          <span class="nav-icon">🏆</span> Рейтинг
+        </div>
+        <div class="nav-item" onclick="showPage('family', this)">
+          <span class="nav-icon">👨‍👩‍👧</span> Моя сім'я
+        </div>
+      </div>
+
+      <div id="childNav" style="display:none">
+        <div class="nav-section-title">Мій кабінет</div>
+        <div class="nav-item active" onclick="showPage('child-dashboard', this)">
+          <span class="nav-icon">🏠</span> Головна
+        </div>
+        <div class="nav-item" onclick="showPage('child-tasks', this)">
+          <span class="nav-icon">📋</span> Мої завдання
+        </div>
+        <div class="nav-item" onclick="showPage('child-upload', this)">
+          <span class="nav-icon">📤</span> Завантажити роботу
+        </div>
+        <div class="nav-item" onclick="showPage('child-shop', this)">
+          <span class="nav-icon">🛍️</span> Магазин нагород
+        </div>
+        <div class="nav-item" onclick="showPage('child-world', this)">
+          <span class="nav-icon">🌍</span> Мій світ
+        </div>
+        <div class="nav-item" onclick="showPage('rating', this)">
+          <span class="nav-icon">🏆</span> Рейтинг
+        </div>
+        <div class="nav-item" onclick="showPage('child-academy', this)">
+          <span class="nav-icon">🎓</span> Академія Героїв
+        </div>
+
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="family-badge">
+          <div class="family-name">🏠 Родина Казичук</div>
+          <div class="family-id">SPARK-8472</div>
+        </div>
+        <div class="role-switcher" style="margin: 0 8px 8px">
+          <button class="role-btn active" id="roleParentBtn" onclick="switchRole('parent')">👩 Мама</button>
+          <button class="role-btn" id="roleChildBtn" onclick="switchRole('child')">🦁 Сашко</button>
+        </div>
+        <div class="nav-item" onclick="doLogout()" style="color:var(--text-light);font-size:0.85rem">
+          <span class="nav-icon">🚪</span> Вийти
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="mainContent">
+
+      <!-- PARENT DASHBOARD -->
+      <div id="page-dashboard" class="page-content">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🏠 Кабінет батьків</div>
+            <div class="page-sub">Субота, 14 червня 2025 · Родина Казичук</div>
+          </div>
+          <button class="btn-primary" onclick="openTaskModal()">+ Нове завдання</button>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="sc-label">Активних завдань</div>
+            <div class="sc-value">7 <span class="sc-icon">📋</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">На перевірці</div>
+            <div class="sc-value">3 <span class="sc-icon">📸</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Монет видано</div>
+            <div class="sc-value">240 <span class="sc-icon">🪙</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Завдань виконано</div>
+            <div class="sc-value">18 <span class="sc-icon">✅</span></div>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <div>
+            <div class="card">
+              <div class="card-title">
+                Останні завдання
+                <span class="card-title-action" onclick="showPage('tasks', null)">Всі завдання →</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check done"></div>
+                <div class="task-info">
+                  <div class="task-name done">Математика: сторінка 45-46</div>
+                  <div class="task-meta">Сашко · виконано сьогодні</div>
+                </div>
+                <span class="task-badge">+15 🪙</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check"></div>
+                <div class="task-info">
+                  <div class="task-name">Читання: 20 хвилин</div>
+                  <div class="task-meta">Олечка · до 20:00</div>
+                </div>
+                <span class="task-status status-pending">Очікує</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check"></div>
+                <div class="task-info">
+                  <div class="task-name">Малювання: намалюй весну</div>
+                  <div class="task-meta">Сашко · завантажено фото</div>
+                </div>
+                <span class="task-status status-review">На перевірці</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check done"></div>
+                <div class="task-info">
+                  <div class="task-name done">Допомогти з прибиранням</div>
+                  <div class="task-meta">Всі діти · виконано вчора</div>
+                </div>
+                <span class="task-badge">+10 🪙</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Рейтинг тижня <span class="card-title-action" onclick="showPage('rating', null)">Повний рейтинг →</span></div>
+              <div class="rating-item" onclick="openChildProfile('sasho')" style="cursor:pointer">
+                <div class="rating-rank rank-1">1</div>
+                <span style="font-size:1.5rem;margin:0 4px">🦁</span>
+                <div class="rating-info">
+                  <div class="rating-name">Сашко</div>
+                  <div class="rating-score">⭐ 340 балів · 🪙 120 монет</div>
+                </div>
+                <div style="color:var(--gold);font-weight:800;font-size:0.9rem">👑</div>
+              </div>
+              <div class="rating-item" onclick="openChildProfile('olechka')" style="cursor:pointer">
+                <div class="rating-rank rank-2">2</div>
+                <span style="font-size:1.5rem;margin:0 4px">🦋</span>
+                <div class="rating-info">
+                  <div class="rating-name">Олечка</div>
+                  <div class="rating-score">⭐ 290 балів · 🪙 85 монет</div>
+                </div>
+              </div>
+              <div class="rating-item" onclick="openChildProfile('volodya')" style="cursor:pointer">
+                <div class="rating-rank rank-3">3</div>
+                <span style="font-size:1.5rem;margin:0 4px">🐬</span>
+                <div class="rating-info">
+                  <div class="rating-name">Володя</div>
+                  <div class="rating-score">⭐ 180 балів · 🪙 35 монет</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">На перевірці</div>
+              <div style="text-align:center;padding:16px 0">
+                <div style="font-size:2.5rem;margin-bottom:8px">📸</div>
+                <div style="font-size:0.9rem;font-weight:700">3 роботи чекають</div>
+                <div style="font-size:0.8rem;color:var(--text-light);margin:6px 0 16px;font-family:Inter,sans-serif">Сашко надіслав малюнок весни</div>
+                <button class="btn-primary" style="width:100%" onclick="showPage('review', null)">Переглянути роботи</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TASKS PAGE -->
+      <div id="page-tasks" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">📋 Завдання</div>
+            <div class="page-sub">Керуйте завданнями для кожної дитини</div>
+          </div>
+          <button class="btn-primary" onclick="openTaskModal()">+ Нове завдання</button>
+        </div>
+
+        <div class="children-row">
+          <div class="child-pill active">
+            <span class="cp-avatar">👥</span>
+            <div><div class="cp-name">Всі діти</div></div>
+          </div>
+          <div class="child-pill">
+            <span class="cp-avatar">🦁</span>
+            <div><div class="cp-name">Сашко</div></div>
+          </div>
+          <div class="child-pill">
+            <span class="cp-avatar">🦋</span>
+            <div><div class="cp-name">Олечка</div></div>
+          </div>
+          <div class="child-pill">
+            <span class="cp-avatar">🐬</span>
+            <div><div class="cp-name">Володя</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Активні завдання (7)</div>
+          <div id="parentTasksList">
+          <div class="task-item">
+            <div class="task-check done"></div>
+            <div class="task-info">
+              <div class="task-name done">Математика: сторінка 45-46</div>
+              <div class="task-meta">🦁 Сашко · виконано · Математика</div>
+            </div>
+            <span class="task-badge">+15 🪙</span>
+            <span class="task-status status-done">Виконано</span>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-info">
+              <div class="task-name">Читання: 20 хвилин книги</div>
+              <div class="task-meta">🦋 Олечка · до 20:00 · Читання</div>
+            </div>
+            <span class="task-badge">+10 🪙</span>
+            <span class="task-status status-pending">Очікує</span>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-info">
+              <div class="task-name">Малювання: намалюй весну</div>
+              <div class="task-meta">🦁 Сашко · завантажено · Творчість</div>
+            </div>
+            <span class="task-badge">+20 🪙</span>
+            <span class="task-status status-review">На перевірці</span>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-info">
+              <div class="task-name">Прибрати кімнату</div>
+              <div class="task-meta">🐬 Володя · до кінця дня · Добрі справи</div>
+            </div>
+            <span class="task-badge">+10 🪙</span>
+            <span class="task-status status-pending">Очікує</span>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-info">
+              <div class="task-name">Англійська: урок 5</div>
+              <div class="task-meta">🦋 Олечка · до 18:00 · Мови</div>
+            </div>
+            <span class="task-badge">+25 🪙</span>
+            <span class="task-status status-pending">Очікує</span>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVIEW PAGE -->
+      <div id="page-review" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">📸 Перевірка робіт</div>
+            <div class="page-sub">Перегляньте завантажені роботи та нарахуйте бали</div>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <div>
+            <div class="card">
+              <div class="card-title">Чекають на перевірку (3)</div>
+              <div style="border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;margin-bottom:16px">
+                <div style="background:linear-gradient(135deg,#1A3A2A,#2A4A3A);padding:24px;text-align:center">
+                  <div style="font-size:5rem">🖼️</div>
+                  <div style="font-size:0.8rem;color:var(--text-light);margin-top:8px;font-family:Inter,sans-serif">малювання_весна_сашко.jpg</div>
+                </div>
+                <div style="padding:16px">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+                    <span style="font-size:1.3rem">🦁</span>
+                    <div>
+                      <div style="font-size:0.9rem;font-weight:700">Сашко</div>
+                      <div style="font-size:0.78rem;color:var(--text-light);font-family:Inter,sans-serif">Малювання: намалюй весну · надіслано 14:32</div>
+                    </div>
+                  </div>
+                  <div style="font-size:0.85rem;color:var(--text-mid);margin-bottom:16px;font-family:Inter,sans-serif">"Мамо, я намалював сонечко і квіти!"</div>
+                  <div style="display:flex;gap:10px">
+                    <button class="btn-primary" style="flex:1" onclick="approveWork()">✓ Схвалити +20 🪙</button>
+                    <button class="btn-secondary" style="flex:1">✎ Коментар</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-title">Нарахувати бали</div>
+              <div style="font-size:0.88rem;color:var(--text-light);margin-bottom:16px;font-family:Inter,sans-serif">Оберіть розмір нагороди за роботу</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+                <button class="btn-secondary" style="padding:12px" onclick="showToast('🌟 Нараховано 10 монет!')">+10 🪙 Добре</button>
+                <button class="btn-secondary" style="padding:12px" onclick="showToast('⭐ Нараховано 20 монет!')">+20 🪙 Чудово</button>
+                <button class="btn-secondary" style="padding:12px" onclick="showToast('🌟 Нараховано 30 монет!')">+30 🪙 Відмінно</button>
+                <button class="btn-secondary" style="padding:12px" onclick="showToast('🏆 Нараховано 50 монет!')">+50 🪙 Шедевр!</button>
+              </div>
+              <div class="form-group">
+                <label>Коментар дитині</label>
+                <textarea class="form-input" rows="3" placeholder="Молодець, Сашко! Гарний малюнок..." style="resize:none"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REWARDS PAGE -->
+      <div id="page-rewards" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🎁 Магазин нагород</div>
+            <div class="page-sub">Нагороди, які батьки створили для дітей</div>
+          </div>
+          <button class="btn-primary" onclick="showToast('✨ Форма додавання нагороди')">+ Нова нагорода</button>
+        </div>
+        <div class="card">
+          <div class="rewards-grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="reward-item">
+              <span class="r-icon">🍕</span>
+              <div class="r-name">Піца на вечерю</div>
+              <div class="r-cost">🪙 50 монет</div>
+            </div>
+            <div class="reward-item">
+              <span class="r-icon">🎮</span>
+              <div class="r-name">Година гри на планшеті</div>
+              <div class="r-cost">🪙 30 монет</div>
+            </div>
+            <div class="reward-item">
+              <span class="r-icon">🎬</span>
+              <div class="r-name">Кіно в кінотеатрі</div>
+              <div class="r-cost">🪙 100 монет</div>
+            </div>
+            <div class="reward-item">
+              <span class="r-icon">🧸</span>
+              <div class="r-name">Нова іграшка</div>
+              <div class="r-cost">🪙 200 монет</div>
+            </div>
+            <div class="reward-item">
+              <span class="r-icon">🍦</span>
+              <div class="r-name">Морозиво</div>
+              <div class="r-cost">🪙 15 монет</div>
+            </div>
+            <div class="reward-item">
+              <span class="r-icon">🏊</span>
+              <div class="r-name">Аквапарк</div>
+              <div class="r-cost">🪙 300 монет</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RATING PAGE -->
+      <div id="page-rating" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🏆 Рейтинг</div>
+            <div class="page-sub">Родина Казичук · Червень 2025</div>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div class="card">
+            <div class="card-title">🏆 Таблиця лідерів</div>
+            <div class="rating-item">
+              <div class="rating-rank rank-1">1</div>
+              <span style="font-size:2rem;margin:0 8px">🦁</span>
+              <div class="rating-info">
+                <div class="rating-name">Сашко</div>
+                <div class="rating-score">⭐ 340 балів · 🪙 120 монет · 12 завдань</div>
+              </div>
+              <div style="text-align:right">
+                <div style="color:var(--gold);font-weight:900;font-size:1.1rem">👑</div>
+                <div style="font-size:0.75rem;color:var(--text-light);font-family:Inter,sans-serif">Лідер тижня</div>
+              </div>
+            </div>
+            <div class="rating-item">
+              <div class="rating-rank rank-2">2</div>
+              <span style="font-size:2rem;margin:0 8px">🦋</span>
+              <div class="rating-info">
+                <div class="rating-name">Олечка</div>
+                <div class="rating-score">⭐ 290 балів · 🪙 85 монет · 9 завдань</div>
+              </div>
+            </div>
+            <div class="rating-item">
+              <div class="rating-rank rank-3">3</div>
+              <span style="font-size:2rem;margin:0 8px">🐬</span>
+              <div class="rating-info">
+                <div class="rating-name">Володя</div>
+                <div class="rating-score">⭐ 180 балів · 🪙 35 монет · 6 завдань</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📈 Прогрес тижня</div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px">
+                <span>🦁 Сашко</span><span style="color:var(--gold)">340 / 400</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div>
+            </div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px">
+                <span>🦋 Олечка</span><span style="color:var(--gold)">290 / 400</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
+            </div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px">
+                <span>🐬 Володя</span><span style="color:var(--gold)">180 / 400</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAMILY PAGE -->
+      <div id="page-family" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">👨‍👩‍👧 Моя сім'я</div>
+            <div class="page-sub">SPARK-8472 · Родина Казичук</div>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div class="card">
+            <div class="card-title">Члени сім'ї</div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(78,205,196,0.08);border:1px solid rgba(78,205,196,0.15);border-radius:14px">
+                <span style="font-size:2rem">👩</span>
+                <div style="flex:1">
+                  <div style="font-weight:800">Оксана</div>
+                  <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">Мама · Повний доступ</div>
+                </div>
+                <span class="task-status status-done">Активна</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px">
+                <span style="font-size:2rem">👨</span>
+                <div style="flex:1">
+                  <div style="font-weight:800">Михайло</div>
+                  <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">Тато · Повний доступ</div>
+                </div>
+                <span class="task-status status-done">Активний</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px">
+                <span style="font-size:2rem">🦁</span>
+                <div style="flex:1">
+                  <div style="font-weight:800">Сашко</div>
+                  <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">8 років · Код: SASH-4521 · PIN: ••••</div>
+                </div>
+                <span class="task-badge">120 🪙</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px">
+                <span style="font-size:2rem">🦋</span>
+                <div style="flex:1">
+                  <div style="font-weight:800">Олечка</div>
+                  <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">6 років · Код: OLECH-7128 · PIN: ••••</div>
+                </div>
+                <span class="task-badge">85 🪙</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px">
+                <span style="font-size:2rem">🐬</span>
+                <div style="flex:1">
+                  <div style="font-weight:800">Володя</div>
+                  <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">5 років · Код: VOLOD-8391 · PIN: ••••</div>
+                </div>
+                <span class="task-badge">35 🪙</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:16px">
+              <button class="btn-primary" style="flex:1" onclick="showToast('📧 Запрошення надіслано!')">Запросити другого батька</button>
+              <button class="btn-secondary" style="flex:1" onclick="showToast('👶 Форма додавання дитини')">+ Дитина</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Family ID</div>
+            <div style="text-align:center;padding:20px 0">
+              <div style="font-size:2.5rem;font-weight:900;letter-spacing:0.15em;color:var(--coral)">SPARK-8472</div>
+              <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif;margin-top:8px">Поділіться цим кодом для приєднання до сім'ї</div>
+              <button class="btn-secondary" style="margin-top:16px" onclick="showToast('📋 ID скопійовано!')">Скопіювати ID</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHILD DASHBOARD -->
+      <div id="page-child-dashboard" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">👋 Привіт, Сашко!</div>
+            <div class="page-sub">Суботній ранок · Продовж свій шлях!</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px;padding:12px 16px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div style="font-size:0.82rem;font-weight:800;color:var(--gold);white-space:nowrap;margin-right:4px">🏆 Досягнення</div>
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,209,102,0.12);border:1px solid rgba(255,209,102,0.25);border-radius:999px;padding:5px 11px">
+              <span style="font-size:1rem">📚</span><span style="font-size:0.74rem;color:var(--gold);font-weight:700">Читач</span>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,209,102,0.12);border:1px solid rgba(255,209,102,0.25);border-radius:999px;padding:5px 11px">
+              <span style="font-size:1rem">🎨</span><span style="font-size:0.74rem;color:var(--gold);font-weight:700">Художник</span>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,209,102,0.12);border:1px solid rgba(255,209,102,0.25);border-radius:999px;padding:5px 11px">
+              <span style="font-size:1rem">🔢</span><span style="font-size:0.74rem;color:var(--gold);font-weight:700">Математик</span>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:5px 11px;opacity:0.5">
+              <span style="font-size:1rem">🔒</span><span style="font-size:0.74rem;color:var(--text-light);font-weight:700">Закрито</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="sc-label">Мій рахунок</div>
+            <div class="sc-value"><span id="childScoreStatValue">340</span> <span class="sc-icon">⭐</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Монети</div>
+            <div class="sc-value"><span id="childCoinsStatValue">120</span> <span class="sc-icon">🪙</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Виконано</div>
+            <div class="sc-value">12 <span class="sc-icon">✅</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Місце</div>
+            <div class="sc-value">1 <span class="sc-icon">🏆</span></div>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <div>
+            <div class="card">
+              <div class="card-title">📅 Сьогоднішні завдання</div>
+              <div id="childDashTaskList">
+              <div class="task-item">
+                <div class="task-check done"></div>
+                <div class="task-info">
+                  <div class="task-name done">Математика: сторінка 45-46</div>
+                  <div class="task-meta">Виконано · +15 🪙</div>
+                </div>
+                <span class="task-badge">+15 🪙</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check" onclick="completeTask(this)"></div>
+                <div class="task-info">
+                  <div class="task-name">Малювання: намалюй весну</div>
+                  <div class="task-meta">Потрібне фото · +20 🪙</div>
+                </div>
+                <span class="task-status status-review">На перевірці</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check" onclick="completeTask(this)"></div>
+                <div class="task-info">
+                  <div class="task-name">Читання: 20 хвилин</div>
+                  <div class="task-meta">до 20:00 · +10 🪙</div>
+                </div>
+                <span class="task-badge">+10 🪙</span>
+              </div>
+              </div>
+              <button class="btn-primary" style="width:100%;margin-top:12px" onclick="showPage('child-upload', null)">📤 Завантажити виконану роботу</button>
+            </div>
+
+            <div class="world-card" style="margin-top:14px">
+              <div style="font-size:0.95rem;color:var(--mint);font-weight:800;font-family:Inter,sans-serif;margin-bottom:14px">Розвивай себе щодня! ✨</div>
+              <div onclick="showPage('child-academy', null)" style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.4);border-radius:12px;padding:14px;text-decoration:none;color:var(--mint);font-weight:800;font-size:0.95rem;transition:background 0.15s;cursor:pointer" onmouseover="this.style.background='rgba(78,205,196,0.25)'" onmouseout="this.style.background='rgba(78,205,196,0.15)'">
+                🎓 Академія Героїв ▶️
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="world-card">
+              <div class="world-title">🌍 Мій Світ — Рівень 4</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <span style="font-size:0.78rem;color:var(--mint);font-family:Inter,sans-serif">Прогрес до рівня 5</span>
+                <span style="font-size:0.78rem;color:var(--gold);font-weight:800">340/400 ⭐</span>
+              </div>
+              <div class="progress-bar" style="height:8px;margin-bottom:14px"><div class="progress-fill" style="width:85%"></div></div>
+              <a href="learn_play_moi_svit.html" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.4);border-radius:12px;padding:14px;text-decoration:none;color:var(--mint);font-weight:800;font-size:0.95rem;transition:background 0.15s" onmouseover="this.style.background='rgba(78,205,196,0.25)'" onmouseout="this.style.background='rgba(78,205,196,0.15)'">
+                🌍 Відкрити Мій Світ ▶️
+              </a>
+              <div style="font-size:0.72rem;color:rgba(78,205,196,0.7);text-align:center;margin-top:10px;font-family:Inter,sans-serif">Ще 60 ⭐ до нових відкриттів!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHILD TASKS -->
+      <div id="page-child-tasks" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">📋 Мої завдання</div>
+            <div class="page-sub">Виконуй і заробляй монети!</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Сьогодні</div>
+          <div id="childTasksListCard">
+          <div class="task-item">
+            <div class="task-check done"></div>
+            <div class="task-info">
+              <div class="task-name done">Математика: сторінка 45-46</div>
+              <div class="task-meta">Виконано о 10:30 · Мама схвалила</div>
+            </div>
+            <span class="task-badge">+15 🪙</span>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-info">
+              <div class="task-name">Малювання: намалюй весну</div>
+              <div class="task-meta">Надіслано фото · Очікую перевірки</div>
+            </div>
+            <span class="task-status status-review">На перевірці</span>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-info">
+              <div class="task-name">Читання: 20 хвилин</div>
+              <div class="task-meta">до 20:00 · Завантаж фото книги</div>
+            </div>
+            <button class="btn-primary" style="font-size:0.8rem;padding:6px 14px" onclick="showPage('child-upload', null)">Виконати</button>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHILD UPLOAD -->
+      <div id="page-child-upload" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">📤 Завантажити роботу</div>
+            <div class="page-sub">Покажи мамі та татові що ти зробив!</div>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div>
+            <div class="card">
+              <div class="card-title">Виберіть завдання</div>
+              <select class="form-select" style="margin-bottom:16px">
+                <option>📐 Малювання: намалюй весну</option>
+                <option>📖 Читання: 20 хвилин</option>
+                <option>🔢 Математика: сторінка 47-48</option>
+              </select>
+              <div class="upload-area" onclick="showToast('📁 Вибір файлу...')">
+                <span class="u-icon">📸</span>
+                <div style="font-size:1rem;font-weight:700;margin-bottom:6px">Натисни щоб завантажити</div>
+                <p>Фото, відео або файл виконаного завдання<br>Google Фото · Google Диск · Камера</p>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px">
+                <button class="btn-secondary" onclick="showToast('📸 Відкриваємо камеру...')">📸 Фото</button>
+                <button class="btn-secondary" onclick="showToast('🎬 Відкриваємо відео...')">🎬 Відео</button>
+                <button class="btn-secondary" onclick="showToast('🎵 Додати аудіо...')">🎵 Аудіо</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-title">Коментар</div>
+              <textarea class="form-input" rows="5" placeholder="Розкажи як виконував завдання..." style="resize:none;margin-bottom:16px;width:100%"></textarea>
+              <button class="btn-primary" style="width:100%" onclick="showToast('🚀 Роботу надіслано! Очікуй оцінку!')">📤 Надіслати роботу</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHILD SHOP -->
+      <div id="page-child-shop" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🛍️ Магазин нагород</div>
+            <div class="page-sub">У тебе: 🪙 120 монет</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Доступні нагороди</div>
+          <div class="rewards-grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="reward-item" onclick="showToast('🍦 Морозиво замовлено! Мама підтвердить!')">
+              <span class="r-icon">🍦</span>
+              <div class="r-name">Морозиво</div>
+              <div class="r-cost">🪙 15 монет</div>
+            </div>
+            <div class="reward-item" onclick="showToast('🎮 Заявка надіслана мамі!')">
+              <span class="r-icon">🎮</span>
+              <div class="r-name">Година гри</div>
+              <div class="r-cost">🪙 30 монет</div>
+            </div>
+            <div class="reward-item" onclick="showToast('🍕 Піца замовлена!')">
+              <span class="r-icon">🍕</span>
+              <div class="r-name">Піца на вечерю</div>
+              <div class="r-cost">🪙 50 монет</div>
+            </div>
+            <div class="reward-item" style="opacity:0.5;cursor:not-allowed">
+              <span class="r-icon">🎬</span>
+              <div class="r-name">Кіно</div>
+              <div class="r-cost" style="color:var(--text-light)">🪙 100 монет · Не вистачає 20</div>
+            </div>
+            <div class="reward-item" style="opacity:0.5;cursor:not-allowed">
+              <span class="r-icon">🧸</span>
+              <div class="r-name">Нова іграшка</div>
+              <div class="r-cost" style="color:var(--text-light)">🪙 200 монет</div>
+            </div>
+            <div class="reward-item" style="opacity:0.5;cursor:not-allowed">
+              <span class="r-icon">🏊</span>
+              <div class="r-name">Аквапарк</div>
+              <div class="r-cost" style="color:var(--text-light)">🪙 300 монет</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHILD WORLD -->
+      <div id="page-child-world" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🌍 Мій Світ</div>
+            <div class="page-sub">Рівень 4 · 340 / 400 зірок до рівня 5</div>
+          </div>
+        </div>
+        <div class="world-card" style="min-height:400px;padding:32px">
+          <div class="world-title">🌟 КОРОЛІВСТВО САШКА</div>
+          <div style="text-align:center;padding:20px 0;font-size:4rem">🏰</div>
+          <div class="world-grid" style="grid-template-columns:repeat(8,1fr);max-width:600px;margin:0 auto">
+            <div class="world-cell unlocked">🏠</div>
+            <div class="world-cell unlocked">🌳</div>
+            <div class="world-cell unlocked">⛲</div>
+            <div class="world-cell unlocked">🌺</div>
+            <div class="world-cell unlocked">🐕</div>
+            <div class="world-cell unlocked">🌙</div>
+            <div class="world-cell unlocked">⭐</div>
+            <div class="world-cell unlocked">🏆</div>
+            <div class="world-cell unlocked">🎯</div>
+            <div class="world-cell unlocked">🦋</div>
+            <div class="world-cell unlocked">🌈</div>
+            <div class="world-cell unlocked">🔮</div>
+            <div class="world-cell">🔒</div>
+            <div class="world-cell">🔒</div>
+            <div class="world-cell">🔒</div>
+            <div class="world-cell">🔒</div>
+          </div>
+          <div style="text-align:center;margin-top:24px">
+            <div class="progress-bar" style="max-width:400px;margin:0 auto 8px;height:12px"><div class="progress-fill" style="width:85%"></div></div>
+            <div style="font-size:0.85rem;color:rgba(78,205,196,0.8);font-family:Inter,sans-serif">Виконай ще 2 завдання щоб відкрити нові клітинки!</div>
+          </div>
+          <div style="text-align:center;margin-top:28px">
+            <a href="learn_play_moi_svit_1.html" target="_blank"
+              style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(78,205,196,0.2),rgba(108,99,255,0.2));border:2px solid rgba(78,205,196,0.5);border-radius:16px;padding:14px 28px;text-decoration:none;color:#fff;font-weight:800;font-size:1rem;transition:all .2s"
+              onmouseover="this.style.background='linear-gradient(135deg,rgba(78,205,196,0.35),rgba(108,99,255,0.35))'"
+              onmouseout="this.style.background='linear-gradient(135deg,rgba(78,205,196,0.2),rgba(108,99,255,0.2))'">
+              🗺️ Відкрити карту світу ▶️
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHILD ACADEMY -->
+      <div id="page-child-academy" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🎓 Академія Героїв</div>
+            <div class="page-sub">Обери предмет, пройди тренування та виконуй квести!</div>
+          </div>
+        </div>
+
+        <div id="academy-root" style="position:relative;z-index:1"></div>
+      </div>
+
+      <!-- MATH TEST -->
+      <div id="page-math-test" class="page-content" style="display:none;padding:0">
+        <div id="math-test-root" style="min-height:100vh"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- CREATE TASK MODAL -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeTaskModal()">✕</button>
+    <div class="modal-title">➕ Нове завдання</div>
+    <div class="form-group">
+      <label>Дитина</label>
+      <select class="form-select">
+        <option>🦁 Сашко</option>
+        <option>🦋 Олечка</option>
+        <option>🐬 Володя</option>
+        <option>👥 Всі діти</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Тип завдання</label>
+      <select class="form-select" id="taskType">
+        <option>🔢 Математика</option>
+        <option>📐 Творчість</option>
+        <option>📚 Читання</option>
+        <option>🌍 Природознавство</option>
+        <option>🤝 Добрі справи</option>
+        <option>💬 Мови</option>
+        <option>✏️ Власне завдання</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Назва завдання</label>
+      <select class="form-select" id="taskName" style="display:none"></select>
+      <input class="form-input" type="text" placeholder="Наприклад: Намалюй весну" id="taskNameText">
+    </div>
+    <div class="form-group">
+      <label>Нагорода (монети)</label>
+      <input class="form-input" type="number" value="15" placeholder="Кількість монет" id="taskCoins">
+    </div>
+    <div class="form-group">
+      <label>Дедлайн (необов'язково)</label>
+      <input class="form-input" type="time" value="20:00">
+    </div>
+    <button class="auth-btn" onclick="createTask()">Створити завдання</button>
+  </div>
+</div>
+
+<!-- HERO QUESTS / MINI-GAME MODAL -->
+<div class="modal-overlay" id="gameModal">
+  <div class="modal" style="max-width:560px">
+    <button class="modal-close" onclick="closeGameModal()">✕</button>
+    <div id="mg-root" class="mg-wrap"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="t-icon">✅</span>
+  <span id="toastMsg">Дія виконана!</span>
+</div>
+
+<script>
+// ========= STARS =========
+function createStars() {
+  const bg = document.getElementById('starsBg');
+  if (!bg) return;
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 3 + 1;
+    s.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;top:${Math.random()*100}%;
+      animation-delay:${Math.random()*3}s;
+      animation-duration:${2+Math.random()*4}s;
+    `;
+    bg.appendChild(s);
+  }
+}
+createStars();
+
+// ========= AUTH =========
+let currentRole = 'parent';
+let selectedChild = '';
+
+function showAuth(mode) {
+  document.getElementById('authModal').classList.add('open');
+  switchForm(mode === 'register' ? 'register' : 'login');
+}
+
+function closeAuth() {
+  document.getElementById('authModal').classList.remove('open');
+}
+
+function switchForm(form) {
+  ['loginForm','registerForm','childForm'].forEach(f => {
+    document.getElementById(f).style.display = 'none';
+  });
+  document.getElementById(form === 'register' ? 'registerForm' : form === 'child' ? 'childForm' : 'loginForm').style.display = 'block';
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  if (!email) { showToast('⚠️ Введіть email'); return; }
+  closeAuth();
+  switchRole('parent');
+  showApp();
+}
+
+function doRegister() {
+  const name = document.getElementById('regName').value;
+  if (!name) { showToast('⚠️ Введіть ім\'я'); return; }
+  closeAuth();
+  switchRole('parent');
+  showApp();
+  showToast('🎉 Родину Казичук створено! Ласкаво просимо!');
+}
+
+function selectAvatar(el, name) {
+  document.querySelectorAll('.avatar-option').forEach(a => a.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedChild = name;
+}
+
+function pinNext(el) {
+  if (el.value && el.nextElementSibling && el.nextElementSibling.classList.contains('pin-digit')) {
+    el.nextElementSibling.focus();
+  }
+}
+
+function doChildLogin() {
+  if (!selectedChild) { showToast('⚠️ Оберіть аватар'); return; }
+  closeAuth();
+  switchRole('child');
+  showApp();
+  showToast('⚡ Привіт, ' + selectedChild + '!');
+}
+
+function showApp() {
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('appInterface').style.display = 'block';
+}
+
+function doLogout() {
+  document.getElementById('landing').style.display = 'block';
+  document.getElementById('appInterface').style.display = 'none';
+}
+
+// ========= ROLE SWITCH =========
+function switchRole(role) {
+  currentRole = role;
+  document.getElementById('parentNav').style.display = role === 'parent' ? 'block' : 'none';
+  document.getElementById('childNav').style.display = role === 'child' ? 'block' : 'none';
+  document.getElementById('roleParentBtn').classList.toggle('active', role === 'parent');
+  document.getElementById('roleChildBtn').classList.toggle('active', role === 'child');
+  if (role === 'parent') showPage('dashboard', null);
+  else showPage('child-dashboard', null);
+}
+
+// ========= NAVIGATION =========
+function showPage(pageId, navEl) {
+  document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+  const page = document.getElementById('page-' + pageId);
+  if (page) page.style.display = 'block';
+
+  if (navEl) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    navEl.classList.add('active');
+  }
+}
+
+// ========= TASKS =========
+function openTaskModal() {
+  document.getElementById('taskModal').classList.add('open');
+  const sel = document.getElementById('taskType');
+
+  const TASK_PRESETS = {
+    'Математика': [
+      '🧮 Тест з математики 1 клас',
+      '🧮 Тест з математики 2 клас',
+      '🧮 Тест з математики 3 клас',
+      '🧮 Тест з математики 4 клас',
+    ],
+    'Читання': ['📖 Читання 20 хвилин','📖 Читання розділу','📖 Переказ прочитаного','✏️ Власна назва...'],
+    'Мови': ['🔤 Вивчення букв','📝 Диктант','💬 Розмовна практика','✏️ Власна назва...'],
+    'Природознавство': ['🌿 Урок природознавства','🌍 Географія','✏️ Власна назва...'],
+    'Творчість': ['🎨 Малювання','✂️ Аплікація','🎵 Музика','✏️ Власна назва...'],
+    'Добрі справи': ['🏠 Прибирання','🍽️ Допомога на кухні','🐾 Догляд за тваринкою','✏️ Власна назва...'],
+  };
+
+  function updateNameField() {
+    const type = sel.value.replace(/^[^\s]+\s/, ''); // strip emoji
+    const nameSelect = document.getElementById('taskName');
+    const nameText = document.getElementById('taskNameText');
+    const presets = TASK_PRESETS[type];
+    if (presets) {
+      nameSelect.style.display = 'block';
+      nameSelect.innerHTML = presets.map(p => `<option>${p}</option>`).join('');
+      nameText.style.display = 'block';
+      nameText.placeholder = 'Або введіть власну назву...';
+      nameSelect.onchange = null;
+    } else {
+      nameSelect.style.display = 'none';
+      nameText.style.display = 'block';
+      nameText.placeholder = 'Наприклад: Намалюй весну';
+    }
+  }
+
+  sel.onchange = updateNameField;
+  updateNameField();
+}
+function closeTaskModal() {
+  document.getElementById('taskModal').classList.remove('open');
+}
+function createTask() {
+  const nameSelect = document.getElementById('taskName');
+  const nameText = document.getElementById('taskNameText');
+  const name = (nameText.value.trim() || (nameSelect.style.display !== 'none' ? nameSelect.value : '')).trim();
+  const coins = document.getElementById('taskCoins').value;
+  if (!name) { showToast('⚠️ Введіть назву завдання'); return; }
+
+  // If math test — use special handler
+  if (name.includes('Тест з математики')) { addMathTest1Class(); return; }
+
+  closeTaskModal();
+  showToast('✅ Завдання "' + name + '" створено! +' + coins + ' 🪙 за виконання');
+}
+
+function quickAddMathTestTask() {
+  addMathTest1Class();
+}
+
+function addMathTest1Class() {
+  const coins = 25;
+  const childItemHTML = `
+    <div class="task-item">
+      <div class="task-check"></div>
+      <div class="task-info">
+        <div class="task-name">🧮 Тест: Математика 1 клас</div>
+        <div class="task-meta">Автоматична перевірка · +${coins} 🪙</div>
+      </div>
+      <button class="btn-primary" style="font-size:0.8rem;padding:6px 14px" onclick="startMathTest()">▶️ Почати</button>
+    </div>`;
+  const parentItemHTML = `
+    <div class="task-item">
+      <div class="task-check"></div>
+      <div class="task-info">
+        <div class="task-name">🧮 Тест: Математика 1 клас</div>
+        <div class="task-meta">🦁 Сашко · Авто-перевірка · Математика</div>
+      </div>
+      <span class="task-badge">+${coins} 🪙</span>
+      <span class="task-status" style="background:rgba(78,205,196,0.15);color:var(--mint)">Авто-перевірка</span>
+    </div>`;
+  const dashList = document.getElementById('childDashTaskList');
+  const tasksList = document.getElementById('childTasksListCard');
+  const parentList = document.getElementById('parentTasksList');
+  if (dashList) dashList.insertAdjacentHTML('beforeend', childItemHTML);
+  if (tasksList) tasksList.insertAdjacentHTML('beforeend', childItemHTML);
+  if (parentList) parentList.insertAdjacentHTML('beforeend', parentItemHTML);
+  closeTaskModal();
+  showToast('✅ Завдання «Тест: Математика 1 клас» створено!');
+}
+
+// ========= INTERACTIONS =========
+function completeTask(el) {
+  el.classList.toggle('done');
+  const nameEl = el.nextElementSibling.querySelector('.task-name');
+  if (el.classList.contains('done')) {
+    nameEl.classList.add('done');
+    showToast('⭐ Молодець! Завдання відправлено на перевірку!');
+  } else {
+    nameEl.classList.remove('done');
+  }
+}
+
+function approveWork() {
+  showToast('🎉 Схвалено! Сашку нараховано 20 монет!');
+}
+
+// ========= TOAST =========
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ========= КВЕСТИ ГЕРОЯ: міні-гра на додавання =========
+const MathGame = (function(){
+  const root = document.getElementById('mg-root');
+  function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+  const levelsMeta = [
+    {id:1, title:'Рівень 1', subtitle:'Числа до 10', timed:false},
+    {id:2, title:'Рівень 2', subtitle:'Числа до 20', timed:false},
+    {id:3, title:'Рівень 3', subtitle:'Числа до 50', timed:false},
+    {id:4, title:'Рівень 4', subtitle:'Числа до 100', timed:false},
+    {id:5, title:'Рівень 5', subtitle:'Двоцифрові числа', timed:false},
+    {id:6, title:'Рівень 6', subtitle:'Перехід через десяток', timed:false},
+    {id:7, title:'Рівень 7', subtitle:'Трицифрові числа', timed:false},
+    {id:8, title:'Рівень 8', subtitle:'Задачі на додавання', timed:false},
+    {id:9, title:'Рівень 9', subtitle:'Приклади на час', timed:true, perTime:12},
+    {id:10, title:'Рівень 10', subtitle:'Майстер додавання', timed:true, perTime:20}
+  ];
+
+  const counts = {1:10,2:10,3:10,4:10,5:10,6:10,7:10,8:8,9:10,10:10};
+
+  const templates = [
+    (a,b)=>`У Марійки було ${a} яблук. Тато подарував їй ще ${b} яблук. Скільки яблук стало у Марійки?`,
+    (a,b)=>`На дереві сиділо ${a} пташок. Прилетіло ще ${b} пташок. Скільки пташок стало на дереві?`,
+    (a,b)=>`У класі ${a} хлопчиків і ${b} дівчаток. Скільки всього учнів у класі?`,
+    (a,b)=>`Мама купила ${a} цукерок, а бабуся подарувала ще ${b} цукерок. Скільки всього цукерок?`,
+    (a,b)=>`У саду росло ${a} троянд. Садівник посадив ще ${b} троянд. Скільки троянд тепер у саду?`,
+    (a,b)=>`Петрик прочитав ${a} сторінок книги вчора, а сьогодні ще ${b} сторінок. Скільки сторінок він прочитав за два дні?`,
+    (a,b)=>`У гаражі стояло ${a} машин. Приїхало ще ${b} машин. Скільки машин стало в гаражі?`,
+    (a,b)=>`На клумбі росло ${a} тюльпанів. Посадили ще ${b} тюльпанів. Скільки тюльпанів тепер на клумбі?`
+  ];
+
+  function genSimple(max){
+    const minSum = Math.max(2, Math.round(max*0.3));
+    const sum = randInt(minSum, max);
+    const a = randInt(1, sum-1);
+    return {text:`${a} + ${sum-a}`, answer:sum};
+  }
+  function genTwoDigit(){
+    const a = randInt(10,89), b = randInt(10,89);
+    return {text:`${a} + ${b}`, answer:a+b};
+  }
+  function genCarry(){
+    const a1 = randInt(1,9);
+    const b1 = randInt(Math.max(1,10-a1), 9);
+    const a2 = randInt(1,8), b2 = randInt(1,8);
+    const a = a2*10+a1, b = b2*10+b1;
+    return {text:`${a} + ${b}`, answer:a+b};
+  }
+  function genThreeDigit(){
+    const a = randInt(100,799), b = randInt(100,799);
+    return {text:`${a} + ${b}`, answer:a+b};
+  }
+  function genHard(){
+    const a = randInt(120,876), b = randInt(115,864);
+    return {text:`${a} + ${b}`, answer:a+b};
+  }
+  function genWordProblem(){
+    const a = randInt(2,25), b = randInt(2,25);
+    const t = templates[randInt(0,templates.length-1)];
+    return {text:t(a,b), answer:a+b, isWord:true};
+  }
+
+  function generateProblems(id){
+    const n = counts[id];
+    const arr = [];
+    for(let i=0;i<n;i++){
+      let p;
+      if(id===1) p=genSimple(10);
+      else if(id===2) p=genSimple(20);
+      else if(id===3) p=genSimple(50);
+      else if(id===4) p=genSimple(100);
+      else if(id===5) p=genTwoDigit();
+      else if(id===6) p=genCarry();
+      else if(id===7) p=genThreeDigit();
+      else if(id===8) p=genWordProblem();
+      else if(id===9) p=genSimple(100);
+      else p=genHard();
+      arr.push(p);
+    }
+    return arr;
+  }
+
+  let state = {screen:'menu'};
+
+  function clearTimer(){ if(state.timerId){ clearInterval(state.timerId); state.timerId=null; } }
+
+  function startLevel(id){
+    clearTimer();
+    const meta = levelsMeta.find(l=>l.id===id);
+    state = {screen:'quiz', levelId:id, problems:generateProblems(id), index:0, score:0, timeLeft:meta.timed?meta.perTime:0, timerId:null, answers:[]};
+    render();
+    if(meta.timed) startTimer();
+  }
+
+  function startTimer(){
+    clearTimer();
+    state.timerId = setInterval(()=>{
+      state.timeLeft--;
+      if(state.timeLeft<=0){ submitAnswer(true); }
+      else {
+        const el = document.getElementById('mg-timer-val');
+        if(el) el.textContent = state.timeLeft;
+      }
+    },1000);
+  }
+
+  function submitAnswer(timeout){
+    const input = document.getElementById('mg-answer-input');
+    const val = timeout ? null : (input ? parseInt(input.value,10) : null);
+    const correct = state.problems[state.index].answer;
+    const isCorrect = !timeout && val===correct;
+    state.answers.push({given:val, isCorrect, timeout});
+    if(isCorrect) state.score++;
+    clearTimer();
+    state.screen='feedback';
+    render();
+  }
+
+  function nextProblem(){
+    state.index++;
+    if(state.index>=state.problems.length){ state.screen='result'; render(); return; }
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    state.screen='quiz';
+    if(meta.timed) state.timeLeft = meta.perTime;
+    render();
+    if(meta.timed) startTimer();
+    const input = document.getElementById('mg-answer-input');
+    if(input) input.focus();
+  }
+
+  function retryLevel(){ startLevel(state.levelId); }
+  function showMenu(){ clearTimer(); state={screen:'menu'}; render(); }
+  function handleKey(e){ if(e.key==='Enter') submitAnswer(false); }
+
+  function finishAndClaim(){
+    const total = state.problems.length;
+    const score = state.score;
+    clearTimer();
+    awardForQuest(score, total);
+    closeGameModal();
+  }
+
+  function render(){
+    if(!root) return;
+    if(state.screen==='menu') renderMenu();
+    else if(state.screen==='quiz') renderQuiz();
+    else if(state.screen==='feedback') renderFeedback();
+    else renderResult();
+  }
+
+  function renderMenu(){
+    root.innerHTML = `
+      <div class="mg-header">
+        <span class="mg-emoji">🗡️</span>
+        <div>
+          <h2>Квести Героя</h2>
+          <p>Обери рівень тесту на додавання</p>
+        </div>
+      </div>
+      <div class="mg-grid">
+        ${levelsMeta.map(l=>`
+          <div class="mg-level-card" onclick="window.__mg.startLevel(${l.id})">
+            <span class="mg-level-num">${l.id}</span>
+            <span class="mg-level-title">${l.title}</span>
+            <span class="mg-level-sub">${l.subtitle}</span>
+            ${l.timed?'<span class="mg-badge-timed">⏱ на час</span>':''}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderQuiz(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const p = state.problems[state.index];
+    root.innerHTML = `
+      <div class="mg-top-row">
+        <span>${meta.title} · ${meta.subtitle}</span>
+        <span>${state.index+1} / ${state.problems.length}</span>
+      </div>
+      ${meta.timed?`<div class="mg-timer-row">⏱ <span id="mg-timer-val">${state.timeLeft}</span> с</div>`:''}
+      <div class="mg-problem-card ${p.isWord?'mg-word':'mg-big'}">
+        <p>${p.text}</p>
+      </div>
+      <div class="mg-answer-row">
+        <input id="mg-answer-input" type="number" placeholder="Твоя відповідь" onkeydown="window.__mg.handleKey(event)" />
+        <button class="btn-primary" onclick="window.__mg.submitAnswer(false)">Перевірити</button>
+      </div>
+    `;
+    setTimeout(()=>{ const i=document.getElementById('mg-answer-input'); if(i) i.focus(); },0);
+  }
+
+  function renderFeedback(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const last = state.answers[state.answers.length-1];
+    const p = state.problems[state.index];
+    root.innerHTML = `
+      <div class="mg-top-row">
+        <span>${meta.title} · ${meta.subtitle}</span>
+        <span>${state.index+1} / ${state.problems.length}</span>
+      </div>
+      <div class="mg-feedback-card" style="background:${last.isCorrect?'rgba(107,203,119,0.15)':'rgba(255,107,107,0.15)'};">
+        <p class="mg-expr">${p.text} = ${p.answer}</p>
+        <div class="mg-status" style="color:${last.isCorrect?'var(--success)':'var(--danger)'};">
+          ${last.isCorrect?'✅':'❌'} ${last.timeout?'Час вийшов':last.isCorrect?'Правильно':'Неправильно, ти написав '+last.given}
+        </div>
+      </div>
+      <button class="btn-primary mg-full-btn" onclick="window.__mg.nextProblem()">Далі</button>
+    `;
+  }
+
+  function renderResult(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const total = state.problems.length;
+    const pct = Math.round(state.score/total*100);
+    const passed = state.levelId===10 && state.score>=8;
+    root.innerHTML = `
+      <div class="mg-result-box">
+        ${passed?`
+          <div class="mg-trophy">🏆</div>
+          <p class="mg-result-title">Титул: майстер додавання</p>
+          <p class="mg-result-sub">Ти впорався з найскладнішим рівнем</p>
+        `:`
+          <p class="mg-result-title">${meta.title} завершено</p>
+          <p class="mg-result-sub">${meta.subtitle}</p>
+        `}
+        <div class="mg-stats-grid">
+          <div class="mg-stat-card">
+            <p class="mg-stat-label">Правильно</p>
+            <p class="mg-stat-value">${state.score} / ${total}</p>
+          </div>
+          <div class="mg-stat-card">
+            <p class="mg-stat-label">Точність</p>
+            <p class="mg-stat-value">${pct}%</p>
+          </div>
+        </div>
+        <div class="mg-result-actions">
+          <button class="btn-secondary" onclick="window.__mg.retryLevel()">🔁 Ще раз</button>
+          <button class="btn-secondary" onclick="window.__mg.showMenu()">📋 Інший рівень</button>
+          <button class="btn-primary" onclick="window.__mg.finishAndClaim()">✅ Забрати нагороду</button>
+        </div>
+      </div>
+    `;
+  }
+
+  return { showMenu, startLevel, submitAnswer, nextProblem, retryLevel, handleKey, finishAndClaim };
+})();
+
+window.__mg = MathGame;
+
+function awardForQuest(score, total) {
+  const pct = total ? score/total : 0;
+  const coins = Math.max(5, Math.round(score * 2.5));
+  const starsEarned = score * 2;
+
+  const walletEl = document.getElementById('childWalletValue');
+  const coinsStatEl = document.getElementById('childCoinsStatValue');
+  const scoreStatEl = document.getElementById('childScoreStatValue');
+
+  if (coinsStatEl) coinsStatEl.textContent = (parseInt(coinsStatEl.textContent,10) || 0) + coins;
+  if (scoreStatEl) scoreStatEl.textContent = (parseInt(scoreStatEl.textContent,10) || 0) + starsEarned;
+  if (walletEl) {
+    const current = parseInt(walletEl.textContent.replace(/\D/g,''),10) || 0;
+    walletEl.textContent = '🪙 ' + (current + coins);
+  }
+
+  if (pct >= 0.8) showToast(`🏆 Чудовий результат: ${score}/${total}! +${starsEarned} ⭐ +${coins} 🪙`);
+  else if (pct >= 0.5) showToast(`⭐ Непогано: ${score}/${total}! +${starsEarned} ⭐ +${coins} 🪙`);
+  else showToast(`💪 Завершено: ${score}/${total}. +${starsEarned} ⭐ +${coins} 🪙. Спробуй ще раз для кращого результату!`);
+}
+
+function openHeroQuests() {
+  document.getElementById('gameModal').classList.add('open');
+  MathGame.showMenu();
+}
+
+function closeGameModal() {
+  document.getElementById('gameModal').classList.remove('open');
+  MathGame.showMenu();
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) {
+      if (this.id === 'gameModal') { closeGameModal(); }
+      else { this.classList.remove('open'); }
+    }
+  });
+});
+</script>
+<style>
+/* ===== ACADEMY STYLES ===== */
+.ac-eyebrow{font-weight:800;font-size:.72rem;letter-spacing:.18em;color:var(--gold);opacity:.9;margin-bottom:4px;}
+.ac-subtitle{font-size:.95rem;line-height:1.45;opacity:.8;margin:0 0 24px;}
+.ac-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;max-width:900px;}
+details.ac-card{background:#2a2150;border:2px solid rgba(140,160,255,.28);border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.35);overflow:hidden;}
+details.ac-card summary{list-style:none;cursor:pointer;background:#2d2658;padding:16px 18px;display:flex;align-items:center;gap:12px;border-left:8px solid var(--ac-accent,var(--gold));}
+details.ac-card summary::-webkit-details-marker{display:none;}
+.ac-sum-icon{font-size:30px;line-height:1;flex-shrink:0;}
+.ac-sum-titles{flex:1 1 auto;min-width:0;}
+.ac-subject-name{font-family:'Nunito',sans-serif;font-size:1.08rem;color:#fff;display:block;font-weight:800;}
+.ac-pill{font-size:.68rem;font-weight:800;letter-spacing:.03em;padding:3px 9px;border-radius:999px;display:inline-block;margin-top:3px;}
+.ac-pill.ready{background:rgba(120,220,150,.18);color:#9be6b0;}
+.ac-pill.soon{background:rgba(255,255,255,.1);color:#6f6a8a;}
+.ac-arrow{font-size:18px;color:#cfd4ff;transition:transform .25s ease;flex-shrink:0;}
+details.ac-card[open] .ac-arrow{transform:rotate(180deg);}
+.ac-panel{background:#251f4a;padding:16px 18px 20px;}
+.ac-panel-heading{font-weight:800;font-size:.78rem;letter-spacing:.04em;color:#c3c8f0;margin:0 0 8px;display:flex;align-items:center;gap:6px;}
+.ac-chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+a.ac-chip{display:inline-flex;align-items:center;gap:5px;font-size:.85rem;font-weight:700;padding:8px 13px;border-radius:11px;text-decoration:none;background:var(--ac-accent,var(--gold));color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.3);transition:filter .15s,transform .1s;}
+a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
+.ac-empty{font-size:.85rem;font-style:italic;color:#9ea3c8;margin:0 0 14px;}
+</style>
+
+<script>
+// ===== ACADEMY =====
+(function(){
+  const subjects = [
+    {id:'math',icon:'🧮',name:'Математика',accent:'#5C6BC0',
+      trainings:[{label:'Вивчаю цифри',href:'learn-math-numbers.html'}],
+      quests:[{label:'1 клас — 20 рівнів 🧮',href:'#',onclick:'startMathTest()'},{label:'Додавання',href:'addition-test.html'},{label:'Віднімання',href:'subtraction-test.html'},{label:'Множення',href:'multiplication-test.html'}]},
+    {id:'ukr',icon:'🌺',name:'Українська мова',accent:'#D6577A',
+      trainings:[{label:'Вивчаю букви Абетки',href:'learn-ukrainian-letters.html'}],
+      quests:[{label:'Правопис слів',href:'spelling-test.html'}]},
+    {id:'eng',icon:'🌍',name:'English',accent:'#3FB6A8',
+      trainings:[{label:'Learn ABC',href:'learn-english-letters.html'}],
+      quests:[{label:'Тест A1 · 10 рівнів',href:'english-test.html'}]},
+    {id:'logic',icon:'🧩',name:'Світ логіки',accent:'#8B6FCE',
+      trainings:[],
+      quests:[{label:'Логіка і пам\'ять',href:'logic-memory-test.html'}]},
+    {id:'geo',icon:'🗺️',name:'Географія',accent:'#E0954E',
+      trainings:[],
+      quests:[{label:'Столиці світу',href:'capitals-test.html'}]}
+  ];
+
+  function chipHtml(t, accent){
+    if(t.onclick){
+      return `<a class="ac-chip" href="#" style="--ac-accent:${accent}" onclick="event.preventDefault();${t.onclick}">▶ ${t.label}</a>`;
+    }
+    return `<a class="ac-chip" href="${t.href}" target="_blank" style="--ac-accent:${accent}">▶ ${t.label}</a>`;
+  }
+
+  function cardHtml(s){
+    const hasAny = s.trainings.length>0||s.quests.length>0;
+    const pill = hasAny
+      ? `<span class="ac-pill ready">✅ Доступно</span>`
+      : `<span class="ac-pill soon">🔒 Скоро</span>`;
+    const tr = s.trainings.length
+      ? `<div class="ac-chip-row">${s.trainings.map(t=>chipHtml(t,s.accent)).join('')}</div>`
+      : `<p class="ac-empty">Тренажера ще немає.</p>`;
+    const qu = s.quests.length
+      ? `<div class="ac-chip-row">${s.quests.map(t=>chipHtml(t,s.accent)).join('')}</div>`
+      : `<p class="ac-empty">Квестів ще немає.</p>`;
+    return `
+      <details class="ac-card" style="--ac-accent:${s.accent}">
+        <summary>
+          <span class="ac-sum-icon">${s.icon}</span>
+          <span class="ac-sum-titles">
+            <span class="ac-subject-name">${s.name}</span>
+            ${pill}
+          </span>
+          <span class="ac-arrow">▾</span>
+        </summary>
+        <div class="ac-panel">
+          <p class="ac-panel-heading">🎯 Тренування</p>${tr}
+          <p class="ac-panel-heading">🏆 Квести</p>${qu}
+        </div>
+      </details>`;
+  }
+
+  function renderAcademy(){
+    const root = document.getElementById('academy-root');
+    if(!root||root.dataset.built) return;
+    root.dataset.built = '1';
+    root.innerHTML = `
+      <div class="ac-eyebrow">LEARN &amp; PLAY</div>
+      <p class="ac-subtitle">Шляхи знань Героя. Обери предмет і виконуй квести!</p>
+      <div class="ac-grid">${subjects.map(cardHtml).join('')}</div>`;
+  }
+
+  // Hook into showPage so academy renders when first opened
+  const _origShowPage = window.showPage;
+  window.showPage = function(pageId, navEl){
+    _origShowPage(pageId, navEl);
+    if(pageId==='child-academy') renderAcademy();
+  };
+})();
+</script>
+<style>
+/* ===== MATH TEST STYLES ===== */
+#math-test-root{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#1a1040 0%,#2d1b6b 50%,#0d2647 100%)}
+.mt-home{display:flex;flex-direction:column;align-items:center;padding:32px 16px}
+.mt-levels-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;width:100%;max-width:720px}
+.mt-lv-card{border-radius:16px;padding:14px 12px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s ease;border:2px solid #5040A0;background:#26185A}
+.mt-lv-card.mt-locked{opacity:.45;cursor:not-allowed;background:#1e1450;border-color:#2d245a}
+.mt-lv-card.mt-done{border-color:#FFD700}
+.mt-lv-card:not(.mt-locked):hover{transform:translateY(-3px) scale(1.03)}
+.mt-xp-badge{background:linear-gradient(135deg,rgba(255,179,0,.2),rgba(255,138,0,.13));border:2px solid #FFB300;border-radius:30px;padding:8px 20px;margin-bottom:24px;display:flex;align-items:center;gap:8px}
+.mt-quiz-wrap{display:flex;flex-direction:column;align-items:center;padding:16px;min-height:100vh}
+.mt-quiz-topbar{width:100%;max-width:520px;margin-bottom:16px}
+.mt-progress-track{background:#E8E8F0;border-radius:12px;height:14px;overflow:hidden}
+.mt-progress-fill{height:100%;border-radius:12px;transition:width .4s cubic-bezier(.4,0,.2,1);background:linear-gradient(90deg,#6C63FF,#6C63FFCC)}
+.mt-card{border-radius:24px;padding:28px 24px;max-width:520px;width:100%;border:2px solid #5040A0;background:#1e1450;transition:background .3s,border .3s}
+.mt-card.mt-correct{background:#1b3a1b;border-color:#4CAF50}
+.mt-card.mt-wrong{background:#3a1b1b;border-color:#F44336}
+.mt-choices{display:flex;flex-wrap:wrap;gap:10px}
+.mt-choice-btn{flex:1 1 auto;min-width:80px;background:#2d2060;color:#fff;border:2px solid #5040A0;border-radius:12px;padding:12px 8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .15s}
+.mt-choice-btn:disabled{cursor:not-allowed}
+.mt-choice-btn.mt-sel-ok{background:#2e7d32}
+.mt-choice-btn.mt-sel-bad{background:#c62828}
+.mt-num-input{width:140px;max-width:60vw;text-align:center;background:#2d2060;color:#fff;border:2px solid #5040A0;border-radius:12px;padding:14px 8px;font-size:24px;font-weight:700;outline:none;-moz-appearance:textfield}
+.mt-num-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.mt-feedback{margin-top:14px;text-align:center;font-size:20px;font-weight:700}
+.mt-result-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
+.mt-result-card{background:#1e1450;border-radius:24px;padding:32px;max-width:400px;width:100%;text-align:center}
+.mt-btn-main{background:linear-gradient(135deg,#6C63FF,#A06CFF);color:#fff;border:none;border-radius:14px;padding:14px 32px;font-size:16px;font-weight:700;cursor:pointer;width:100%}
+.mt-btn-back{background:none;color:#9B8FCC;border:2px solid #5040A0;border-radius:14px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;width:100%}
+@keyframes mt-fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+</style>
+
+<script>
+// ===== MATH TEST ENGINE =====
+(function(){
+  const LEVELS=[
+    {level:1,medal:"🥉",tasks:10,title:"Лічба до 10",cheer:"Перший рівень підкорено!"},
+    {level:2,medal:"🥉",tasks:15,title:"Порівняння кількості",cheer:"Ти вмієш порівнювати!"},
+    {level:3,medal:"🥉",tasks:20,title:"Два кольори",cheer:"Кольори тобі по зубах!"},
+    {level:4,medal:"🥉",tasks:25,title:"Лічба до 20",cheer:"Дорахував аж до 20!"},
+    {level:5,medal:"🥈",tasks:30,title:"Парні та непарні",cheer:"Срібний рівень — твій!"},
+    {level:6,medal:"🥈",tasks:35,title:"Додавання",cheer:"Ти справжній додавач!"},
+    {level:7,medal:"🥈",tasks:40,title:"Віднімання",cheer:"Віднімання підкорено!"},
+    {level:8,medal:"🥈",tasks:45,title:"Знайди помилку",cheer:"Від тебе помилка не сховається!"},
+    {level:9,medal:"🥇",tasks:50,title:"Текстові задачі",cheer:"Золото! Ти розв'язуєш задачі!"},
+    {level:10,medal:"🥇",tasks:55,title:"Дві дії",cheer:"Дві дії — і ти впорався!"},
+    {level:11,medal:"⭐",tasks:60,title:"Додавання до 20",cheer:"Зірковий результат!"},
+    {level:12,medal:"⭐",tasks:65,title:"Віднімання до 20",cheer:"Ти майстер віднімання!"},
+    {level:13,medal:"⭐",tasks:70,title:"Закономірності",cheer:"Ти бачиш закономірності!"},
+    {level:14,medal:"⭐",tasks:75,title:"Логіка",cheer:"Логіка на висоті!"},
+    {level:15,medal:"⭐",tasks:80,title:"Лабіринт",cheer:"Вийшов з лабіринту!"},
+    {level:16,medal:"💎",tasks:85,title:"Десятки",cheer:"Діамантовий рівень!"},
+    {level:17,medal:"💎",tasks:90,title:"Порівняння до 100",cheer:"Числа до 100 — твоя стихія!"},
+    {level:18,medal:"💎",tasks:95,title:"Складні задачі",cheer:"Складні задачі тобі легкі!"},
+    {level:19,medal:"💎",tasks:100,title:"Ланцюжки",cheer:"Ланцюжок розплутано!"},
+    {level:20,medal:"👑",tasks:105,title:"Міні-екзамен",cheer:"БОС ПЕРЕМОЖЕНИЙ! Ти чемпіон!"}
+  ];
+  const PASTEL=["#FFD6D6","#FFE8C8","#FFF6C0","#D6F5D6","#D6ECF5","#E6D6F5","#F5D6EC","#D6F5EF"];
+  const EMOJIS=["🍎","🐶","⭐","🌸","🎈","🦋","🍦","🚂","🌙","🐱","🌺","🍕","🦄","🎵","🐸"];
+
+  let mtUnlocked=0,mtTotalXp=0,mtLevel=null,mtQuestions=[],mtIdx=0,mtEarnedXp=0,mtFeedback=null,mtAutoTimer=null;
+  try{mtUnlocked=parseInt(localStorage.getItem("mathtest_unlocked")||"0")||0;}catch{}
+  try{mtTotalXp=parseInt(localStorage.getItem("mathtest_xp")||"0")||0;}catch{}
+
+  function mtRnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+  function mtPick(arr){return arr[mtRnd(0,arr.length-1)];}
+  function mtSave(){try{localStorage.setItem("mathtest_unlocked",String(mtUnlocked));localStorage.setItem("mathtest_xp",String(mtTotalXp));}catch{}}
+
+  function mtMakeQ(n){
+    if(n===1){const c=mtRnd(1,10),e=mtPick(EMOJIS);return{text:`Скільки ${e} тут?`,display:e.repeat(c),answer:c,type:"number"};}
+    if(n===2){const a=mtRnd(1,9),b=mtRnd(1,9),s=a>b?">":a<b?"<":"=";return{text:`${a}  ?  ${b}  —  який знак?`,answer:s,type:"choice",choices:[">","<","="]};}
+    if(n===3){const r=mtRnd(1,5),b=mtRnd(1,5),e1="🔴",e2="🔵",q=mtPick(["sum","more","less"]);
+      if(q==="sum")return{text:`${e1.repeat(r)} + ${e2.repeat(b)} = ?`,answer:r+b,type:"number"};
+      if(q==="more")return{text:`Яких більше: ${r} ${e1} чи ${b} ${e2}?`,answer:r>=b?e1:e2,type:"choice",choices:[e1,e2,"порівну"]};
+      return{text:`Яких менше: ${r} ${e1} чи ${b} ${e2}?`,answer:r<=b?e1:e2,type:"choice",choices:[e1,e2,"порівну"]};}
+    if(n===4){if(Math.random()>.5){const x=mtRnd(1,18);return{text:`${x}, __, ${x+2}  — яке число пропущено?`,answer:x+1,type:"number"};}
+      const x=mtRnd(11,20);return{text:`Яке число іде після ${x-1}?`,answer:x,type:"number"};}
+    if(n===5){if(Math.random()>.5){const x=mtRnd(3,10);return{text:`Лічба назад: ${x}, ${x-1}, __`,answer:x-2,type:"number"};}
+      const x=mtRnd(1,20);return{text:`${x} — парне чи непарне?`,answer:x%2===0?"парне":"непарне",type:"choice",choices:["парне","непарне"]};}
+    if(n===6){const a=mtRnd(1,9),b=mtRnd(1,9-a+1);return{text:`${a} + ${b} = ?`,answer:a+b,type:"number"};}
+    if(n===7){const b=mtRnd(1,9),a=mtRnd(b,10);return{text:`${a} − ${b} = ?`,answer:a-b,type:"number"};}
+    if(n===8){const a=mtRnd(1,8),b=mtRnd(1,9-a),c=a+b,w=c+mtPick([-2,-1,1,2]),ok=Math.random()>.5,sh=ok?c:w;
+      return{text:`${a} + ${b} = ${sh}  — правильно?`,answer:ok?"✅ Правильно":"❌ Неправильно",type:"choice",choices:["✅ Правильно","❌ Неправильно"]};}
+    if(n===9){const a=mtRnd(2,5),b=mtRnd(1,a),t=mtPick(["яблук","булочок","цукерок"]);
+      if(mtPick(["add","sub"])==="add")return{text:`У Ані ${a} ${t}, у Миші ${b} ${t}. Скільки разом?`,answer:a+b,type:"number"};
+      return{text:`Було ${a} ${t}, з'їли ${b}. Скільки лишилось?`,answer:a-b,type:"number"};}
+    if(n===10){const a=mtRnd(2,4),b=mtRnd(1,3),c=mtRnd(1,2);return{text:`${a} + ${b} − ${c} = ?`,answer:a+b-c,type:"number"};}
+    if(n===11){const a=mtRnd(1,18),b=mtRnd(1,20-a);return{text:`${a} + ${b} = ?`,answer:a+b,type:"number"};}
+    if(n===12){const b=mtRnd(1,18),a=mtRnd(b+1,20);return{text:`${a} − ${b} = ?`,answer:a-b,type:"number"};}
+    if(n===13){const s=mtRnd(1,5),st=mtPick([2,3,5]);return{text:`${s}, ${s+st}, ${s+2*st}, __  — продовж`,answer:s+3*st,type:"number"};}
+    if(n===14){const a=mtRnd(2,9),b=mtRnd(2,9);return{text:`${a} разів по ${b} олівців. Скільки всього?`,answer:a*b,type:"number"};}
+    if(n===15){const s1=mtRnd(2,5),s2=mtRnd(1,4),st=mtRnd(3,8);return{text:`Старт: ${st}. +${s1}, потім −${s2}. Результат?`,answer:st+s1-s2,type:"number"};}
+    if(n===16){const t=mtRnd(1,9);return{text:`${t} десятків = ?`,answer:t*10,type:"number"};}
+    if(n===17){const a=mtRnd(10,99),b=mtRnd(10,99);return{text:`${a}  ?  ${b}`,answer:a>b?">":a<b?"<":"=",type:"choice",choices:[">","<","="]};}
+    if(n===18){const a=mtRnd(10,50),b=mtRnd(10,40),c=mtRnd(1,10);return{text:`${a} + ${b} − ${c} = ?`,answer:a+b-c,type:"number"};}
+    if(n===19){const a=mtRnd(5,15),b=mtRnd(1,5),c=mtRnd(1,5),d=mtRnd(1,3);return{text:`${a} + ${b} − ${c} + ${d} = ?`,answer:a+b-c+d,type:"number"};}
+    return mtMakeQ(mtPick([6,7,8,9,11,12,13,16,17,19]));
+  }
+
+  function mtBuildQuestions(n,total){
+    const list=[];
+    for(let i=0;i<total;i++){
+      let q=mtMakeQ(n);
+      const recent=list.slice(-3).map(x=>String(x.answer));
+      let tries=0;
+      while(tries<12&&recent.includes(String(q.answer))){q=mtMakeQ(n);tries++;}
+      list.push(q);
+    }
+    return list;
+  }
+
+  function mtRenderHome(){
+    const root=document.getElementById("math-test-root");
+    root.innerHTML=`
+      <div class="mt-home">
+        <div style="text-align:center;margin-bottom:20px">
+          <div style="font-size:56px;margin-bottom:8px">🧮</div>
+          <h1 style="color:#fff;font-size:clamp(24px,5vw,36px);font-weight:800;margin:0;letter-spacing:-1px">Математичний тест</h1>
+          <p style="color:#9B8FCC;margin-top:8px;font-size:15px">20 рівнів від простого до бос-рівня!</p>
+        </div>
+        <div class="mt-xp-badge">
+          <span style="font-size:20px">⚡</span>
+          <span style="color:#FFD54F;font-weight:800;font-size:18px">${mtTotalXp} XP</span>
+        </div>
+        <div class="mt-levels-grid" id="mt-levels-grid"></div>
+        <button class="mt-btn-back" style="max-width:300px;margin-top:24px" onclick="showPage('child-academy',null)">← До Академії</button>
+      </div>`;
+    const grid=document.getElementById("mt-levels-grid");
+    LEVELS.forEach((lv,i)=>{
+      const locked=lv.level>mtUnlocked+1, done=lv.level<=mtUnlocked;
+      const card=document.createElement("div");
+      card.className="mt-lv-card"+(locked?" mt-locked":"")+(done?" mt-done":"");
+      card.innerHTML=`<div style="font-size:22px;margin-bottom:4px">${lv.medal}</div>
+        <div style="font-weight:700;font-size:13px;color:${locked?"#5a4fa0":"#fff"};margin-bottom:2px">Рівень ${lv.level}</div>
+        <div style="color:#9B8FCC;font-size:11px;line-height:1.3">${lv.title}</div>
+        <div style="color:#6C60B0;font-size:10px;margin-top:4px">${lv.tasks} завдань</div>
+        ${done?'<div style="position:absolute;top:6px;right:8px;font-size:13px">✓</div>':""}
+        ${locked?'<div style="position:absolute;top:8px;right:8px;font-size:16px">🔒</div>':""}`;
+      if(!locked){
+        card.addEventListener("mouseenter",()=>card.style.background=PASTEL[i%PASTEL.length]);
+        card.addEventListener("mouseleave",()=>card.style.background="");
+        card.addEventListener("click",()=>mtStartLevel(lv.level));
+      }
+      grid.appendChild(card);
+    });
+  }
+
+  function mtStartLevel(level){
+    mtLevel=level;
+    const lv=LEVELS[level-1];
+    mtQuestions=mtBuildQuestions(level,lv.tasks);
+    mtIdx=0; mtEarnedXp=0; mtFeedback=null;
+    mtRenderQuestion();
+  }
+
+  function mtRenderQuestion(){
+    if(mtAutoTimer){clearTimeout(mtAutoTimer);mtAutoTimer=null;}
+    const lv=LEVELS[mtLevel-1], TOTAL=lv.tasks, q=mtQuestions[mtIdx];
+    const pct=Math.min(100,Math.round((mtIdx/TOTAL)*100));
+    const root=document.getElementById("math-test-root");
+
+    const choicesHtml=q.type==="choice"
+      ? `<div class="mt-choices">${q.choices.map(c=>`<button class="mt-choice-btn" onclick="window._mtSubmit(${JSON.stringify(String(c))},this)">${c}</button>`).join("")}</div>`
+      : `<div style="display:flex;justify-content:center"><input class="mt-num-input" id="mt-num-input" type="number" inputmode="numeric" placeholder="?" autocomplete="off"></div>`;
+
+    root.innerHTML=`
+      <div class="mt-quiz-wrap">
+        <div class="mt-quiz-topbar">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="color:#9B8FCC;font-size:13px">${lv.medal} Рівень ${mtLevel}: ${lv.title}</span>
+            <span style="color:#6C63FF;font-weight:700;font-size:14px">${mtIdx+1}/${TOTAL}</span>
+          </div>
+          <div class="mt-progress-track"><div class="mt-progress-fill" style="width:${pct}%"></div></div>
+        </div>
+        <div class="mt-card" id="mt-card">
+          ${q.display?`<div style="font-size:clamp(18px,4vw,28px);line-height:1.6;margin-bottom:16px;background:#2d2060;border-radius:12px;padding:12px 16px;word-break:break-all;letter-spacing:3px">${q.display}</div>`:""}
+          <p style="color:#E0D8FF;font-size:clamp(15px,3vw,19px);font-weight:600;margin:0 0 20px;line-height:1.4">${q.text}</p>
+          ${choicesHtml}
+          <div id="mt-feedback" class="mt-feedback" style="display:none"></div>
+        </div>
+        <div style="margin-top:16px;display:flex;align-items:center;gap:6px;color:#FFD54F;font-size:14px;font-weight:700">
+          <span>⚡</span><span id="mt-xp-tick">${mtEarnedXp} XP за рівень</span>
+        </div>
+      </div>`;
+
+    if(q.type==="number"){
+      const inp=document.getElementById("mt-num-input");
+      inp.focus();
+      inp.oninput=()=>{
+        if(mtFeedback) return;
+        const val=inp.value.slice(0,6); inp.value=val;
+        if(mtAutoTimer){clearTimeout(mtAutoTimer);mtAutoTimer=null;}
+        if(!val) return;
+        const delay=val.length>=String(q.answer).length?250:1100;
+        mtAutoTimer=setTimeout(()=>window._mtSubmit(val,null),delay);
+      };
+      inp.onkeydown=e=>{
+        if(e.key==="Enter"&&inp.value){
+          if(mtAutoTimer){clearTimeout(mtAutoTimer);mtAutoTimer=null;}
+          window._mtSubmit(inp.value,null);
+        }
+      };
+    }
+  }
+
+  window._mtSubmit=function(ans,btn){
+    if(mtFeedback) return;
+    const lv=LEVELS[mtLevel-1],TOTAL=lv.tasks,q=mtQuestions[mtIdx];
+    const correct=String(ans).trim()===String(q.answer).trim();
+    mtFeedback=correct?"correct":"wrong";
+    const card=document.getElementById("mt-card");
+    if(card) card.className="mt-card "+(correct?"mt-correct":"mt-wrong");
+    if(btn){
+      btn.className="mt-choice-btn "+(correct?"mt-sel-ok":"mt-sel-bad");
+      document.querySelectorAll(".mt-choice-btn").forEach(b=>b.disabled=true);
+    } else {
+      const inp=document.getElementById("mt-num-input");
+      if(inp) inp.disabled=true;
+    }
+    const fb=document.getElementById("mt-feedback");
+    if(fb){fb.style.display="block";fb.style.color=correct?"#6EE86E":"#FF7070";fb.style.animation="mt-fadein .2s ease";
+      fb.textContent=correct?"✅ Правильно!":"❌ Відповідь: "+q.answer;}
+    if(correct){
+      mtEarnedXp+=(mtLevel===20?2:1);
+      const tick=document.getElementById("mt-xp-tick");
+      if(tick) tick.textContent=mtEarnedXp+" XP за рівень";
+      setTimeout(()=>{mtFeedback=null; if(mtIdx+1>=TOTAL)mtShowResult(true); else{mtIdx++;mtRenderQuestion();}},800);
+    } else {
+      mtEarnedXp=0;
+      setTimeout(()=>{mtFeedback=null;mtQuestions=mtBuildQuestions(mtLevel,TOTAL);mtIdx=0;mtRenderQuestion();},1300);
+    }
+  };
+
+  function mtShowResult(win){
+    const lv=LEVELS[mtLevel-1];
+    if(win){mtTotalXp+=mtEarnedXp;if(mtLevel>=mtUnlocked+1)mtUnlocked=mtLevel;mtSave();}
+    const root=document.getElementById("math-test-root");
+    root.innerHTML=`
+      <div class="mt-result-wrap">
+        <div class="mt-result-card" style="border:2px solid ${win?"#FFD700":"#5040A0"}">
+          <div style="font-size:64px;margin-bottom:8px">${win?"🎉":"💪"}</div>
+          <h2 style="font-size:26px;line-height:1.2;margin:0 0 6px">${win?"Вітаю!":"Ой, помилка!"}</h2>
+          <div style="font-size:18px;font-weight:800;margin-bottom:16px;color:${win?"#FFD700":"#FFB74D"}">${win?lv.medal+" "+lv.cheer:"Рівень починаємо спочатку"}</div>
+          ${win?'<div style="font-size:32px;letter-spacing:4px;margin-bottom:4px">⭐⭐⭐</div>':""}
+          <div style="background:linear-gradient(135deg,rgba(255,179,0,.2),rgba(255,138,0,.13));border:2px solid #FFB300;border-radius:14px;padding:12px 14px;margin:18px 0;text-align:center">
+            <div style="color:#FFD54F;font-weight:800;font-size:22px">⚡ +${mtEarnedXp} XP</div>
+            <div style="color:#9B8FCC;font-size:13px">Всього: ${mtTotalXp} XP</div>
+          </div>
+          ${!win?'<p style="color:#9B8FCC;font-size:14px;margin-bottom:14px;line-height:1.4">XP за цей рівень обнулилися. Пройди весь рівень без помилок!</p>':""}
+          <button class="mt-btn-main" onclick="${win&&mtLevel<20?`window._mtNextLevel()`:`window._mtGoHome()`}">
+            ${win?(mtLevel<20?`Рівень ${mtLevel+1} →`:"До меню 👑"):"↻ Почати рівень спочатку"}
+          </button>
+          <button class="mt-btn-back" onclick="window._mtGoHome()">← До вибору рівнів</button>
+        </div>
+      </div>`;
+  }
+
+  window._mtNextLevel=function(){mtStartLevel(mtLevel+1);};
+  window._mtGoHome=function(){mtRenderHome();};
+
+  // Public entry point
+  window.startMathTest=function(){
+    const page=document.getElementById("page-math-test");
+    if(!page) return;
+    // Hide all pages, show math test
+    document.querySelectorAll(".page-content").forEach(p=>p.style.display="none");
+    page.style.display="block";
+    document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+    mtRenderHome();
+  };
+})();
+</script>
+<!-- CHILD PROFILE MODAL -->
+<div class="modal-overlay" id="childProfileModal" onclick="if(event.target===this)closeChildProfile()">
+  <div class="modal" style="max-width:420px;padding:0;overflow:hidden">
+    <div id="childProfileContent"></div>
+  </div>
+</div>
+
+<style>
+.cp-modal-header{padding:24px 20px 16px;display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(108,99,255,0.2),rgba(160,108,255,0.1));border-bottom:1px solid rgba(255,255,255,0.08)}
+.cp-modal-avatar{font-size:52px;line-height:1;flex-shrink:0}
+.cp-modal-name{font-size:1.3rem;font-weight:800;color:#fff;margin:0 0 2px}
+.cp-modal-meta{font-size:0.82rem;color:#9B8FCC;margin:0}
+.cp-grade-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(108,99,255,0.25);border:1px solid rgba(108,99,255,0.5);border-radius:20px;padding:3px 10px;font-size:0.78rem;font-weight:700;color:#c3b8ff;margin-top:6px;cursor:pointer;transition:background .15s}
+.cp-grade-badge:hover{background:rgba(108,99,255,0.4)}
+.cp-grade-select{background:#1e1450;color:#fff;border:1px solid rgba(108,99,255,0.5);border-radius:8px;padding:4px 8px;font-size:0.82rem;font-weight:700;cursor:pointer;margin-top:6px}
+.cp-section{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.cp-section-title{font-size:0.72rem;font-weight:800;letter-spacing:.1em;color:#6C63FF;text-transform:uppercase;margin-bottom:10px}
+.cp-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cp-stat-box{background:rgba(255,255,255,0.05);border-radius:12px;padding:10px 8px;text-align:center}
+.cp-stat-val{font-size:1.15rem;font-weight:800;color:#fff}
+.cp-stat-lbl{font-size:0.68rem;color:#9B8FCC;margin-top:2px}
+.cp-achievements{display:flex;flex-wrap:wrap;gap:8px}
+.cp-ach{background:rgba(255,179,0,0.12);border:1px solid rgba(255,179,0,0.3);border-radius:20px;padding:5px 11px;font-size:0.78rem;font-weight:700;color:#FFD54F}
+.cp-task-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.cp-task-item:last-child{border-bottom:none}
+.cp-task-name{flex:1;font-size:0.85rem;font-weight:600;color:#E0D8FF}
+.cp-task-coins{font-size:0.75rem;color:var(--gold);white-space:nowrap}
+.cp-modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:#9B8FCC;font-size:20px;cursor:pointer;line-height:1;padding:4px}
+</style>
+
+<script>
+const CHILDREN_DATA = {
+  sasho: {
+    name: 'Сашко', avatar: '🦁', age: 7, grade: 1,
+    xp: 340, coins: 120, tasksCompleted: 12,
+    achievements: ['👑 Чемпіон тижня','🧮 Математик','🔥 5 днів поспіль','⭐ Перший тест'],
+    tasks: [
+      {name:'🧮 Тест: Математика 1 клас', coins:25, status:'▶️ Виконати'},
+      {name:'📚 Читання 20 хв', coins:10, status:'⏳ В процесі'},
+      {name:'✏️ Прописи', coins:15, status:'✅ Здано'},
+    ]
+  },
+  olechka: {
+    name: 'Олечка', avatar: '🦋', age: 9, grade: 3,
+    xp: 290, coins: 85, tasksCompleted: 9,
+    achievements: ['🌺 Відмінниця','📚 Книголюб','🎨 Творча'],
+    tasks: [
+      {name:'📖 Читання розділу', coins:15, status:'⏳ В процесі'},
+      {name:'🌍 Природознавство', coins:20, status:'▶️ Виконати'},
+    ]
+  },
+  volodya: {
+    name: 'Володя', avatar: '🐬', age: 6, grade: 1,
+    xp: 180, coins: 35, tasksCompleted: 5,
+    achievements: ['🚀 Новачок','💪 Старається'],
+    tasks: [
+      {name:'🧮 Тест: Математика 1 клас', coins:25, status:'▶️ Виконати'},
+    ]
+  }
+};
+
+// Grade suggestion based on age
+function suggestedGrade(age) {
+  if (age <= 7) return 1;
+  if (age === 8) return 2;
+  if (age === 9) return 3;
+  if (age === 10) return 4;
+  return Math.min(4, Math.max(1, age - 6));
+}
+
+function openChildProfile(childId) {
+  const c = CHILDREN_DATA[childId];
+  if (!c) return;
+  const suggested = suggestedGrade(c.age);
+  const gradeHint = suggested !== c.grade ? ` (підказка: ${suggested} кл. за віком)` : '';
+
+  const tasksHtml = c.tasks.map(t => `
+    <div class="cp-task-item">
+      <div class="cp-task-name">${t.name}</div>
+      <div class="cp-task-coins">+${t.coins} 🪙</div>
+    </div>`).join('');
+
+  const achHtml = c.achievements.map(a => `<span class="cp-ach">${a}</span>`).join('');
+
+  document.getElementById('childProfileContent').innerHTML = `
+    <button class="cp-modal-close" onclick="closeChildProfile()">✕</button>
+    <div class="cp-modal-header">
+      <div class="cp-modal-avatar">${c.avatar}</div>
+      <div>
+        <div class="cp-modal-name">${c.name}</div>
+        <div class="cp-modal-meta">${c.age} років</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+          <select class="cp-grade-select" onchange="changeChildGrade('${childId}',this.value)" title="Клас дитини${gradeHint}">
+            ${[1,2,3,4].map(g=>`<option value="${g}" ${c.grade===g?'selected':''}>${g} клас</option>`).join('')}
+          </select>
+          ${suggested !== c.grade ? `<span style="font-size:0.72rem;color:#FFB300">💡 ${suggested} кл. за віком</span>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="cp-section">
+      <div class="cp-section-title">Характеристики</div>
+      <div class="cp-stats-row">
+        <div class="cp-stat-box"><div class="cp-stat-val">⭐ ${c.xp}</div><div class="cp-stat-lbl">балів XP</div></div>
+        <div class="cp-stat-box"><div class="cp-stat-val">🪙 ${c.coins}</div><div class="cp-stat-lbl">монет</div></div>
+        <div class="cp-stat-box"><div class="cp-stat-val">📚 ${c.tasksCompleted}</div><div class="cp-stat-lbl">завдань</div></div>
+      </div>
+    </div>
+    <div class="cp-section">
+      <div class="cp-section-title">Досягнення</div>
+      <div class="cp-achievements">${achHtml}</div>
+    </div>
+    <div class="cp-section" style="border-bottom:none">
+      <div class="cp-section-title">Активні завдання</div>
+      ${tasksHtml || '<div style="color:#9B8FCC;font-size:0.85rem">Завдань немає</div>'}
+    </div>`;
+
+  document.getElementById('childProfileModal').classList.add('open');
+}
+
+function closeChildProfile() {
+  document.getElementById('childProfileModal').classList.remove('open');
+}
+
+function changeChildGrade(childId, grade) {
+  CHILDREN_DATA[childId].grade = parseInt(grade);
+  showToast(`✅ Клас ${CHILDREN_DATA[childId].name} змінено на ${grade} клас`);
+}
+</script>
+</body>
+</html>
