@@ -2142,7 +2142,23 @@ function doChildLogin() {
 function showApp() {
   document.getElementById('landing').style.display = 'none';
   document.getElementById('appInterface').style.display = 'block';
+
+  // If returning from an external page (e.g. math test), restore child view
+  const params = new URLSearchParams(window.location.search);
+  const view = params.get('view');
+  if (view === 'child-academy') {
+    switchRole('child');
+    showPage('child-academy', null);
+  }
 }
+
+// Auto-enter app if returning with a view param
+window.addEventListener('DOMContentLoaded', function(){
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('view')) {
+    showApp();
+  }
+});
 
 function doLogout() {
   document.getElementById('landing').style.display = 'block';
