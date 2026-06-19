@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🧮 Математичний тест — SchoolKingdom</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#1a1040 0%,#2d1b6b 50%,#0d2647 100%);min-height:100vh;color:#fff}
+
+  /* BACK BUTTON */
+  .back-bar{padding:12px 16px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.08)}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(108,99,255,0.2);border:1px solid rgba(108,99,255,0.4);border-radius:10px;padding:7px 14px;color:#c3b8ff;font-size:0.85rem;font-weight:700;text-decoration:none;transition:background .15s}
+  .back-btn:hover{background:rgba(108,99,255,0.35)}
+  .back-bar-title{color:#9B8FCC;font-size:0.85rem}
+
+  /* HOME */
+  #home{display:flex;flex-direction:column;align-items:center;padding:32px 16px}
+  .xp-badge{background:linear-gradient(135deg,rgba(255,179,0,.2),rgba(255,138,0,.13));border:2px solid #FFB300;border-radius:30px;padding:8px 20px;margin-bottom:24px;display:flex;align-items:center;gap:8px}
+  .xp-badge span{color:#FFD54F;font-weight:800;font-size:18px}
+  .levels-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;width:100%;max-width:720px}
+  .lv-card{border-radius:16px;padding:14px 12px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s ease;border:2px solid #5040A0;background:#26185A}
+  .lv-card.locked{opacity:.45;cursor:not-allowed;background:#1e1450;border-color:#2d245a}
+  .lv-card.done{border-color:#FFD700}
+  .lv-card:not(.locked):hover{transform:translateY(-3px) scale(1.03)}
+
+  /* QUIZ */
+  #quiz{display:none;flex-direction:column;align-items:center;padding:16px}
+  .quiz-topbar{width:100%;max-width:520px;margin-bottom:16px}
+  .progress-track{background:#E8E8F0;border-radius:12px;height:14px;overflow:hidden;width:100%}
+  .progress-fill{height:100%;border-radius:12px;transition:width .4s cubic-bezier(.4,0,.2,1);background:linear-gradient(90deg,#6C63FF,#6C63FFCC)}
+  .quiz-card{border-radius:24px;padding:28px 24px;max-width:520px;width:100%;border:2px solid #5040A0;background:#1e1450;transition:background .3s,border .3s}
+  .quiz-card.correct{background:#1b3a1b;border-color:#4CAF50}
+  .quiz-card.wrong{background:#3a1b1b;border-color:#F44336}
+  .choices{display:flex;flex-wrap:wrap;gap:10px}
+  .choice-btn{flex:1 1 auto;min-width:80px;background:#2d2060;color:#fff;border:2px solid #5040A0;border-radius:12px;padding:12px 8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .15s}
+  .choice-btn:disabled{cursor:not-allowed}
+  .choice-btn.sel-ok{background:#2e7d32}
+  .choice-btn.sel-bad{background:#c62828}
+  .num-input{width:140px;max-width:60vw;text-align:center;background:#2d2060;color:#fff;border:2px solid #5040A0;border-radius:12px;padding:14px 8px;font-size:24px;font-weight:700;outline:none;appearance:textfield;-moz-appearance:textfield}
+  .num-input::-webkit-inner-spin-button{-webkit-appearance:none}
+  .feedback{margin-top:14px;text-align:center;font-size:20px;font-weight:700;animation:fadeIn .2s ease}
+
+  /* RESULT */
+  #result{display:none;align-items:center;justify-content:center;min-height:80vh;padding:16px}
+  .result-card{background:#1e1450;border-radius:24px;padding:32px;max-width:400px;width:100%;text-align:center}
+  .xp-box{background:linear-gradient(135deg,rgba(255,179,0,.2),rgba(255,138,0,.13));border:2px solid #FFB300;border-radius:14px;padding:12px 14px;margin:18px 0;text-align:center}
+  .btn-main{background:linear-gradient(135deg,#6C63FF,#A06CFF);color:#fff;border:none;border-radius:14px;padding:14px 32px;font-size:16px;font-weight:700;cursor:pointer;width:100%;margin-bottom:8px}
+  .btn-ghost{background:none;color:#9B8FCC;border:none;font-size:14px;cursor:pointer;text-decoration:underline}
+
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- BACK BAR -->
+<div class="back-bar">
+  <a class="back-btn" href="index.html">← До кабінету</a>
+  <span class="back-bar-title">Академія Героїв · Математика</span>
+</div>
+
+<!-- HOME -->
+<div id="home">
+  <div style="text-align:center;margin-bottom:20px">
+    <div style="font-size:56px;margin-bottom:8px">🧮</div>
+    <h1 style="font-size:clamp(24px,5vw,36px);font-weight:800;letter-spacing:-1px">Математичний тест</h1>
+    <p style="color:#9B8FCC;margin-top:8px;font-size:15px">20 рівнів від простого до бос-рівня!</p>
+  </div>
+  <div class="xp-badge">
+    <span style="font-size:20px">⚡</span>
+    <span id="home-xp">0 XP</span>
+  </div>
+  <div class="levels-grid" id="levels-grid"></div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz">
+  <div class="quiz-topbar">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="color:#9B8FCC;font-size:13px" id="q-meta-lv"></span>
+      <span style="color:#6C63FF;font-weight:700;font-size:14px" id="q-meta-prog"></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="q-progress" style="width:0%"></div></div>
+  </div>
+  <div class="quiz-card" id="quiz-card">
+    <div id="q-display" style="display:none;font-size:clamp(18px,4vw,28px);line-height:1.6;margin-bottom:16px;background:#2d2060;border-radius:12px;padding:12px 16px;word-break:break-all;letter-spacing:3px"></div>
+    <p style="color:#E0D8FF;font-size:clamp(15px,3vw,19px);font-weight:600;margin:0 0 20px;line-height:1.4" id="q-text"></p>
+    <div id="q-choices" class="choices" style="display:none"></div>
+    <div id="q-number" style="display:none;justify-content:center">
+      <input class="num-input" id="num-input" type="number" inputmode="numeric" placeholder="?" maxlength="6">
+    </div>
+    <div id="q-feedback" class="feedback" style="display:none"></div>
+  </div>
+  <div style="margin-top:16px;display:flex;align-items:center;gap:6px;color:#FFD54F;font-size:14px;font-weight:700">
+    <span>⚡</span><span id="q-xp-ticker">0 XP за рівень</span>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result">
+  <div class="result-card" id="result-card">
+    <div id="res-emoji" style="font-size:64px;margin-bottom:8px"></div>
+    <h2 id="res-h2" style="font-size:26px;line-height:1.2;margin:0 0 6px"></h2>
+    <div id="res-msg" style="font-size:18px;font-weight:800;margin-bottom:16px;line-height:1.3;color:#FFD700"></div>
+    <div id="res-stars" style="display:none;font-size:32px;letter-spacing:4px;margin-bottom:4px">⭐⭐⭐</div>
+    <div class="xp-box">
+      <div style="color:#FFD54F;font-weight:800;font-size:22px">⚡ <span id="res-xp-earned"></span></div>
+      <div style="color:#9B8FCC;font-size:13px" id="res-xp-total"></div>
+    </div>
+    <p id="res-fail-note" style="display:none;color:#9B8FCC;font-size:14px;margin-bottom:14px;line-height:1.4">
+      XP за цей рівень обнулилися. Пройди весь рівень без помилок!
+    </p>
+    <button class="btn-main" id="res-btn-main"></button>
+    <button class="btn-ghost" id="res-btn-menu" style="display:none">До меню рівнів</button>
+    <br>
+    <a href="index.html" style="display:inline-block;margin-top:10px;color:#9B8FCC;font-size:13px;text-decoration:underline">← До кабінету</a>
+  </div>
+</div>
+
+<script>
+const LEVELS=[
+  {level:1,medal:"🥉",tasks:10,title:"Лічба до 10",cheer:"Перший рівень підкорено!"},
+  {level:2,medal:"🥉",tasks:15,title:"Порівняння кількості",cheer:"Ти вмієш порівнювати!"},
+  {level:3,medal:"🥉",tasks:20,title:"Два кольори",cheer:"Кольори тобі по зубах!"},
+  {level:4,medal:"🥉",tasks:25,title:"Лічба до 20",cheer:"Дорахував аж до 20!"},
+  {level:5,medal:"🥈",tasks:30,title:"Парні та непарні",cheer:"Срібний рівень — твій!"},
+  {level:6,medal:"🥈",tasks:35,title:"Додавання",cheer:"Ти справжній додавач!"},
+  {level:7,medal:"🥈",tasks:40,title:"Віднімання",cheer:"Віднімання підкорено!"},
+  {level:8,medal:"🥈",tasks:45,title:"Знайди помилку",cheer:"Від тебе помилка не сховається!"},
+  {level:9,medal:"🥇",tasks:50,title:"Текстові задачі",cheer:"Золото! Ти розв'язуєш задачі!"},
+  {level:10,medal:"🥇",tasks:55,title:"Дві дії",cheer:"Дві дії — і ти впорався!"},
+  {level:11,medal:"⭐",tasks:60,title:"Додавання до 20",cheer:"Зірковий результат!"},
+  {level:12,medal:"⭐",tasks:65,title:"Віднімання до 20",cheer:"Ти майстер віднімання!"},
+  {level:13,medal:"⭐",tasks:70,title:"Закономірності",cheer:"Ти бачиш закономірності!"},
+  {level:14,medal:"⭐",tasks:75,title:"Логіка",cheer:"Логіка на висоті!"},
+  {level:15,medal:"⭐",tasks:80,title:"Лабіринт",cheer:"Вийшов з лабіринту!"},
+  {level:16,medal:"💎",tasks:85,title:"Десятки",cheer:"Діамантовий рівень!"},
+  {level:17,medal:"💎",tasks:90,title:"Порівняння до 100",cheer:"Числа до 100 — твоя стихія!"},
+  {level:18,medal:"💎",tasks:95,title:"Складні задачі",cheer:"Складні задачі тобі легкі!"},
+  {level:19,medal:"💎",tasks:100,title:"Ланцюжки",cheer:"Ланцюжок розплутано!"},
+  {level:20,medal:"👑",tasks:105,title:"Міні-екзамен",cheer:"БОС ПЕРЕМОЖЕНИЙ! Ти чемпіон!"}
+];
+const PASTEL=["#FFD6D6","#FFE8C8","#FFF6C0","#D6F5D6","#D6ECF5","#E6D6F5","#F5D6EC","#D6F5EF"];
+const EMOJIS=["🍎","🐶","⭐","🌸","🎈","🦋","🍦","🚂","🌙","🐱","🌺","🍕","🦄","🎵","🐸"];
+
+let unlocked=0,totalXp=0,activeLevel=null,questions=[],idx=0,earnedXp=0,feedback=null,autoTimer=null;
+try{unlocked=parseInt(localStorage.getItem("mathtest_unlocked")||"0")||0;}catch{}
+try{totalXp=parseInt(localStorage.getItem("mathtest_xp")||"0")||0;}catch{}
+
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(arr){return arr[rnd(0,arr.length-1)];}
+function save(){try{localStorage.setItem("mathtest_unlocked",String(unlocked));localStorage.setItem("mathtest_xp",String(totalXp));}catch{}}
+
+function showScreen(id){
+  document.getElementById("home").style.display = id==="home" ? "flex" : "none";
+  document.getElementById("quiz").style.display = id==="quiz" ? "flex" : "none";
+  document.getElementById("result").style.display = id==="result" ? "flex" : "none";
+  if(id==="quiz") document.getElementById("quiz").style.flexDirection="column";
+}
+
+function makeQuestion(n){
+  if(n===1){const c=rnd(1,10),e=pick(EMOJIS);return{text:`Скільки ${e} тут?`,display:e.repeat(c),answer:c,type:"number"};}
+  if(n===2){const a=rnd(1,9),b=rnd(1,9),s=a>b?">":a<b?"<":"=";return{text:`${a}  ?  ${b}  —  який знак?`,answer:s,type:"choice",choices:[">","<","="]};}
+  if(n===3){const r=rnd(1,5),b=rnd(1,5),e1="🔴",e2="🔵",q=pick(["sum","more","less"]);
+    if(q==="sum")return{text:`${e1.repeat(r)} + ${e2.repeat(b)} = ?`,answer:r+b,type:"number"};
+    if(q==="more")return{text:`Яких більше: ${r} ${e1} чи ${b} ${e2}?`,answer:r>b?e1:r<b?e2:"порівну",type:"choice",choices:[e1,e2,"порівну"]};
+    return{text:`Яких менше: ${r} ${e1} чи ${b} ${e2}?`,answer:r<b?e1:r>b?e2:"порівну",type:"choice",choices:[e1,e2,"порівну"]};}
+  if(n===4){if(Math.random()>.5){const x=rnd(1,18);return{text:`${x}, __, ${x+2}  — яке число пропущено?`,answer:x+1,type:"number"};}
+    const x=rnd(11,20);return{text:`Яке число іде після ${x-1}?`,answer:x,type:"number"};}
+  if(n===5){if(Math.random()>.5){const x=rnd(3,10);return{text:`Лічба назад: ${x}, ${x-1}, __`,answer:x-2,type:"number"};}
+    const x=rnd(1,20);return{text:`${x} — парне чи непарне?`,answer:x%2===0?"парне":"непарне",type:"choice",choices:["парне","непарне"]};}
+  if(n===6){const a=rnd(1,9),b=rnd(1,9-a+1);return{text:`${a} + ${b} = ?`,answer:a+b,type:"number"};}
+  if(n===7){const b=rnd(1,9),a=rnd(b,10);return{text:`${a} − ${b} = ?`,answer:a-b,type:"number"};}
+  if(n===8){const a=rnd(1,8),b=rnd(1,9-a),c=a+b,w=c+pick([-2,-1,1,2]),ok=Math.random()>.5,sh=ok?c:w;
+    return{text:`${a} + ${b} = ${sh}  — правильно?`,answer:ok?"✅ Правильно":"❌ Неправильно",type:"choice",choices:["✅ Правильно","❌ Неправильно"]};}
+  if(n===9){const a=rnd(2,5),b=rnd(1,a),t=pick(["яблук","булочок","цукерок"]);
+    if(pick(["add","sub"])==="add")return{text:`У Ані ${a} ${t}, у Миші ${b} ${t}. Скільки разом?`,answer:a+b,type:"number"};
+    return{text:`Було ${a} ${t}, з'їли ${b}. Скільки лишилось?`,answer:a-b,type:"number"};}
+  if(n===10){const a=rnd(2,4),b=rnd(1,3),c=rnd(1,2);return{text:`${a} + ${b} − ${c} = ?`,answer:a+b-c,type:"number"};}
+  if(n===11){const a=rnd(1,18),b=rnd(1,20-a);return{text:`${a} + ${b} = ?`,answer:a+b,type:"number"};}
+  if(n===12){const b=rnd(1,18),a=rnd(b+1,20);return{text:`${a} − ${b} = ?`,answer:a-b,type:"number"};}
+  if(n===13){const s=rnd(1,5),st=pick([2,3,5]);return{text:`${s}, ${s+st}, ${s+2*st}, __  — продовж`,answer:s+3*st,type:"number"};}
+  if(n===14){const a=rnd(2,9),b=rnd(2,9);return{text:`${a} разів по ${b} олівців. Скільки всього?`,answer:a*b,type:"number"};}
+  if(n===15){const s1=rnd(2,5),s2=rnd(1,4),st=rnd(3,8);return{text:`Старт: ${st}. +${s1}, потім −${s2}. Результат?`,answer:st+s1-s2,type:"number"};}
+  if(n===16){const t=rnd(1,9);return{text:`${t} десятків = ?`,answer:t*10,type:"number"};}
+  if(n===17){const a=rnd(10,99),b=rnd(10,99);return{text:`${a}  ?  ${b}`,answer:a>b?">":a<b?"<":"=",type:"choice",choices:[">","<","="]};}
+  if(n===18){const a=rnd(10,50),b=rnd(10,40),c=rnd(1,10);return{text:`${a} + ${b} − ${c} = ?`,answer:a+b-c,type:"number"};}
+  if(n===19){const a=rnd(5,15),b=rnd(1,5),c=rnd(1,5),d=rnd(1,3);return{text:`${a} + ${b} − ${c} + ${d} = ?`,answer:a+b-c+d,type:"number"};}
+  return makeQuestion(pick([6,7,8,9,11,12,13,16,17,19]));
+}
+
+function buildQuestions(levelNum,total){
+  const list=[];
+  for(let i=0;i<total;i++){
+    let q=makeQuestion(levelNum);
+    const recent=list.slice(-3).map(x=>String(x.answer));
+    let t=0;
+    while(t<12&&recent.includes(String(q.answer))){q=makeQuestion(levelNum);t++;}
+    list.push(q);
+  }
+  return list;
+}
+
+// ── HOME ──
+function renderHome(){
+  showScreen("home");
+  document.getElementById("home-xp").textContent=totalXp+" XP";
+  const grid=document.getElementById("levels-grid");
+  grid.innerHTML="";
+  LEVELS.forEach((lv,i)=>{
+    const locked=lv.level>unlocked+1,done=lv.level<=unlocked;
+    const card=document.createElement("div");
+    card.className="lv-card"+(locked?" locked":"")+(done?" done":"");
+    card.innerHTML=`<div style="font-size:22px;margin-bottom:4px">${lv.medal}</div>
+      <div style="font-weight:700;font-size:13px;color:${locked?"#5a4fa0":"#fff"};margin-bottom:2px">Рівень ${lv.level}</div>
+      <div style="color:#9B8FCC;font-size:11px;line-height:1.3">${lv.title}</div>
+      <div style="color:#6C60B0;font-size:10px;margin-top:4px">${lv.tasks} завдань</div>
+      ${done?'<div style="position:absolute;top:6px;right:8px;font-size:13px">✓</div>':""}
+      ${locked?'<div style="position:absolute;top:8px;right:8px;font-size:16px">🔒</div>':""}`;
+    if(!locked){
+      card.addEventListener("mouseenter",()=>card.style.background=PASTEL[i%PASTEL.length]);
+      card.addEventListener("mouseleave",()=>card.style.background="");
+      card.addEventListener("click",()=>startLevel(lv.level));
+    }
+    grid.appendChild(card);
+  });
+}
+
+// ── QUIZ ──
+function startLevel(level){
+  activeLevel=level;
+  const lv=LEVELS[level-1];
+  questions=buildQuestions(level,lv.tasks);
+  idx=0;earnedXp=0;feedback=null;
+  showScreen("quiz");
+  renderQuestion();
+}
+
+function renderQuestion(){
+  if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
+  const lv=LEVELS[activeLevel-1],TOTAL=lv.tasks,q=questions[idx];
+  const pct=Math.min(100,Math.round((idx/TOTAL)*100));
+
+  document.getElementById("q-meta-lv").textContent=`${lv.medal} Рівень ${activeLevel}: ${lv.title}`;
+  document.getElementById("q-meta-prog").textContent=`${idx+1}/${TOTAL}`;
+  document.getElementById("q-progress").style.width=pct+"%";
+  document.getElementById("q-xp-ticker").textContent=earnedXp+" XP за рівень";
+  document.getElementById("quiz-card").className="quiz-card";
+
+  const dispEl=document.getElementById("q-display");
+  if(q.display){dispEl.style.display="block";dispEl.textContent=q.display;}
+  else dispEl.style.display="none";
+  document.getElementById("q-text").textContent=q.text;
+  document.getElementById("q-feedback").style.display="none";
+
+  const choicesEl=document.getElementById("q-choices");
+  const numberEl=document.getElementById("q-number");
+  const numInp=document.getElementById("num-input");
+
+  if(q.type==="choice"){
+    choicesEl.style.display="flex";numberEl.style.display="none";
+    choicesEl.innerHTML="";
+    q.choices.forEach((c,i)=>{
+      const btn=document.createElement("button");
+      btn.className="choice-btn";btn.textContent=c;
+      btn.addEventListener("click",()=>submitAnswer(q.choices[i],btn));
+      choicesEl.appendChild(btn);
+    });
+  } else {
+    choicesEl.style.display="none";numberEl.style.display="flex";
+    numInp.value="";numInp.disabled=false;numInp.focus();
+    numInp.oninput=()=>{
+      if(feedback)return;
+      const val=numInp.value.slice(0,6);numInp.value=val;
+      if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
+      if(!val)return;
+      const delay=val.length>=String(q.answer).length?250:1100;
+      autoTimer=setTimeout(()=>submitAnswer(Number(val),null),delay);
+    };
+    numInp.onkeydown=e=>{
+      if(e.key==="Enter"&&numInp.value){
+        if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
+        submitAnswer(Number(numInp.value),null);
+      }
+    };
+  }
+}
+
+function submitAnswer(ans,btnEl){
+  if(feedback)return;
+  const lv=LEVELS[activeLevel-1],TOTAL=lv.tasks,q=questions[idx];
+  const correct=String(ans).trim()===String(q.answer).trim();
+  feedback=correct?"correct":"wrong";
+  document.getElementById("quiz-card").className="quiz-card "+(correct?"correct":"wrong");
+  if(btnEl){btnEl.className="choice-btn "+(correct?"sel-ok":"sel-bad");
+    document.querySelectorAll(".choice-btn").forEach(b=>b.disabled=true);}
+  else{document.getElementById("num-input").disabled=true;}
+  const fb=document.getElementById("q-feedback");
+  fb.style.display="block";fb.style.color=correct?"#6EE86E":"#FF7070";
+  fb.textContent=correct?"✅ Правильно!":"❌ Відповідь: "+q.answer;
+  if(correct){
+    earnedXp+=(activeLevel===20?2:1);
+    document.getElementById("q-xp-ticker").textContent=earnedXp+" XP за рівень";
+    setTimeout(()=>{feedback=null;if(idx+1>=TOTAL)showResult(true);else{idx++;renderQuestion();}},800);
+  } else {
+    earnedXp=0;
+    setTimeout(()=>{feedback=null;questions=buildQuestions(activeLevel,lv.tasks);idx=0;renderQuestion();},1300);
+  }
+}
+
+// ── RESULT ──
+function showResult(win){
+  const lv=LEVELS[activeLevel-1];
+  showScreen("result");
+  document.getElementById("result-card").style.border=`2px solid ${win?"#FFD700":"#5040A0"}`;
+  document.getElementById("res-emoji").textContent=win?"🎉":"💪";
+  document.getElementById("res-h2").textContent=win?"Вітаю!":"Ой, помилка!";
+  const msg=document.getElementById("res-msg");
+  msg.textContent=win?`${lv.medal} ${lv.cheer}`:"Рівень починаємо спочатку";
+  msg.style.color=win?"#FFD700":"#FFB74D";
+  document.getElementById("res-stars").style.display=win?"block":"none";
+  document.getElementById("res-xp-earned").textContent=`+${earnedXp} XP`;
+  document.getElementById("res-fail-note").style.display=win?"none":"block";
+
+  if(win){totalXp+=earnedXp;if(activeLevel>=unlocked+1)unlocked=activeLevel;save();}
+  document.getElementById("res-xp-total").textContent=`Всього: ${totalXp} XP`;
+
+  const btnMain=document.getElementById("res-btn-main");
+  const btnMenu=document.getElementById("res-btn-menu");
+  if(win){
+    btnMain.textContent=activeLevel<20?`Рівень ${activeLevel+1} →`:"До меню 👑";
+    btnMain.onclick=()=>{if(activeLevel<20)startLevel(activeLevel+1);else renderHome();};
+    btnMenu.style.display="inline-block";
+    btnMenu.onclick=()=>renderHome();
+  } else {
+    btnMain.textContent="↻ Почати рівень спочатку";
+    btnMain.onclick=()=>startLevel(activeLevel);
+    btnMenu.style.display="none";
+  }
+}
+
+renderHome();
+</script>
+</body>
+</html>
