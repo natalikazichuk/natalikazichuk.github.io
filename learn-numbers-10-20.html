@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🔢 Вивчаю цифри від 10 до 20</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0d1b3e;--indigo:#1a2a5e;--violet:#2d1b4e;--brand-red:#E5383B;--gold:#ffd54a;--green:#4CAF50;--ten:#4fc3f7}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,var(--navy) 0%,var(--indigo) 50%,var(--violet) 100%);min-height:100vh;color:#fff;overflow-x:hidden;touch-action:manipulation}
+.stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star-dot{position:absolute;background:#fff;border-radius:50%;animation:tw var(--dur,3s) infinite ease-in-out}
+@keyframes tw{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+#app{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:14px 14px 28px;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.back-btn{background:rgba(255,255,255,.1);border:none;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;padding:8px 14px;border-radius:12px;font-size:.85rem;cursor:pointer;transition:.15s;text-decoration:none;display:inline-block}
+.back-btn:active{transform:scale(.95)}
+.xp-badge{background:rgba(255,213,74,.15);border:1px solid rgba(255,213,74,.35);color:var(--gold);padding:6px 12px;border-radius:12px;font-weight:800;font-size:.85rem;transition:background .3s;white-space:nowrap}
+.xp-badge.flash{background:rgba(255,213,74,.45)}
+
+/* MENU */
+.page-title{text-align:center;margin:4px 0 14px}
+.page-title h1{font-family:'Fredoka One',cursive;font-size:1.55rem;color:var(--gold);text-shadow:0 0 26px rgba(255,213,74,.5)}
+.page-title p{color:rgba(255,255,255,.5);font-size:.86rem;margin-top:4px}
+
+.num-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.num-chip{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1;border-radius:16px;cursor:pointer;border:2px solid var(--ten);background:rgba(79,195,247,.08);font-family:'Fredoka One',cursive;transition:.18s}
+.num-chip:active{transform:scale(.88)}
+.chip-num{font-size:1.5rem;line-height:1;color:#fff}
+.chip-sub{font-size:.62rem;margin-top:3px;color:rgba(255,255,255,.55);font-family:'Nunito',sans-serif;font-weight:700}
+
+.sep{text-align:center;font-size:.74rem;color:rgba(255,255,255,.28);margin:6px 0 10px;letter-spacing:2px}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.mode-card{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);border-radius:16px;padding:13px 8px;cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
+.mode-card:active{transform:scale(.95);background:rgba(255,255,255,.14)}
+.mode-icon{font-size:1.6rem}
+.mode-title{font-weight:800;font-size:.82rem}
+.mode-sub{font-size:.68rem;color:rgba(255,255,255,.45);line-height:1.3}
+
+/* progress dots */
+.prog-row{display:flex;gap:4px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.prog-dot{width:18px;height:6px;border-radius:4px;background:rgba(255,255,255,.18);transition:.3s}
+.prog-dot.done{background:var(--gold)}
+.prog-dot.active{background:var(--brand-red);width:26px}
+
+/* LEARN card */
+.learn-card{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);border-radius:24px;padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;animation:pop .32s ease;flex:1;overflow-y:auto}
+@keyframes pop{0%{opacity:0;transform:scale(.93)}100%{opacity:1;transform:scale(1)}}
+.big-num{font-family:'Fredoka One',cursive;font-size:clamp(78px,22vw,120px);line-height:.9;color:var(--gold);filter:drop-shadow(0 0 22px rgba(255,213,74,.5))}
+.num-name{font-size:1.5rem;font-weight:900;color:#fff}
+
+/* десяток + одиниці visual */
+.tenframe-wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;width:100%}
+.ten-box{background:rgba(79,195,247,.12);border:2px solid var(--ten);border-radius:14px;padding:7px;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.ten-box span{font-size:1.1rem;line-height:1}
+.plus-sign{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--gold)}
+.units-box{background:rgba(255,213,74,.1);border:2px dashed var(--gold);border-radius:14px;padding:7px;display:flex;flex-wrap:wrap;gap:4px;max-width:130px;justify-content:center;min-width:46px;min-height:46px;align-items:center}
+.units-box span{font-size:1.2rem;line-height:1}
+.compose{font-family:'Fredoka One',cursive;font-size:1.5rem}
+.compose .t{color:var(--ten)} .compose .u{color:var(--gold)} .compose .eq{color:rgba(255,255,255,.5)}
+.compose-label{font-size:.9rem;font-weight:700;color:rgba(255,255,255,.55)}
+
+.tts-btn{background:linear-gradient(135deg,#3949ab,#283593);border:none;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;padding:9px 18px;border-radius:14px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.15s}
+.tts-btn:active{transform:scale(.97)}
+
+.nav-row{display:flex;gap:10px;margin-top:10px}
+.nav-btn{flex:1;background:rgba(255,255,255,.1);border:none;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;padding:13px;border-radius:16px;cursor:pointer;transition:.15s}
+.nav-btn.primary{background:linear-gradient(135deg,var(--brand-red),#c62828);box-shadow:0 4px 16px rgba(229,56,59,.35)}
+.nav-btn.full{width:100%;flex:none;margin-top:4px}
+.nav-btn:active{transform:scale(.97)}
+
+/* QUIZ */
+.quiz-prog{height:7px;background:rgba(255,255,255,.15);border-radius:4px;margin-bottom:6px;overflow:hidden}
+.quiz-prog-fill{height:100%;background:var(--gold);border-radius:4px;transition:width .3s ease}
+.quiz-counter{text-align:right;font-size:.8rem;color:rgba(255,255,255,.38);margin-bottom:10px}
+.q-card{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);border-radius:24px;padding:20px 16px;text-align:center;margin-bottom:12px;animation:pop .3s ease;display:flex;flex-direction:column;align-items:center;gap:12px}
+.q-compose{font-family:'Fredoka One',cursive;font-size:clamp(2rem,9vw,2.8rem);line-height:1}
+.q-compose .t{color:var(--ten)} .q-compose .u{color:var(--gold)} .q-compose .eq{color:rgba(255,255,255,.5)} .q-compose .blank{color:var(--brand-red)}
+.q-text{font-size:1.05rem;font-weight:800;color:#ffe9a8}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{background:rgba(255,255,255,.09);border:2px solid rgba(255,255,255,.2);border-radius:18px;padding:16px;cursor:pointer;transition:.13s;font-family:'Fredoka One',cursive;font-size:1.9rem;color:#fff;min-height:70px;display:flex;align-items:center;justify-content:center}
+.opt:active{transform:scale(.96)}
+.opt.correct{background:rgba(76,175,80,.32);border-color:var(--green);animation:pg .4s ease}
+.opt.wrong{background:rgba(229,56,59,.32);border-color:var(--brand-red);animation:shake .4s}
+.opt.disabled{pointer-events:none}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+@keyframes pg{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+.feedback{text-align:center;font-size:1rem;font-weight:800;min-height:30px;margin:8px 0;line-height:30px}
+
+/* RESULT */
+.result-box{display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 0;flex:1;justify-content:center}
+.result-stars{font-size:3rem;letter-spacing:8px;animation:pop .4s ease}
+.result-title{font-family:'Fredoka One',cursive;font-size:1.9rem;color:var(--gold)}
+.result-score{font-size:1rem;color:rgba(255,255,255,.65)}
+.result-xp{font-size:1.25rem;font-weight:800;color:var(--gold);background:rgba(255,213,74,.12);border:1px solid rgba(255,213,74,.3);padding:8px 24px;border-radius:14px}
+.result-mode{font-size:.78rem;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="stars-bg" id="stars"></div>
+<div id="app"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ─── DATA: 10–20 ─── */
+const NUMS=[
+  {n:10, word:'десять',        tens:1, units:0},
+  {n:11, word:'одинадцять',    tens:1, units:1},
+  {n:12, word:'дванадцять',    tens:1, units:2},
+  {n:13, word:'тринадцять',    tens:1, units:3},
+  {n:14, word:'чотирнадцять',  tens:1, units:4},
+  {n:15, word:"п'ятнадцять",   tens:1, units:5},
+  {n:16, word:'шістнадцять',   tens:1, units:6},
+  {n:17, word:'сімнадцять',    tens:1, units:7},
+  {n:18, word:'вісімнадцять',  tens:1, units:8},
+  {n:19, word:"дев'ятнадцять", tens:1, units:9},
+  {n:20, word:'двадцять',      tens:2, units:0}
+];
+const UNIT_EMOJI='⭐';
+
+const XP_KEY='sk_num1020_xp_v1';
+let xp=parseInt(localStorage.getItem(XP_KEY)||'0');
+let ST={screen:'menu'};
+
+/* stars bg */
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<55;i++){
+    const d=document.createElement('div'); d.className='star-dot';
+    const s=Math.random()*2.5+.8;
+    d.style.cssText=`width:${s}px;height:${s}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${(2+Math.random()*4).toFixed(1)}s;animation-delay:${(Math.random()*6).toFixed(1)}s`;
+    c.appendChild(d);
+  }
+})();
+
+/* helpers */
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function shuffle(a){ const r=a.slice(); for(let i=r.length-1;i>0;i--){ const j=randInt(0,i); [r[i],r[j]]=[r[j],r[i]]; } return r; }
+function save(){ try{ localStorage.setItem(XP_KEY,String(xp)); }catch(e){} }
+function speak(t){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t); u.lang='uk-UA'; u.rate=0.82; u.pitch=1.1;
+  window.speechSynthesis.speak(u);
+}
+function flashXP(){
+  document.querySelectorAll('.xp-badge').forEach(el=>{ el.textContent='⭐ '+xp+' XP'; el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),500); });
+}
+
+/* десяток + одиниці HTML */
+function tensVisual(d){
+  let tensHtml='';
+  for(let t=0;t<d.tens;t++){
+    let inner=''; for(let k=0;k<10;k++) inner+=`<span>${UNIT_EMOJI}</span>`;
+    tensHtml+=`<div class="ten-box">${inner}</div>`;
+  }
+  let unitsHtml='';
+  if(d.units>0){
+    let u=''; for(let k=0;k<d.units;k++) u+=`<span>${UNIT_EMOJI}</span>`;
+    unitsHtml=`<span class="plus-sign">+</span><div class="units-box">${u}</div>`;
+  }
+  return `<div class="tenframe-wrap">${tensHtml}${unitsHtml}</div>`;
+}
+
+/* swipe in learn mode */
+let _tx=0,_ty=0;
+document.addEventListener('touchstart',e=>{_tx=e.changedTouches[0].screenX;_ty=e.changedTouches[0].screenY;},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(ST.screen!=='learn') return;
+  const dx=e.changedTouches[0].screenX-_tx, dy=e.changedTouches[0].screenY-_ty;
+  if(Math.abs(dx)>65 && Math.abs(dx)>Math.abs(dy)*1.5) window.__app.navLearn(dx<0?1:-1);
+},{passive:true});
+
+const app=document.getElementById('app');
+
+/* ─── MENU ─── */
+function renderMenu(){
+  app.innerHTML=`
+    <div class="topbar">
+      <a class="back-btn" href="akademiya-geroya.html">← Академія</a>
+      <span class="xp-badge">⭐ ${xp} XP</span>
+    </div>
+    <div class="page-title">
+      <h1>🔢 Цифри від 10 до 20</h1>
+      <p>Десяток і одиниці · натисни число або обери режим</p>
+    </div>
+    <div class="num-gallery">
+      ${NUMS.map((d,i)=>`
+        <button class="num-chip" onclick="window.__app.openLearn(${i})">
+          <span class="chip-num">${d.n}</span>
+          <span class="chip-sub">${d.word}</span>
+        </button>`).join('')}
+    </div>
+    <div class="sep">── режими ──</div>
+    <div class="mode-grid">
+      <div class="mode-card" onclick="window.__app.startLearn()">
+        <span class="mode-icon">📖</span>
+        <span class="mode-title">Знайомство</span>
+        <span class="mode-sub">Усі числа з десятком</span>
+      </div>
+      <div class="mode-card" onclick="window.__app.startQuiz('compose')">
+        <span class="mode-icon">🧩</span>
+        <span class="mode-title">Склад числа</span>
+        <span class="mode-sub">10 + ? = число</span>
+      </div>
+      <div class="mode-card" onclick="window.__app.startQuiz('count')">
+        <span class="mode-icon">🔢</span>
+        <span class="mode-title">Яке число?</span>
+        <span class="mode-sub">Порахуй ⭐ і вибери</span>
+      </div>
+    </div>
+  `;
+}
+
+/* ─── LEARN ─── */
+function renderLearn(){
+  const d=NUMS[ST.idx];
+  const isLast=ST.idx===NUMS.length-1;
+  const composeHtml = d.units>0
+    ? `<span class="t">10</span> <span class="eq">+</span> <span class="u">${d.units}</span> <span class="eq">=</span> <span>${d.n}</span>`
+    : (d.n===10
+        ? `<span class="t">1</span> десяток <span class="eq">=</span> <span>10</span>`
+        : `<span class="t">2</span> десятки <span class="eq">=</span> <span>20</span>`);
+  const composeLabel = d.units>0 ? 'десяток та '+d.units+' одиниц'+(d.units===1?'я':(d.units<5?'і':'ь'))
+                                 : (d.n===10?'рівно один десяток':'рівно два десятки');
+  app.innerHTML=`
+    <div class="topbar">
+      <button class="back-btn" onclick="window.__app.goMenu()">← Меню</button>
+      <span class="xp-badge">⭐ ${xp} XP</span>
+    </div>
+    <div class="prog-row">
+      ${NUMS.map((_,i)=>`<div class="prog-dot ${i===ST.idx?'active':i<ST.idx?'done':''}"></div>`).join('')}
+    </div>
+    <div class="learn-card">
+      <div class="big-num">${d.n}</div>
+      <div class="num-name">${d.word}</div>
+      ${tensVisual(d)}
+      <div class="compose">${composeHtml}</div>
+      <div class="compose-label">${composeLabel}</div>
+      <button class="tts-btn" onclick="window.__app.speakLearn(${ST.idx})">🔊 Послухати</button>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="window.__app.navLearn(-1)">← ${ST.idx===0?'Меню':'Назад'}</button>
+      <button class="nav-btn primary" onclick="window.__app.navLearn(1)">${isLast?'🎉 Готово!':'Далі →'}</button>
+    </div>
+  `;
+}
+
+/* ─── QUIZ ─── */
+function buildQuiz(mode){
+  // одне питання на кожне число 10..20, перемішане
+  const order=shuffle(NUMS.map((_,i)=>i));
+  return order.map(ci=>{
+    const correct=ci;
+    const others=shuffle(NUMS.map((_,i)=>i).filter(x=>x!==ci)).slice(0,3);
+    return {correctIdx:correct, opts:shuffle([correct,...others])};
+  });
+}
+function renderQuiz(){
+  const q=ST.quiz[ST.qIdx];
+  const d=NUMS[q.correctIdx];
+  const total=ST.quiz.length;
+  const pct=Math.round(ST.qIdx/total*100);
+
+  let body;
+  if(ST.mode==='compose'){
+    // показуємо число словом + 10 + ? = n ; обираємо одиниці? -> простіше: обираємо саме число за складом
+    const u = d.units;
+    const compose = d.n===20 ? `<span class="t">10</span> <span class="eq">+</span> <span class="u">10</span> <span class="eq">=</span> <span class="blank">?</span>`
+                  : d.n===10 ? `<span class="t">10</span> <span class="eq">+</span> <span class="u">0</span> <span class="eq">=</span> <span class="blank">?</span>`
+                  : `<span class="t">10</span> <span class="eq">+</span> <span class="u">${u}</span> <span class="eq">=</span> <span class="blank">?</span>`;
+    body=`<div class="q-compose">${compose}</div>
+          <div class="q-text">Яке це число?</div>`;
+  } else {
+    // count: показуємо десяток+одиниці, обираємо число
+    body=`${tensVisual(d)}
+          <div class="q-text">Скільки тут зірочок?</div>`;
+  }
+
+  app.innerHTML=`
+    <div class="topbar">
+      <button class="back-btn" onclick="window.__app.goMenu()">← Меню</button>
+      <span class="xp-badge">⭐ ${xp} XP</span>
+    </div>
+    <div class="quiz-prog"><div class="quiz-prog-fill" style="width:${pct}%"></div></div>
+    <div class="quiz-counter">${ST.qIdx+1} / ${total}</div>
+    <div class="q-card">${body}</div>
+    <div class="opts">
+      ${q.opts.map((ni,i)=>`<button class="opt" id="opt${i}" onclick="window.__app.answer(${i})">${NUMS[ni].n}</button>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+  `;
+}
+
+/* ─── RESULT ─── */
+function renderResult(){
+  const total=ST.quiz.length;
+  const stars=ST.correct>=total?3:ST.correct>=Math.ceil(total*0.7)?2:1;
+  const gained=ST.correct;
+  const modeName=ST.mode==='compose'?'Склад числа':'Яке число?';
+  app.innerHTML=`
+    <div class="topbar">
+      <button class="back-btn" onclick="window.__app.goMenu()">← Меню</button>
+      <span class="xp-badge">⭐ ${xp} XP</span>
+    </div>
+    <div class="result-box">
+      <div class="result-mode">${modeName}</div>
+      <div class="result-stars">${'⭐'.repeat(stars)}</div>
+      <div class="result-title">${stars===3?'Чудово!':stars===2?'Молодець!':'Гарно!'}</div>
+      <div class="result-score">${ST.correct} з ${total} правильно</div>
+      <div class="result-xp">+${gained} XP</div>
+      <button class="nav-btn primary full" onclick="window.__app.startQuiz('${ST.mode}')">Ще раз</button>
+      <button class="nav-btn full" onclick="window.__app.goMenu()">← До меню</button>
+    </div>
+  `;
+}
+
+/* ─── API ─── */
+window.__app={
+  goMenu(){ window.speechSynthesis&&window.speechSynthesis.cancel(); ST={screen:'menu'}; renderMenu(); },
+  openLearn(i){ ST={screen:'learn',idx:i}; renderLearn(); setTimeout(()=>speak(NUMS[i].word),350); },
+  startLearn(){ ST={screen:'learn',idx:0}; renderLearn(); },
+  navLearn(dir){ const ni=ST.idx+dir; if(ni<0||ni>=NUMS.length){ this.goMenu(); return; } ST.idx=ni; renderLearn(); },
+  speakLearn(i){ const d=NUMS[i]; const txt = d.units>0 ? `${d.word}. Десять плюс ${d.units}` : d.word; speak(txt); },
+  startQuiz(mode){ ST={screen:'quiz',mode,quiz:buildQuiz(mode),qIdx:0,correct:0,answered:false}; renderQuiz(); },
+  answer(i){
+    if(ST.answered) return; ST.answered=true;
+    const q=ST.quiz[ST.qIdx];
+    const ok=(q.opts[i]===q.correctIdx);
+    document.querySelectorAll('.opt').forEach(b=>b.classList.add('disabled'));
+    const btn=document.getElementById('opt'+i), fb=document.getElementById('fb');
+    if(ok){
+      btn.classList.add('correct'); ST.correct++; xp+=1; save(); flashXP();
+      if(fb){ fb.textContent='✅ Правильно! +1 XP'; fb.style.color='#69DB7C'; }
+    } else {
+      btn.classList.add('wrong');
+      const ci=q.opts.indexOf(q.correctIdx);
+      const cb=document.getElementById('opt'+ci); if(cb) cb.classList.add('correct');
+      if(fb){ fb.textContent='Це число '+NUMS[q.correctIdx].n; fb.style.color='#ffd54a'; }
+    }
+    if(ST.advanceTimer) clearTimeout(ST.advanceTimer);
+    ST.advanceTimer=setTimeout(()=>this.next(), ok?850:1600);
+  },
+  next(){
+    if(ST.advanceTimer){ clearTimeout(ST.advanceTimer); ST.advanceTimer=null; }
+    ST.answered=false; ST.qIdx++;
+    if(ST.qIdx>=ST.quiz.length){ ST.screen='result'; renderResult(); }
+    else renderQuiz();
+  }
+};
+
+renderMenu();
+})();
+</script>
+</body>
+</html>
