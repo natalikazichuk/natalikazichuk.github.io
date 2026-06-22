@@ -1,10 +1,158 @@
+
+schoolkingdoms
+
+
+
+How can I help you today?
+
+
+Usage limit reached ∙ Resets 7:20 PM ∙ limits shared with Claude Code
+Keep working with free credits
+Тренажер для вивчення цифр від 1 до 10
+Last message 11 minutes ago
+Вбудовування посилань на тести та тренажери
+Last message 1 hour ago
+Структура тестів з української мови для 1 класу
+Last message 20 hours ago
+19/06
+Last message 3 days ago
+Підключення до Академії на дитячій сторінці
+Last message 4 days ago
+English test section addition
+Last message 4 days ago
+Прототип сторінки реєстрації та авторизації
+Last message 4 days ago
+Чи варто писати на Go
+Last message 4 days ago
+Планування розробки гри
+Last message 4 days ago
+Memory
+Only you
+Purpose & context Natalikazichuk is building SchoolKingdom, a Ukrainian-language gamified educational web platform for families (hosted at natalikazichuk.github.io/Learningkill.io/). The platform targets first-grade children with a parent/child dashboard system, XP/coins rewards, and an Academy of Heroes (Академія Героїв) containing subject-based tests and trainers. The broader vision includes an RPG-strategy module called "МІЙ СВІТ" (My World) — a hex-grid map game where in-game hero progression links to real learning activity across subjects. The platform is built entirely in vanilla HTML/CSS/JavaScript (no React, no external frameworks), with all files in a flat directory and relative paths only. Visual identity: Starry night aesthetic (deep navy/indigo gradient), brand red #E5383B, Fredoka One + Nunito fonts. All UI is in Ukrainian. --- Current state Active development across several interconnected files: ukrainian-palace-test.html — 20-level Ukrainian language test (1,200+ questions) covering letters, syllables, parts of speech, punctuation, sentence construction, rhymes, error-finding, and official first-grade словникові слова. Extensively debugged: ID mismatches, shuffling logic, mobile touch interaction, cursive font display (Pacifico), XP-only-on-correct logic, and duplicate option removal. Mini-games series — standalone games on a shared engine template: mini-gra-rak.html — tongue-twister "Рак рубав з горіха дрова" mini-gra-piven.html — "Півень рано прокидався" mini-gra-druzhba.html — friendship poem "Хмаринка дружить з дощиком" (matching/pairs mechanic) logika-pamyat-test.html — 10-level logic and memory test math-test.html — standalone 20-level math test, linked from the Academy via ?view=child-academy URL parameter index.html — main platform dashboard (parent + child views), brand renamed from SkillSpark to SchoolKingdom, UI significantly streamlined akademiya-geroya.html — Academy hub organizing five subjects (Математика, Українська мова, English, Світ логіки, Географія) into Тренування and Квести sections learnplaymoi_svit.html — hex grid world map prototype with buildings and roaming monsters --- On the horizon Adding more subject tests gradually (up to ~10 total) Expanding reading/listening features using Web Speech API (Ukrainian TTS already integrated in mini-games) Potential speech recognition for read-aloud activities Further development of the МІЙ СВІТ RPG module (hero progression tied to real learning data, multiplayer via asynchronous patterns) Backend architecture decisions remain open (Python/FastAPI recommended over Go for content management needs) --- Key learnings & principles claudeusercontent.com links don't persist — only GitHub Pages URLs and relative paths work for the hosted site All files must be flat-directory — no subdirectories; relative paths only JS validation before delivery — validate via node --check and simulation runners; use Python+Node scripts to detect duplicate options and bad indices in question pools Mobile touch UX requirements — user-select:none, touch-action:manipulation, -webkit-tap-highlight-color:transparent needed to prevent text selection on long-press Answer shuffling is essential — correct answers must not default to first position XP only on correct answers — not on wrong answers React/Babel CDN fails in the deployment environment; vanilla JS is the reliable choice onclick with special characters in HTML attributes — pass index instead of value to avoid JSON.stringify escaping bugs with characters like > Asynchronous multiplayer preferred for young users (leaderboards, shared goals) over real-time chat, with privacy considerations around student photos --- Approach & patterns Iterative visual refinement — natalikazichuk uploads screenshots with red boxes/arrows marking elements to remove or reposition; expects immediate targeted fixes with minimal explanation Minimal preamble preference — point out specific bugs or content issues and expect direct fixes Shared engine template — new mini-games are built from a common template, then adapted per content State management pattern — vanilla JS with a state object (ST), HTML string rendering functions, and a bindEvents pattern called after each render Content integrity checks — pool duplicate detection and bad-index validation via scripted checks before finalizing question banks --- Tools & resources Platform: GitHub Pages (flat-file hosting, vanilla HTML/CSS/JS) Fonts: Google Fonts — Fredoka One, Nunito, Pacifico (for cursive/прописні levels) APIs: Web Speech API for Ukrainian TTS Storage: localStorage for XP/progress persistence (unique keys per game) Validation: Node.js (node --check), Python scripts for pool integrity Navigation target: akademiya-geroya.html as back-navigation anchor for mini-games
+
+Last updated 8 hours ago
+
+Instructions
+Add instructions to tailor Claude’s responses
+
+Files
+13% of project capacity used
+Search mode
+
+ukrainian-palace-test.html
+1,938 lines
+
+html
+
+
+
+learn-english-letters.html
+276 lines
+
+html
+
+
+
+english-test.html
+390 lines
+
+html
+
+
+
+logic-memory-test.html
+422 lines
+
+html
+
+
+
+spelling-test.html
+421 lines
+
+html
+
+
+
+capitals-test.html
+309 lines
+
+html
+
+
+
+learn-math-numbers.html
+246 lines
+
+html
+
+
+
+learn-ukrainian-letters.html
+288 lines
+
+html
+
+
+
+index.html
+2,826 lines
+
+html
+
+
+
+math-test.html
+360 lines
+
+html
+
+
+
+ukrainian-palace-test.html
+1,938 lines
+
+html
+
+
+
+mini-gra-piven.html
+364 lines
+
+html
+
+
+
+mini-gra-rak.html
+365 lines
+
+html
+
+
+
+logika-pamyat-test.html
+907 lines
+
+html
+
+
+
+mini-gra-druzhba.html
+286 lines
+
+html
+
+
+ukrainian-palace-test.html
+
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🏰 Палац Укр. Мови — 1 клас</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Marck+Script&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Pacifico&family=Marck+Script&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --brand-red:#E5383B;
@@ -30,12 +178,14 @@ body{
   font-family:'Nunito',sans-serif;
   background:linear-gradient(160deg,var(--navy) 0%,var(--indigo) 50%,var(--violet) 100%);
   min-height:100vh;color:#fff;overflow-x:hidden;
+  -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
+  -webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
 }
 .stars-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
 .star-dot{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--dur,3s) infinite ease-in-out}
 @keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
 #app{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:16px}
-
+ 
 /* ── HEADER ── */
 .page-header{text-align:center;padding:24px 0 16px}
 .page-header h1{
@@ -54,7 +204,7 @@ body{
   transition:.2s;cursor:pointer;margin-bottom:16px;
 }
 .back-btn:hover{background:rgba(255,255,255,.2)}
-
+ 
 /* ── LEVEL GRID ── */
 #home-screen{animation:fadeIn .4s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -87,7 +237,7 @@ body{
 .lc-lock{margin-top:10px;text-align:center;font-size:.8rem;color:#888;font-weight:700}
 .level-card.locked{cursor:not-allowed}
 .level-card.locked:hover{transform:none;background:rgba(255,255,255,.07);box-shadow:none}
-
+ 
 /* ── TEST SCREEN ── */
 #test-screen{display:none;animation:fadeIn .3s ease}
 .test-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
@@ -108,6 +258,8 @@ body{
   color:#fff;padding:14px 16px;border-radius:12px;font-family:'Nunito',sans-serif;
   font-size:.95rem;font-weight:700;cursor:pointer;text-align:left;
   transition:.15s;line-height:1.3;
+  -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
+  -webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
 }
 .opt-btn:hover:not(:disabled){background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.5);transform:translateY(-2px)}
 .opt-btn.correct{background:rgba(39,174,96,.3);border-color:var(--correct);color:#7fff7f}
@@ -122,7 +274,7 @@ body{
   font-size:1rem;font-weight:800;cursor:pointer;transition:.2s;display:none;
 }
 .next-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
-
+ 
 /* ── RESULT SCREEN ── */
 #result-screen{display:none;text-align:center;animation:fadeIn .4s ease;padding:20px 0}
 .result-icon{font-size:4rem;margin-bottom:12px}
@@ -145,7 +297,7 @@ body{
 .btn-next{background:linear-gradient(135deg,#4CAF50,#2e7d32);color:#fff}
 .btn-home{background:linear-gradient(135deg,var(--btn-bg),var(--btn-hover));color:#fff}
 .btn-retry:hover,.btn-home:hover,.btn-next:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
-
+ 
 @media(max-width:560px){
   .options-grid{grid-template-columns:1fr}
   .levels-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))}
@@ -166,15 +318,17 @@ body{
 }
 /* ── Рукописний (прописний) шрифт для відповідних рівнів ── */
 .options-grid.cursive .opt-btn{
-  font-family:'Marck Script','Caveat',cursive;
-  font-size:1.7rem;font-weight:400;line-height:1.2;
+  font-family:'Pacifico','Marck Script','Caveat',cursive !important;
+  font-style:italic;
+  font-size:2.3rem;font-weight:400;line-height:1.15;letter-spacing:1px;
 }
 .question-box.cursive{
-  font-family:'Marck Script','Caveat',cursive;
-  font-size:1.7rem;font-weight:400;
+  font-family:'Pacifico','Marck Script','Caveat',cursive !important;
+  font-style:italic;
+  font-size:2rem;font-weight:400;
 }
 @media(max-width:560px){
-  .options-grid.cursive .opt-btn{font-size:1.5rem}
+  .options-grid.cursive .opt-btn{font-size:2rem}
 }
 </style>
 </head>
@@ -193,7 +347,7 @@ body{
     </div>
     <div id="levels-container" class="levels-grid"></div>
   </div>
-
+ 
   <!-- TEST SCREEN -->
   <div id="test-screen">
     <div class="test-header">
@@ -208,7 +362,7 @@ body{
     <div class="options-grid" id="options-grid"></div>
     <div class="feedback" id="feedback"></div>
   </div>
-
+ 
   <!-- RESULT SCREEN -->
   <div id="result-screen">
     <div class="result-icon" id="res-icon">🏆</div>
@@ -232,7 +386,7 @@ body{
 // QUESTION BANKS — format: [question, [opt0,opt1,opt2,opt3], correctIdx]
 // ═══════════════════════════════════════════════════════
 const POOLS = [
-
+ 
 // ── РІВЕНЬ 1 (pool 15, need 10): Знайомство з буквами ──
 [
 ["Скільки букв в українському алфавіті?",["26","30","33","36"],2],
@@ -267,9 +421,19 @@ const POOLS = [
 ["Яка буква йде останньою перед «Я» в алфавіті?",["Ь","Ю","Щ","Ш"],1],
 ["Яка буква йде після «Ф» в алфавіті?",["Ц","Х","Ч","Ш"],1],
 ["Яка буква йде після «Ц» в алфавіті?",["Ч","Ш","Щ","Х"],0],
-["Яка буква йде після «Ш» в алфавіті?",["Ч","Ц","Щ","Ь"],2]
+["Яка буква йде після «Ш» в алфавіті?",["Ч","Ц","Щ","Ь"],2],
+["Як правильно пишеться це слово?",["олівець","алівець","олівец","олвець"],0],
+["Як правильно пишеться це слово?",["зошит","зошіт","зашит","зошід"],0],
+["Як правильно пишеться це слово?",["клас","класс","кляс","клос"],0],
+["Як правильно пишеться це слово?",["учень","учэнь","учінь","учен"],0],
+["Як правильно пишеться це слово?",["діти","діты","деті","дiті"],0],
+["Як правильно пишеться це слово?",["заєць","заець","зайець","заєц"],0],
+["Як правильно пишеться це слово?",["яблуко","яблоко","йаблуко","яблука"],0],
+["Як правильно пишеться це слово?",["корова","карова","коровва","корава"],0],
+["Як правильно пишеться це слово?",["лисиця","лисица","лесиця","лисыця"],0],
+["Як правильно пишеться це слово?",["горобець","гаробець","горобец","гороб'єць"],0]
 ],
-
+ 
 // ── РІВЕНЬ 2 (pool 18, need 15): Друковані малі і великі літери ──
 [
 ["Яка мала літера відповідає великій «А»?",["о","а","е","у"],1],
@@ -306,9 +470,19 @@ const POOLS = [
 ["Яка пара є правильною?",["Х-х","Х-г","Х-к","Х-ф"],0],
 ["Яка пара є неправильною?",["Ц-ц","Ч-ч","Ш-щ","Щ-щ"],2],
 ["Яка пара є правильною?",["Ю-я","Я-я","Є-ю","Ї-і"],1],
-["Яка пара є неправильною?",["Ф-ф","Х-х","Ц-ч","Ч-ч"],2]
+["Яка пара є неправильною?",["Ф-ф","Х-х","Ц-ч","Ч-ч"],2],
+["Як правильно пишеться це слово?",["портфель","партфель","портфел","портфэль"],0],
+["Як правильно пишеться це слово?",["учитель","учітель","учитіль","учытель"],0],
+["Як правильно пишеться це слово?",["ведмідь","ведмедь","видмідь","ведмід"],0],
+["Як правильно пишеться це слово?",["огірок","огурок","огірак","агірок"],0],
+["Як правильно пишеться це слово?",["веселка","весэлка","виселка","весолка"],0],
+["Як правильно пишеться це слово?",["олівець","алівець","олівец","олвець"],0],
+["Як правильно пишеться це слово?",["зошит","зошіт","зашит","зошід"],0],
+["Як правильно пишеться це слово?",["заєць","заець","зайець","заєц"],0],
+["Як правильно пишеться це слово?",["яблуко","яблоко","йаблуко","яблука"],0],
+["Як правильно пишеться це слово?",["горобець","гаробець","горобец","гороб'єць"],0]
 ],
-
+ 
 // ── РІВЕНЬ 3 (pool 24, need 20): Ознайомлення з великими прописними літерами ──
 [
 ["З якої великої літери починається слово «Київ»?",["К","М","Т","С"],0],
@@ -350,9 +524,19 @@ const POOLS = [
 ["Яка велика літера йде після «Ц»?",["Ш","Ч","Щ","Х"],1],
 ["Яка велика літера йде після «Ч»?",["Щ","Ц","Ш","Х"],2],
 ["Яка велика літера йде перед «Я»?",["Ю","Ь","Щ","Ш"],1],
-["Яка велика літера йде після «Ф»?",["Ц","Х","Ч","Ш"],1]
+["Яка велика літера йде після «Ф»?",["Ц","Х","Ч","Ш"],1],
+["Як правильно пишеться це слово?",["черговий","чірговий","черговый","черговій"],0],
+["Як правильно пишеться це слово?",["картопля","кортопля","картопла","картопеля"],0],
+["Як правильно пишеться це слово?",["метелик","мителик","метелік","метэлик"],0],
+["Як правильно пишеться це слово?",["кишеня","кишэня","кешеня","кишена"],0],
+["Як правильно пишеться це слово?",["червоний","червоній","чирвоний","червонний"],0],
+["Як правильно пишеться це слово?",["портфель","партфель","портфел","портфэль"],0],
+["Як правильно пишеться це слово?",["учитель","учітель","учитіль","учытель"],0],
+["Як правильно пишеться це слово?",["ведмідь","ведмедь","видмідь","ведмід"],0],
+["Як правильно пишеться це слово?",["огірок","огурок","огірак","агірок"],0],
+["Як правильно пишеться це слово?",["веселка","весэлка","виселка","весолка"],0]
 ],
-
+ 
 // ── РІВЕНЬ 4 (pool 28, need 25): Прописні малі літери ──
 [
 ["Яка буква є малою формою прописної «А»?",["о","а","е","у"],1],
@@ -403,7 +587,7 @@ const POOLS = [
 ["Яка буква є останньою в слові «їжак»?",["ї","ж","а","к"],3],
 ["Яке слово написано правильно малими літерами?",["Цибуля","ЦИБУЛЯ","цибуля","цИБУЛЯ"],2]
 ],
-
+ 
 // ── РІВЕНЬ 5 (pool 33, need 30): З'єднай прописні пари ──
 [
 ["Яку пару літер потрібно з'єднати, щоб отримати склад «ма»?",["М+О","М+А","М+У","М+І"],1],
@@ -459,7 +643,7 @@ const POOLS = [
 ["З'єднай букви Х, А, Т, А. Яке слово вийде?",["хата","хота","хатя","хвта"],0],
 ["З'єднай склади «ЧЕ» + «РЕ» + «ВИК». Яке слово вийде?",["черевик","черивик","черевек","черавик"],0]
 ],
-
+ 
 // ── РІВЕНЬ 6 (pool 38, need 35): Поділ слів на склади та наголос ──
 [
 ["Як правильно поділити слово «мама» на склади?",["ма-ма","м-ама","мам-а","ма+ма"],0],
@@ -501,7 +685,7 @@ const POOLS = [
 ["Як правильно поділити слово «місяць» на склади?",["мі-сяць","міс-яць","місяц-ь","м-ісяць"],0],
 ["На який склад падає наголос у слові «річка» (рІчка)?",["перший","другий","третій","четвертий"],0]
 ],
-
+ 
 // ── РІВЕНЬ 7 (pool 45, need 40): Кількість складів у слові ──
 [
 ["Скільки складів у слові «кіт»?",["1","2","3","4"],0],
@@ -550,7 +734,7 @@ const POOLS = [
 ["Скільки складів у слові «перо»?",["1","2","3","4"],1],
 ["Скільки складів у слові «вовк»?",["1","2","3","4"],0]
 ],
-
+ 
 // ── РІВЕНЬ 8 (pool 50, need 45): Складання слів із букв ──
 [
 ["Яке слово утвориться з літер Р, И, Б, А?",["риба","рибо","рябо","рибу"],0],
@@ -564,7 +748,7 @@ const POOLS = [
 ["Яке слово утвориться з літер З, О, Ш, И, Т?",["зашит","зошит","зшиток","зосит"],1],
 ["Яке слово утвориться з літер В, І, К, Н, О?",["вокно","вікна","вікно","векно"],2],
 ["Яке слово утвориться з літер С, Т, І, Л?",["стол","стул","стіл","стала"],2],
-["Яке слово утвориться з літер З, І, М, А?",["зіма","зема","зима","зюма"],2],
+["Яке слово утвориться з літер З, И, М, А?",["зіма","зема","зима","зюма"],2],
 ["Яке слово утвориться з літер В, Е, С, Н, А?",["весна","вісна","васна","висна"],0],
 ["Яке слово утвориться з літер Д, Е, Р, Е, В, О?",["дерево","дорево","дерива","дарево"],0],
 ["Яке слово утвориться з літер Я, Б, Л, У, К, О?",["яблоко","яблуко","яблика","яблако"],1],
@@ -604,7 +788,7 @@ const POOLS = [
 ["Яке слово утвориться з літер Л, И, С, И, Ц, Я?",["лисиця","лесиця","лосиця","лусиця"],0],
 ["Яке слово утвориться з літер Г, О, Р, О, Б, Е, Ц, Ь?",["горобець","гарабець","гурабець","горибець"],0]
 ],
-
+ 
 // ── РІВЕНЬ 9 (pool 55, need 50): Пропущені друковані букви ──
 [
 ["Яка літера пропущена в слові «д_м» (будинок)?",["о","а","і","у"],2],
@@ -661,9 +845,32 @@ const POOLS = [
 ["Яка літера пропущена в слові «д_бро»?",["а","е","о","у"],2],
 ["Яка літера пропущена в слові «ж_ба»?",["а","е","и","о"],0],
 ["Яка літера пропущена в слові «ч_рний»?",["а","е","о","и"],2],
-["Яка літера пропущена в слові «кот_к» (маленький кіт)?",["а","е","и","о"],2]
+["Яка літера пропущена в слові «кот_к» (маленький кіт)?",["а","е","и","о"],2],
+// — Словникові слова (бронза) —
+["Встав пропущену букву: ол_вець",["а","і","е","и"],1],
+["Встав пропущену букву: з_шит",["а","о","у","е"],1],
+["Встав пропущену букву: кла_",["з","с","ц","ч"],1],
+["Встав пропущену букву: уч_нь",["и","і","е","я"],2],
+["Встав пропущену букву: д_ти (малеча)",["е","и","і","я"],2],
+["Встав пропущену букву: за_ць",["е","й","є","я"],2],
+["Встав пропущену букву: ябл_ко",["о","у","а","и"],1],
+["Встав пропущену букву: к_рова",["а","о","у","и"],1],
+["Встав пропущену букву: л_сиця",["і","е","и","я"],2],
+["Встав пропущену букву: г_робець",["а","у","о","и"],2],
+// — Словникові слова (срібло) —
+["Встав пропущену букву: п_ртфель",["а","о","у","и"],1],
+["Встав пропущену букву: уч_тель",["і","и","е","я"],1],
+["Встав пропущену букву: в_дмідь",["и","е","і","я"],1],
+["Встав пропущену букву: ог_рок",["и","і","е","й"],1],
+["Встав пропущену букву: в_селка",["и","е","і","я"],1],
+// — Словникові слова (золото) —
+["Встав пропущену букву: ч_рговий",["и","е","і","я"],1],
+["Встав пропущену букву: к_ртопля",["о","а","у","и"],1],
+["Встав пропущену букву: м_телик",["и","е","і","я"],1],
+["Встав пропущену букву: к_шеня",["е","и","і","я"],1],
+["Встав пропущену букву: ч_рвоний",["и","е","і","я"],1]
 ],
-
+ 
 // ── РІВЕНЬ 10 (pool 60, need 55): Пропущені прописні літери ──
 [
 ["Яка літера пропущена в слові «Укр_їна»?",["е","а","и","о"],1],
@@ -728,7 +935,7 @@ const POOLS = [
 ["Яка літера пропущена в слові «здоб_ток»?",["а","е","и","у"],3],
 ["Яка літера пропущена в слові «Батьк_вщина»?",["а","е","і","о"],2]
 ],
-
+ 
 // ── РІВЕНЬ 11 (pool 65, need 60): Читаю речення ──
 [
 ["Мама читає книгу. Що робить мама?",["спить","читає","їсть","малює"],1],
@@ -796,7 +1003,7 @@ const POOLS = [
 ["Зозуля кує в лісі. Що робить зозуля?",["свище","гавкає","кує","ревіть"],2],
 ["Олег любить малинове варення. Яке варення любить Олег?",["полуничне","вишневе","малинове","абрикосове"],2]
 ],
-
+ 
 // ── РІВЕНЬ 12 (pool 68, need 65): Складаю речення ──
 [
 ["Яке речення написано ПРАВИЛЬНО?",["мама читає книгу.","Мама читає книгу.","МаМА читає книгу.","МАМА читає книгу."],1],
@@ -820,7 +1027,7 @@ const POOLS = [
 ["Яке речення написано ПРАВИЛЬНО?",["Хто Живе в цьому будинку?","хто живе в цьому будинку?","Хто живе в цьому будинку?","Хто живе в цьому Будинку?"],2],
 ["Яке речення написано ПРАВИЛЬНО?",["Діти Граються У парку.","Діти граються у парку.","діти граються у парку.","ДІТИ граються У ПАРКУ."],1],
 ["Яке речення написано ПРАВИЛЬНО?",["Ліс шумить.","ліс шумить.","ліс Шумить.","Ліс шумить!"],0],
-
+ 
 // Check: "Ліс шумить." → capital first word, period end = correct.
 // But option 3 has !, which could also be right...
 // Let me change:
@@ -866,8 +1073,8 @@ const POOLS = [
 ["Яке речення написано ПРАВИЛЬНО?",["красива дівчинка маринка посміхається.","Красива дівчинка маринка посміхається.","Красива дівчинка Маринка посміхається.","красива дівчинка Маринка посміхається."],2],
 ["Яке речення написано ПРАВИЛЬНО?",["Ходімо грати!","ходімо грати!","Ходімо Грати!","ходімо Грати."],0]
 ],
-
-
+ 
+ 
 // ── РІВЕНЬ 13 (pool 75, need 70): Слова-предмети (хто? що?) — Іменники ──
 [
 ["Яке слово є предметом (хто? що?)?",["стіл","великий","стоїть","швидко"],0],
@@ -944,7 +1151,7 @@ const POOLS = [
 ["Яке слово є предметом (хто? що?)?",["місток","дерев'яний","стоїть","там"],0],
 ["Яке слово є предметом (хто? що?)?",["маленький","дзижчить","джміль","гучно"],2]
 ],
-
+ 
 // ── РІВЕНЬ 14 (pool 80, need 75): Слова-ознаки (який? яка? яке?) — Прикметники ──
 [
 ["Яке слово є ознакою (який? яка? яке?)?",["великий","стіл","стоїть","тут"],0],
@@ -1026,7 +1233,7 @@ const POOLS = [
 ["Яке слово є ознакою (який? яка? яке?)?",["яскраве","горить","сонце","вгорі"],0],
 ["Яке слово є ознакою (який? яка? яке?)?",["холодна","тече","вода","тут"],0]
 ],
-
+ 
 // ── РІВЕНЬ 15 (pool 85, need 80): Слова-дії (що робить?) — Дієслова ──
 [
 ["Яке слово є дією (що робить?)?",["бігає","синій","стіл","тихо"],0],
@@ -1111,7 +1318,7 @@ const POOLS = [
 ["Яке слово є дією (що робить?)?",["ненавидить","злий","вовк","завжди"],0],
 ["Яке слово є дією (що робить?)?",["бере","маленька","дівчинка","тихо"],0]
 ],
-
+ 
 // ── РІВЕНЬ 16 (pool 90, need 85): Речення та розділові знаки ──
 [
 ["Яким знаком закінчується питальне речення?",[".",",","?","!"],2],
@@ -1192,7 +1399,7 @@ const POOLS = [
 ["Яке речення написано ПРАВИЛЬНО?",["Запам'ятай: крапку ставимо в кінці.","запам'ятай: крапку ставимо в кінці.","Запам'ятай: Крапку Ставимо В Кінці.","запам'ятай: крапку ставимо В кінці."],0],
 ["Яке речення написано ПРАВИЛЬНО?",["Сьогодні гарна погода.","сьогодні гарна погода.","Сьогодні Гарна Погода.","сьогодні Гарна погода."],0]
 ],
-
+ 
 // ── РІВЕНЬ 17 (pool 95, need 90): Відновлення речень ──
 [
 ["Яке слово пропущене: «Діти _____ до школи»?",["прийшов","пішли","прийшла","прийшло"],1],
@@ -1276,7 +1483,7 @@ const POOLS = [
 ["Яке слово пропущене: «Кулька _____ у небо»?",["падає","летить","стрибає","котиться"],1],
 ["Яке слово пропущене: «Дивовижний світ нас _____»?",["сумує","чекає","ховається","плаче"],1]
 ],
-
+ 
 // ── РІВЕНЬ 18 (pool 100, need 95): Робота з текстами та римами ──
 [
 ["Яке слово римується зі словом «мама»?",["книга","рама","ліс","сонце"],1],
@@ -1303,7 +1510,7 @@ const POOLS = [
 ["Яке слово римується зі словом «горе»?",["кіт","вода","море","ліс"],2],
 ["Яке слово римується зі словом «рука»?",["ніч","мука","кіт","ліс"],1],
 ["Яке слово римується зі словом «ніж»?",["вода","кіт","їж","ліс"],2],
-["Яке слово римується зі словом «стіл»?",["кіт","жіл","вода","ліс"],1],
+["Яке слово римується зі словом «стіл»?",["кіт","віл","вода","ліс"],1],
 ["Прочитай: «Прийшла зима. Лягли на землю сніги». Про яку пору року текст?",["про весну","про літо","про зиму","про осінь"],2],
 ["Прочитай: «Цвітуть сади. Повернулись птахи». Про яку пору року текст?",["про зиму","про осінь","про весну","про літо"],2],
 ["Прочитай: «Пожовтіло листя. Відлітають птахи». Що роблять птахи?",["прилітають","сплять","відлітають","граються"],2],
@@ -1340,7 +1547,7 @@ const POOLS = [
 ["Яке слово римується зі словом «вірш»?",["кіт","ніч","гірш","вода"],2],
 ["Яке слово римується зі словом «країна»?",["місто","Україна","ліс","поле"],1],
 ["Яке слово римується зі словом «пісня»?",["слово","вишня","казка","осінь"],1],
-["Яке слово римується зі словом «хата»?",["дорога","мати","крата","ліс"],2],
+["Яке слово римується зі словом «хата»?",["дорога","мати","лопата","ліс"],2],
 ["Яке слово римується зі словом «зоря»?",["ніч","моря","день","кіт"],1],
 ["Яке слово римується зі словом «ведмідь»?",["заєць","медідь","кіт","мідь"],3],
 ["Яке слово римується зі словом «ранок»?",["ліс","день","жайворонок","кіт"],2],
@@ -1354,13 +1561,13 @@ const POOLS = [
 ["Яке слово римується зі словом «вечір»?",["ніч","ведмідь","плечі","ліс"],2],
 ["Яке слово римується зі словом «ялинка»?",["кіт","дудочка","вода","картинка"],3],
 ["Яке слово римується зі словом «зайченя»?",["кіт","вода","каченя","ліс"],2],
-["Яке слово римується зі словом «метелик»?",["кіт","ліс","тюлик","вода"],2],
+["Яке слово римується зі словом «лисичка»?",["кіт","ліс","сестричка","вода"],2],
 ["Яке слово римується зі словом «сонечко»?",["кіт","горнятко","вода","ліс"],1],
-["Яке слово римується зі словом «вишня»?",["ліс","книжня","вода","кіт"],1],
+["Яке слово римується зі словом «груша»?",["ліс","душа","вода","кіт"],1],
 ["Яке слово римується зі словом «роса»?",["коса","кіт","ліс","вода"],0],
 ["Яке слово римується зі словом «хліб»?",["кіт","гриб","ліс","день"],1],
 ["Яке слово римується зі словом «горобець»?",["кінець","ліс","день","вода"],0],
-["Яке слово римується зі словом «журавель»?",["кіт","вода","тюлень","ліс"],2],
+["Яке слово римується зі словом «журавель»?",["кіт","вода","щавель","ліс"],2],
 ["Яке слово римується зі словом «осінь»?",["кіт","ліс","просинь","вода"],2],
 ["Яке слово римується зі словом «земля»?",["ніч","сім'я","кіт","ліс"],1],
 ["Яке слово римується зі словом «поле»?",["воля","кіт","ліс","вода"],0],
@@ -1368,7 +1575,7 @@ const POOLS = [
 ["Яке слово римується зі словом «гілка»?",["кіт","ліс","вода","стрілка"],3],
 ["Яке слово римується зі словом «стежка»?",["кіт","ліс","вода","мережка"],3]
 ],
-
+ 
 // ── РІВЕНЬ 19 (pool 105, need 100): Знайди помилку ──
 [
 ["Яке слово написано НЕПРАВИЛЬНО?",["школа","шкала","клас","урок"],1],
@@ -1472,13 +1679,34 @@ const POOLS = [
 ["Яке слово написано НЕПРАВИЛЬНО?",["Дніпро","дніпро","Буг","Тиса"],1],
 ["Яке слово написано НЕПРАВИЛЬНО?",["Україна","Польща","польща","Угорщина"],2],
 ["Яке слово написано НЕПРАВИЛЬНО?",["понеділок","вівторок","Середа","четвер"],2],
-["Яке слово написано НЕПРАВИЛЬНО?",["Київ","Харьків","Харків","Львів"],1]
+["Яке слово написано НЕПРАВИЛЬНО?",["Київ","Харьків","Харків","Львів"],1],
+// — Словникові слова: знайди неправильне написання —
+["Яке слово написано НЕПРАВИЛЬНО?",["олівець","зошит","клас","алівець"],3],
+["Яке слово написано НЕПРАВИЛЬНО?",["зошит","корова","карова","учень"],2],
+["Яке слово написано НЕПРАВИЛЬНО?",["заєць","яблуко","яблоко","діти"],2],
+["Яке слово написано НЕПРАВИЛЬНО?",["лисиця","лесиця","горобець","клас"],1],
+["Яке слово написано НЕПРАВИЛЬНО?",["портфель","партфель","учитель","ведмідь"],1],
+["Яке слово написано НЕПРАВИЛЬНО?",["учитель","учітель","огірок","веселка"],1],
+["Яке слово написано НЕПРАВИЛЬНО?",["ведмідь","видмідь","веселка","огірок"],1],
+["Яке слово написано НЕПРАВИЛЬНО?",["черговий","картопля","кортопля","метелик"],2],
+["Яке слово написано НЕПРАВИЛЬНО?",["метелик","мителик","кишеня","червоний"],1],
+["Яке слово написано НЕПРАВИЛЬНО?",["червоний","чирвоний","кишеня","черговий"],1],
+["Яке слово написано ПРАВИЛЬНО?",["алівець","олівець","олівец","алівец"],1],
+["Яке слово написано ПРАВИЛЬНО?",["карова","корова","коровва","корава"],1],
+["Яке слово написано ПРАВИЛЬНО?",["яблоко","яблука","яблуко","ябллуко"],2],
+["Яке слово написано ПРАВИЛЬНО?",["заець","зайець","заєць","заиць"],2],
+["Яке слово написано ПРАВИЛЬНО?",["огирок","агірок","огірок","огірак"],2],
+["Яке слово написано ПРАВИЛЬНО?",["учітель","учитель","вчытель","учитіль"],1],
+["Яке слово написано ПРАВИЛЬНО?",["картопла","кортопля","картопля","картопя"],2],
+["Яке слово написано ПРАВИЛЬНО?",["кишена","кішеня","кишеня","кешеня"],2],
+["Яке слово написано ПРАВИЛЬНО?",["чирвоний","червоній","червоний","чарвоний"],2],
+["Яке слово написано ПРАВИЛЬНО?",["зошіт","зошит","жошит","зошід"],1]
 ],
-
+ 
 // ── РІВЕНЬ 20 (mix): Юний лицар укр. мови — будується динамічно ──
 []
 ]; // кінець POOLS
-
+ 
 /* ══════════════════════════════════════════════
    КОНФІГУРАЦІЯ РІВНІВ
 ══════════════════════════════════════════════ */
@@ -1491,7 +1719,7 @@ const LEVELS = [
   {n:35, title:"Поділ слів на склади та наголос",   badge:"🥈", color:"var(--silver)"},
   {n:40, title:"Кількість складів у слові",         badge:"🥈", color:"var(--silver)"},
   {n:45, title:"Складання слів із прописних букв",  badge:"🥈", color:"var(--silver)"},
-  {n:50, title:"Пропущені друковані букви",         badge:"🥇", color:"var(--gold-c)"},
+  {n:60, title:"Пропущені друковані букви",         badge:"🥇", color:"var(--gold-c)"},
   {n:55, title:"Пропущені прописні літери",         badge:"🥇", color:"var(--gold-c)"},
   {n:60, title:"Читаю речення",                     badge:"⭐", color:"var(--star-c)"},
   {n:65, title:"Складаю речення",                   badge:"⭐", color:"var(--star-c)"},
@@ -1501,10 +1729,39 @@ const LEVELS = [
   {n:85, title:"Речення та розділові знаки",        badge:"💎", color:"var(--diamond)"},
   {n:90, title:"Відновлення речень",                badge:"💎", color:"var(--diamond)"},
   {n:95, title:"Робота з текстами та римами",       badge:"💎", color:"var(--diamond)"},
-  {n:100,title:"Знайди помилку",                    badge:"💎", color:"var(--diamond)"},
+  {n:110,title:"Знайди помилку",                    badge:"💎", color:"var(--diamond)"},
   {n:105,title:"Юний лицар укр. мови 👑",           badge:"👑", color:"var(--crown)"}
 ];
-
+ 
+// Тематичні звання за рівень (для 3★)
+const EPITHETS = [
+  "Знавець Букв", "Майстер Друку", "Володар Великих Літер", "Майстер Прописів",
+  "Майстер Пар", "Володар Складів", "Лічильник Складів", "Будівничий Слів",
+  "Шукач Загублених Букв", "Шукач Прописів", "Майстер Читання", "Будівничий Речень",
+  "Знавець Предметів", "Знавець Ознак", "Володар Дій", "Майстер Розділових Знаків",
+  "Рятівник Речень", "Володар Рим", "Мисливець за Помилками", "Лицар Української Мови"
+];
+ 
+// Різноманітні фрази за результат
+const MSG_POOLS = {
+  3: ["Чудово! Ти справжній лицар!", "Бездоганно! Ти майстер!", "Неперевершено! Ти чемпіон!",
+      "Фантастика! Ти зірочка!", "Блискуче! Ти герой!", "Супер! Ти переможець!",
+      "Вражаюче! Ти геній!", "Відмінно! Ти найкращий!"],
+  2: ["Молодець! Майже ідеально!", "Чудова робота!", "Дуже добре! Ще трішки!",
+      "Гарний результат! Так тримати!", "Молодчина! Ти на правильному шляху!",
+      "Класно! Зовсім близько до зірки!"],
+  1: ["Непогано! Спробуй ще раз!", "Добре! Можеш ще краще!", "Є прогрес! Продовжуй!",
+      "Незле! Ще трохи практики!", "Гарний початок! Не зупиняйся!"],
+  0: ["Тренуйся більше!", "Не здавайся — усе вийде!", "Ще раз — і ти впораєшся!",
+      "Спробуй знову, ти зможеш!", "Кожна спроба робить тебе сильнішим!"]
+};
+const STARS_EMOJI = {3:"🏆", 2:"🌟", 1:"💪", 0:"📚"};
+ 
+function pickMsg(stars){
+  const pool = MSG_POOLS[stars];
+  return STARS_EMOJI[stars] + " " + pool[Math.floor(Math.random()*pool.length)];
+}
+ 
 /* ══════════════════════════════════════════════
    СТАН ГРИ
 ══════════════════════════════════════════════ */
@@ -1516,7 +1773,7 @@ let state = {
   score: 0,
   correctIdx: 0
 };
-
+ 
 /* ══════════════════════════════════════════════
    УТИЛІТИ
 ══════════════════════════════════════════════ */
@@ -1528,12 +1785,12 @@ function shuffle(arr) {
   }
   return a;
 }
-
+ 
 function getProgress() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
   catch(e) { return {}; }
 }
-
+ 
 const XP_KEY = 'ukrPalaceXP';
 function getXP() {
   return parseInt(localStorage.getItem(XP_KEY) || '0', 10) || 0;
@@ -1543,7 +1800,7 @@ function addXP(amount) {
   localStorage.setItem(XP_KEY, String(total));
   return total;
 }
-
+ 
 function saveProgress(idx, stars, pct) {
   const p = getProgress();
   if (!p[idx] || stars >= (p[idx].stars || 0)) {
@@ -1551,14 +1808,14 @@ function saveProgress(idx, stars, pct) {
   }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
 }
-
+ 
 function starsForPct(pct) {
   if (pct >= 85) return 3;
   if (pct >= 70) return 2;
   if (pct >= 50) return 1;
   return 0;
 }
-
+ 
 function buildMixedPool() {
   let mixed = [];
   for (let i = 0; i < 19; i++) {
@@ -1569,7 +1826,7 @@ function buildMixedPool() {
   }
   return shuffle(mixed);
 }
-
+ 
 /* ══════════════════════════════════════════════
    ЗІРКИ ТЛА
 ══════════════════════════════════════════════ */
@@ -1591,35 +1848,35 @@ function initStars() {
     container.appendChild(star);
   }
 }
-
+ 
 /* ══════════════════════════════════════════════
    ГОЛОВНА СТОРІНКА
 ══════════════════════════════════════════════ */
 function renderHome() {
   const progress = getProgress();
-
+ 
   document.getElementById('home-screen').style.display = 'block';
   document.getElementById('test-screen').style.display = 'none';
   document.getElementById('result-screen').style.display = 'none';
-
+ 
   const grid = document.getElementById('levels-container');
   grid.innerHTML = '';
-
+ 
   LEVELS.forEach((lv, idx) => {
     const saved = progress[idx];
     const stars = saved ? saved.stars : 0;
     const pct = saved ? saved.pct : 0;
     const unlocked = idx === 0 || (progress[idx - 1] && progress[idx - 1].stars > 0);
-
+ 
     const card = document.createElement('div');
     card.className = `level-card${unlocked ? '' : ' locked'}${saved && saved.stars > 0 ? ' completed' : ''}`;
     card.style.setProperty('--lc', lv.color);
     if (!unlocked) card.style.opacity = '0.5';
-
+ 
     const starsHtml = [1,2,3].map(s =>
       `<span style="color:${stars >= s ? 'var(--gold)' : 'rgba(255,255,255,.25)'}">★</span>`
     ).join('');
-
+ 
     card.innerHTML = `
       <div class="lc-num">${idx + 1}</div>
       <div class="lc-badge">${lv.badge}</div>
@@ -1632,17 +1889,17 @@ function renderHome() {
         ? `<button class="lc-play" onclick="startLevel(${idx})">▶ Грати</button>`
         : '<div class="lc-lock">🔒 Закрито</div>'}
     `;
-
+ 
     grid.appendChild(card);
   });
-
+ 
   const totalStars = Object.values(progress).reduce((s, v) => s + (v.stars || 0), 0);
   const maxStars = LEVELS.length * 3;
   document.getElementById('totalStarsDisplay').textContent = `⭐ Зірок: ${totalStars} / ${maxStars}`;
   document.getElementById('xpDisplayHome').textContent = `⚡ Досвід: ${getXP()} ХР`;
   document.getElementById('progressDisplay').textContent = `Рівнів пройдено: ${Object.keys(progress).length} / ${LEVELS.length}`;
 }
-
+ 
 /* ══════════════════════════════════════════════
    СТАРТ РІВНЯ
 ══════════════════════════════════════════════ */
@@ -1651,7 +1908,7 @@ function startLevel(idx) {
   state.current = 0;
   state.score = 0;
   updateXpDisplay(getXP());
-
+ 
   const lv = LEVELS[idx];
   let pool;
   if (idx === 19) {
@@ -1659,18 +1916,18 @@ function startLevel(idx) {
   } else {
     pool = shuffle([...POOLS[idx]]);
   }
-
+ 
   const needed = lv.n;
   state.questions = pool.slice(0, Math.min(needed, pool.length));
-
+ 
   document.getElementById('home-screen').style.display = 'none';
   document.getElementById('result-screen').style.display = 'none';
   document.getElementById('test-screen').style.display = 'block';
   document.getElementById('test-title').textContent = `Рівень ${idx + 1}: ${lv.title}`;
-
+ 
   showQuestion();
 }
-
+ 
 /* ══════════════════════════════════════════════
    ПОКАЗАТИ ПИТАННЯ
 ══════════════════════════════════════════════ */
@@ -1678,26 +1935,26 @@ function showQuestion() {
   const { questions, current, score } = state;
   const total = questions.length;
   const q = questions[current];
-
+ 
   const pct = Math.round((current / total) * 100);
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('q-num').textContent = `${current + 1} / ${total}`;
   document.getElementById('test-score').textContent = `✅ ${score}`;
-
+ 
   document.getElementById('q-text').textContent = q[0];
-
+ 
   // Рукописний шрифт для рівнів із прописними літерами
   const isCursive = /прописн/i.test(LEVELS[state.levelIdx].title);
   const optionsEl = document.getElementById('options-grid');
   optionsEl.classList.toggle('cursive', isCursive);
   document.getElementById('q-text').classList.toggle('cursive', false);
-
+ 
   optionsEl.innerHTML = '';
-
+ 
   // Перемішуємо варіанти, щоб правильна відповідь не була завжди на одному місці
   const shuffledOpts = shuffle(q[1].map((text, i) => ({ text, orig: i })));
   state.correctIdx = shuffledOpts.findIndex(o => o.orig === q[2]);
-
+ 
   shuffledOpts.forEach((o, i) => {
     const btn = document.createElement('button');
     btn.className = 'opt-btn';
@@ -1705,41 +1962,40 @@ function showQuestion() {
     btn.onclick = () => handleAnswer(i);
     optionsEl.appendChild(btn);
   });
-
+ 
   document.getElementById('feedback').textContent = '';
 }
-
+ 
 /* ══════════════════════════════════════════════
    ОБРОБКА ВІДПОВІДІ
 ══════════════════════════════════════════════ */
 function handleAnswer(idx) {
   const correct = state.correctIdx;
   const buttons = document.querySelectorAll('.opt-btn');
-
+ 
   buttons.forEach(btn => btn.disabled = true);
-
+ 
   if (idx === correct) {
     buttons[idx].classList.add('correct');
     state.score++;
-    document.getElementById('feedback').textContent = '✅ Правильно!';
+    document.getElementById('feedback').textContent = '✅ Правильно! +1 ХР';
     document.getElementById('feedback').style.color = '#4CAF50';
+    // +1 ХР лише за правильну відповідь
+    const newXP = addXP(1);
+    showXpPopup();
+    updateXpDisplay(newXP);
   } else {
     buttons[idx].classList.add('wrong');
     buttons[correct].classList.add('correct');
     document.getElementById('feedback').textContent = '❌ Неправильно!';
     document.getElementById('feedback').style.color = '#E5383B';
   }
-
-  // +1 ХР за кожну відповідь
-  const newXP = addXP(1);
-  showXpPopup();
-  updateXpDisplay(newXP);
-
+ 
   // Автоматичний перехід до наступного питання
   const delay = idx === correct ? 700 : 1300;
   setTimeout(() => nextQuestion(), delay);
 }
-
+ 
 function showXpPopup() {
   const pop = document.createElement('div');
   pop.className = 'xp-popup';
@@ -1747,12 +2003,12 @@ function showXpPopup() {
   document.body.appendChild(pop);
   setTimeout(() => pop.remove(), 1000);
 }
-
+ 
 function updateXpDisplay(xp) {
   const el = document.getElementById('xp-counter');
   if (el) el.textContent = `⚡ ${xp} ХР`;
 }
-
+ 
 /* ══════════════════════════════════════════════
    НАСТУПНЕ ПИТАННЯ
 ══════════════════════════════════════════════ */
@@ -1764,7 +2020,7 @@ function nextQuestion() {
     showQuestion();
   }
 }
-
+ 
 /* ══════════════════════════════════════════════
    РЕЗУЛЬТАТ
 ══════════════════════════════════════════════ */
@@ -1774,26 +2030,32 @@ function showResult() {
   const pct = Math.round((score / total) * 100);
   const stars = starsForPct(pct);
   const lv = LEVELS[levelIdx];
-
+ 
   saveProgress(levelIdx, stars, pct);
-
+ 
   document.getElementById('test-screen').style.display = 'none';
   document.getElementById('result-screen').style.display = 'block';
-
+ 
   const starsEl = document.getElementById('res-stars');
   starsEl.innerHTML = [1,2,3].map(s =>
     `<span class="result-star${stars >= s ? ' earned' : ''}">★</span>`
   ).join('');
-
+ 
   document.getElementById('res-pct').textContent = `${pct}%`;
   document.getElementById('res-score').textContent = `${score} / ${total} правильних`;
-
-  const msgs = ['📚 Тренуйся більше!', '💪 Непогано! Спробуй ще раз!', '🌟 Молодець! Майже ідеально!', '🏆 Чудово! Ти справжній лицар!'];
-  document.getElementById('res-title').textContent = msgs[stars];
-
+ 
+  const msg = pickMsg(stars);
+  document.getElementById('res-title').textContent = msg;
+ 
+  // Тематичне звання за відмінний результат
+  const epithet = EPITHETS[levelIdx];
+  let levelLine = `Рівень ${levelIdx + 1}: ${lv.title}`;
+  if (stars === 3 && epithet) {
+    levelLine = `🎖️ Тепер ти — ${epithet}!`;
+  }
   document.getElementById('resultBadge').textContent = lv.badge;
-  document.getElementById('resultLevel').textContent = `Рівень ${levelIdx + 1}: ${lv.title}`;
-
+  document.getElementById('resultLevel').textContent = levelLine;
+ 
   const nextBtn = document.getElementById('nextLevelBtn');
   if (stars > 0 && levelIdx + 1 < LEVELS.length) {
     nextBtn.style.display = 'inline-block';
@@ -1802,15 +2064,15 @@ function showResult() {
     nextBtn.style.display = 'none';
   }
 }
-
+ 
 function retryLevel() {
   startLevel(state.levelIdx);
 }
-
+ 
 function goHome() {
   renderHome();
 }
-
+ 
 /* ══════════════════════════════════════════════
    ІНІЦІАЛІЗАЦІЯ
 ══════════════════════════════════════════════ */
@@ -1821,3 +2083,4 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+ 
