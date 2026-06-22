@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🦀 Рак рубав з горіха дрова — міні-гра</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0d1b3e; --indigo:#1a2a5e; --violet:#2d1b4e;
+  --brand-red:#E5383B; --gold:#ffd54a; --green:#4CAF50;
+  --bronze:#cd7f32; --silver:#c0c0c0; --gold-c:#ffd700; --crown:#ff7ac0;
+}
+*{margin:0;padding:0;box-sizing:border-box;
+  -webkit-user-select:none;-moz-user-select:none;user-select:none;
+  -webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
+body{
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--indigo) 50%,var(--violet) 100%);
+  min-height:100vh;color:#fff;overflow-x:hidden;touch-action:manipulation;
+}
+.stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star-dot{position:absolute;background:#fff;border-radius:50%;animation:tw var(--dur,3s) infinite ease-in-out}
+@keyframes tw{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+#app{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:14px;min-height:100vh;display:flex;flex-direction:column}
+
+/* top bar */
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.back-btn{background:rgba(255,255,255,.1);border:none;color:#fff;font-family:inherit;font-weight:800;
+  padding:8px 14px;border-radius:14px;font-size:.85rem;cursor:pointer}
+.stat{background:rgba(255,255,255,.1);border-radius:14px;padding:8px 12px;font-weight:800;font-size:.85rem}
+.stat.xp{color:var(--gold)} .stat.coin{color:#ffcf5e}
+.stats{display:flex;gap:8px}
+
+/* progress dots */
+.dots{display:flex;justify-content:center;gap:8px;margin:6px 0 14px}
+.dot{width:30px;height:8px;border-radius:6px;background:rgba(255,255,255,.18)}
+.dot.done{background:var(--gold)} .dot.active{background:var(--brand-red)}
+
+/* card */
+.card{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);
+  border-radius:22px;padding:22px 18px;text-align:center;flex:1;display:flex;
+  flex-direction:column;justify-content:center;animation:pop .35s ease}
+@keyframes pop{0%{opacity:0;transform:scale(.92)}100%{opacity:1;transform:scale(1)}}
+.lvl-badge{font-size:2.2rem;margin-bottom:4px}
+.lvl-name{font-size:1.05rem;font-weight:800;color:var(--gold);margin-bottom:14px}
+.emoji-row{font-size:2.6rem;letter-spacing:6px;margin:8px 0 16px}
+.verse{font-size:1.5rem;font-weight:800;line-height:1.4;margin:10px 0 18px;color:#fff}
+.verse small{display:block;font-size:1rem;font-weight:600;color:#b8c2e0;margin-top:6px}
+.question{font-size:1.15rem;font-weight:800;margin:6px 0 16px;color:#ffe9a8}
+
+/* buttons */
+.btn{font-family:inherit;font-weight:900;border:none;border-radius:16px;cursor:pointer;
+  padding:15px 22px;font-size:1.05rem;transition:.15s;color:#fff;width:100%;margin-top:10px}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,var(--brand-red),#b71c1c);box-shadow:0 5px 18px rgba(229,56,59,.4)}
+.btn-speak{background:linear-gradient(135deg,#3949ab,#1a237e)}
+.btn-next{background:linear-gradient(135deg,var(--green),#2e7d32)}
+
+/* choice options */
+.options{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.opt{background:rgba(255,255,255,.09);border:2px solid rgba(255,255,255,.2);border-radius:16px;
+  padding:16px;font-size:1.5rem;font-weight:800;color:#fff;cursor:pointer;transition:.15s;
+  display:flex;align-items:center;justify-content:center;gap:10px;min-height:64px}
+.opt .lbl{font-size:1.05rem;font-weight:700}
+.opt:active{transform:scale(.98)}
+.opt.correct{background:rgba(76,175,80,.3);border-color:var(--green)}
+.opt.wrong{background:rgba(229,56,59,.3);border-color:var(--brand-red);animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* order game */
+.order-hint{font-size:.95rem;color:#b8c2e0;margin-bottom:10px}
+.slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:6px;min-height:54px}
+.slot{width:46px;height:46px;border-radius:12px;border:2px dashed rgba(255,255,255,.25);
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:rgba(255,255,255,.04)}
+.slot.filled{border-style:solid;border-color:var(--gold);background:rgba(255,213,74,.15)}
+.placed-line{font-size:.85rem;color:#ffe9a8;font-weight:700;min-height:20px;margin:6px 0 14px}
+.tiles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.tile{width:58px;height:58px;border-radius:14px;background:rgba(255,255,255,.1);
+  border:2px solid rgba(255,255,255,.22);font-size:1.8rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.15s}
+.tile:active{transform:scale(.94)}
+.tile.used{opacity:.25;pointer-events:none}
+.tile.bad{animation:shake .4s;border-color:var(--brand-red)}
+
+/* finale */
+.trophy{font-size:4.5rem;animation:bounce 1s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.finale-title{font-size:1.8rem;font-weight:900;color:var(--gold);margin:8px 0}
+.reward{background:rgba(255,255,255,.08);border-radius:16px;padding:16px;margin:14px 0;font-size:1.15rem;font-weight:800;line-height:2}
+.badge-big{font-size:1.3rem;color:var(--crown)}
+
+/* xp popup */
+.xp-pop{position:fixed;top:46%;left:50%;transform:translate(-50%,-50%);
+  font-size:2.2rem;font-weight:900;color:var(--gold);
+  text-shadow:0 0 14px rgba(255,213,74,.8);pointer-events:none;z-index:99;animation:xpf 1s ease-out forwards}
+@keyframes xpf{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+  100%{opacity:0;transform:translate(-50%,-130%) scale(.9)}}
+.confetti{position:fixed;top:-10px;font-size:1.4rem;z-index:90;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(360deg);opacity:.4}}
+</style>
+</head>
+<body>
+<div class="stars-bg" id="stars"></div>
+<div id="app">
+  <div class="topbar">
+    <button class="back-btn" onclick="location.href='akademiya-geroya.html'">← Академія</button>
+    <div class="stats">
+      <span class="stat xp" id="xp">⭐ 0</span>
+      <span class="stat coin" id="coin">🪙 0</span>
+    </div>
+  </div>
+  <div class="dots" id="dots"></div>
+  <div id="screen"></div>
+</div>
+
+<script>
+/* ─── Дані гри ─── */
+const POEM = [
+  "Рак рубав з горіха дрова.",
+  "Рак розчервонівся.",
+  "Риби з річки виглядали,",
+  "Думали — зварився."
+];
+
+const LEVELS = [
+  { type:"listen", badge:"🦀", name:"Рівень 1. Слухай і повторюй",
+    emoji:"🦞🪓🌳🪵", verse:"Рак рубав з горіха дрова.", xp:10 },
+  { type:"choice", badge:"🔥", name:"Рівень 2. Що сталося з раком?",
+    emoji:"🦞❤️", verse:"Рак розчервонівся.", q:"Вибери правильну картинку:",
+    options:[{t:"🦞🟢"},{t:"🦞🔴"},{t:"🦞🔵"}], correct:1, xp:15 },
+  { type:"choice", badge:"🐟", name:"Рівень 3. Хто виглядав з річки?",
+    emoji:"🐟🌊👀", verse:"Риби з річки виглядали.", q:"Хто виглядав?",
+    options:[{t:"🐸",l:"Жаби"},{t:"🦆",l:"Качки"},{t:"🐟",l:"Риби"}], correct:2, xp:20 },
+  { type:"choice", badge:"🍲", name:"Рівень 4. Про що думали риби?",
+    emoji:"🤔🍲🦞", verse:"Думали — зварився.", q:"Кого хотіли зварити?",
+    options:[{t:"🐟"},{t:"🐸"},{t:"🦞"}], correct:2, xp:25 },
+  { type:"order", badge:"🧩", name:"Рівень 5. Склади віршик",
+    order:[
+      {e:"🦞", line:"Рак"},
+      {e:"🪓", line:"рубав"},
+      {e:"🌳", line:"з горіха"},
+      {e:"🪵", line:"дрова."},
+      {e:"🦞🔴", line:"Рак розчервонівся."},
+      {e:"🐟", line:"Риби"},
+      {e:"🌊", line:"з річки виглядали,"},
+      {e:"🤔", line:"Думали"},
+      {e:"🍲", line:"— зварився."}
+    ], xp:30 }
+];
+
+/* ─── Стан ─── */
+let cur = 0;
+function getXP(){ return +localStorage.getItem('rakXP')||0 }
+function getCoins(){ return +localStorage.getItem('rakCoins')||0 }
+function addXP(n){ localStorage.setItem('rakXP', getXP()+n); refreshStats(); }
+function addCoins(n){ localStorage.setItem('rakCoins', getCoins()+n); refreshStats(); }
+function refreshStats(){
+  document.getElementById('xp').textContent = '⭐ ' + getXP();
+  document.getElementById('coin').textContent = '🪙 ' + getCoins();
+}
+
+/* ─── Озвучення ─── */
+function speak(text){
+  try{
+    if('speechSynthesis' in window){
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang='uk-UA'; u.rate=0.8; u.pitch=1.1;
+      speechSynthesis.speak(u);
+    }
+  }catch(e){}
+}
+
+/* ─── Анімації ─── */
+function xpPop(n){
+  const p=document.createElement('div'); p.className='xp-pop'; p.textContent='+'+n+' XP';
+  document.body.appendChild(p); setTimeout(()=>p.remove(),1000);
+}
+function confetti(){
+  const em=['⭐','🎉','🪙','🦀','🟡','✨'];
+  for(let i=0;i<28;i++){
+    const c=document.createElement('div'); c.className='confetti';
+    c.textContent=em[Math.floor(Math.random()*em.length)];
+    c.style.left=Math.random()*100+'%';
+    c.style.animationDuration=(1.5+Math.random()*2)+'s';
+    c.style.animationDelay=(Math.random()*0.6)+'s';
+    document.body.appendChild(c); setTimeout(()=>c.remove(),4000);
+  }
+}
+
+/* ─── Прогрес-крапки ─── */
+function renderDots(){
+  const d=document.getElementById('dots'); d.innerHTML='';
+  for(let i=0;i<LEVELS.length;i++){
+    const s=document.createElement('div');
+    s.className='dot'+(i<cur?' done':i===cur?' active':'');
+    d.appendChild(s);
+  }
+}
+
+/* ─── Рендер рівня ─── */
+function render(){
+  renderDots();
+  const lv = LEVELS[cur];
+  const s = document.getElementById('screen');
+  if(lv.type==='listen') renderListen(lv,s);
+  else if(lv.type==='choice') renderChoice(lv,s);
+  else if(lv.type==='order') renderOrder(lv,s);
+}
+
+function renderListen(lv,s){
+  s.innerHTML = `
+    <div class="card">
+      <div class="lvl-badge">${lv.badge}</div>
+      <div class="lvl-name">${lv.name}</div>
+      <div class="emoji-row">${lv.emoji}</div>
+      <div class="verse">${lv.verse}</div>
+      <button class="btn btn-speak" id="speakBtn">🔊 Слухати</button>
+      <button class="btn btn-primary" id="repeatBtn">🎤 Повторити</button>
+      <button class="btn btn-next" id="nextBtn" style="display:none">Далі →</button>
+    </div>`;
+  setTimeout(()=>speak(lv.verse),300);
+  document.getElementById('speakBtn').onclick=()=>speak(lv.verse);
+  document.getElementById('repeatBtn').onclick=()=>{
+    addXP(lv.xp); xpPop(lv.xp);
+    document.getElementById('repeatBtn').style.display='none';
+    document.getElementById('nextBtn').style.display='block';
+  };
+  document.getElementById('nextBtn').onclick=goNext;
+}
+
+function renderChoice(lv,s){
+  s.innerHTML = `
+    <div class="card">
+      <div class="lvl-badge">${lv.badge}</div>
+      <div class="lvl-name">${lv.name}</div>
+      <div class="emoji-row">${lv.emoji}</div>
+      <div class="verse">${lv.verse}</div>
+      <div class="question">${lv.q}</div>
+      <div class="options" id="opts"></div>
+      <button class="btn btn-next" id="nextBtn" style="display:none">Далі →</button>
+    </div>`;
+  const box=document.getElementById('opts');
+  // перемішуємо
+  const order = lv.options.map((o,i)=>({o,i})).sort(()=>Math.random()-0.5);
+  order.forEach(({o,i})=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.innerHTML = `<span>${o.t}</span>${o.l?`<span class="lbl">${o.l}</span>`:''}`;
+    b.onclick=()=>{
+      if(box.dataset.done) return;
+      if(i===lv.correct){
+        b.classList.add('correct'); box.dataset.done='1';
+        addXP(lv.xp); xpPop(lv.xp); speak('Молодець!');
+        document.getElementById('nextBtn').style.display='block';
+      } else {
+        b.classList.add('wrong');
+        setTimeout(()=>b.classList.remove('wrong'),400);
+      }
+    };
+    box.appendChild(b);
+  });
+  document.getElementById('nextBtn').onclick=goNext;
+}
+
+function renderOrder(lv,s){
+  s.innerHTML = `
+    <div class="card">
+      <div class="lvl-badge">${lv.badge}</div>
+      <div class="lvl-name">${lv.name}</div>
+      <div class="order-hint">Тисни картинки по черзі — від початку віршика 👇</div>
+      <div class="slots" id="slots"></div>
+      <div class="placed-line" id="placedLine"></div>
+      <div class="tiles" id="tiles"></div>
+      <button class="btn btn-next" id="nextBtn" style="display:none">🎉 Завершити</button>
+    </div>`;
+  const slotsEl=document.getElementById('slots');
+  const tilesEl=document.getElementById('tiles');
+  const lineEl=document.getElementById('placedLine');
+  lv.order.forEach(()=>{
+    const sl=document.createElement('div'); sl.className='slot'; slotsEl.appendChild(sl);
+  });
+  let step=0;
+  const placedWords=[];
+  const shuffled = lv.order.map((o,i)=>({o,i})).sort(()=>Math.random()-0.5);
+  shuffled.forEach(({o,i})=>{
+    const t=document.createElement('button');
+    t.className='tile'; t.textContent=o.e;
+    t.onclick=()=>{
+      if(i===step){
+        // правильний наступний
+        const slot=slotsEl.children[step];
+        slot.textContent=o.e; slot.classList.add('filled');
+        t.classList.add('used');
+        placedWords.push(o.line); lineEl.textContent=placedWords.join(' ');
+        speak(o.line);
+        step++;
+        if(step===lv.order.length){
+          addXP(lv.xp); xpPop(lv.xp);
+          document.getElementById('nextBtn').style.display='block';
+        }
+      } else {
+        t.classList.add('bad'); setTimeout(()=>t.classList.remove('bad'),400);
+      }
+    };
+    tilesEl.appendChild(t);
+  });
+  document.getElementById('nextBtn').onclick=goNext;
+}
+
+/* ─── Перехід ─── */
+function goNext(){
+  cur++;
+  if(cur>=LEVELS.length) renderFinale();
+  else render();
+}
+
+function renderFinale(){
+  renderDots();
+  // фінальна нагорода
+  if(!localStorage.getItem('rakBadge')){
+    addXP(100); addCoins(50);
+    localStorage.setItem('rakBadge','1');
+  }
+  confetti();
+  speak('Вітаємо! Ти майстер звука Р!');
+  const s=document.getElementById('screen');
+  s.innerHTML = `
+    <div class="card">
+      <div class="trophy">🏆</div>
+      <div class="finale-title">🎉 Вітаємо!</div>
+      <div class="verse" style="font-size:1.15rem">${POEM.join('<br>')}</div>
+      <div class="reward">
+        🏆 Нагорода:<br>
+        ⭐ 100 XP<br>
+        🪙 50 монет<br>
+        <span class="badge-big">🦀 Значок «Майстер звука Р»</span>
+      </div>
+      <button class="btn btn-primary" id="againBtn">🔁 Зіграти ще раз</button>
+      <button class="btn btn-speak" onclick="speak(POEM.join(' '))">🔊 Послухати віршик</button>
+    </div>`;
+  document.getElementById('againBtn').onclick=()=>{ cur=0; render(); };
+}
+
+/* ─── Зірки тла ─── */
+function initStars(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<60;i++){
+    const st=document.createElement('div'); st.className='star-dot';
+    const sz=0.8+Math.random()*2.5;
+    st.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;
+      width:${sz}px;height:${sz}px;--dur:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
+    c.appendChild(st);
+  }
+}
+
+/* ─── Старт ─── */
+window.addEventListener('DOMContentLoaded',()=>{
+  initStars(); refreshStats(); render();
+});
+</script>
+</body>
+</html>

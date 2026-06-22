@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🤝 Хто з ким дружить — міні-гра</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0d1b3e; --indigo:#1a2a5e; --violet:#2d1b4e;
+  --brand-red:#E5383B; --gold:#ffd54a; --green:#4CAF50; --crown:#ff7ac0;
+  --bronze:#cd7f32; --silver:#c0c0c0; --gold-c:#ffd700;
+}
+*{margin:0;padding:0;box-sizing:border-box;
+  -webkit-user-select:none;-moz-user-select:none;user-select:none;
+  -webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
+body{font-family:'Nunito',sans-serif;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--indigo) 50%,var(--violet) 100%);
+  min-height:100vh;color:#fff;overflow-x:hidden;touch-action:manipulation;}
+.stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star-dot{position:absolute;background:#fff;border-radius:50%;animation:tw var(--dur,3s) infinite ease-in-out}
+@keyframes tw{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+#app{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:14px;min-height:100vh;display:flex;flex-direction:column}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.back-btn{background:rgba(255,255,255,.1);border:none;color:#fff;font-family:inherit;font-weight:800;padding:8px 14px;border-radius:14px;font-size:.85rem;cursor:pointer}
+.stat{background:rgba(255,255,255,.1);border-radius:14px;padding:8px 12px;font-weight:800;font-size:.85rem}
+.stat.xp{color:var(--gold)} .stat.coin{color:#ffcf5e}
+.stats{display:flex;gap:8px}
+.dots{display:flex;justify-content:center;gap:8px;margin:6px 0 14px}
+.dot{width:30px;height:8px;border-radius:6px;background:rgba(255,255,255,.18)}
+.dot.done{background:var(--gold)} .dot.active{background:var(--brand-red)}
+.card{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);border-radius:22px;padding:22px 18px;text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center;animation:pop .35s ease}
+@keyframes pop{0%{opacity:0;transform:scale(.92)}100%{opacity:1;transform:scale(1)}}
+.lvl-badge{font-size:2.2rem;margin-bottom:4px}
+.lvl-name{font-size:1.05rem;font-weight:800;color:var(--gold);margin-bottom:14px}
+.emoji-row{font-size:2.6rem;letter-spacing:6px;margin:8px 0 16px}
+.verse{font-size:1.4rem;font-weight:800;line-height:1.4;margin:10px 0 18px;color:#fff}
+.question{font-size:1.15rem;font-weight:800;margin:6px 0 16px;color:#ffe9a8}
+.btn{font-family:inherit;font-weight:900;border:none;border-radius:16px;cursor:pointer;padding:15px 22px;font-size:1.05rem;transition:.15s;color:#fff;width:100%;margin-top:10px}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,var(--brand-red),#b71c1c);box-shadow:0 5px 18px rgba(229,56,59,.4)}
+.btn-speak{background:linear-gradient(135deg,#3949ab,#1a237e)}
+.btn-next{background:linear-gradient(135deg,var(--green),#2e7d32)}
+.options{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.opt{background:rgba(255,255,255,.09);border:2px solid rgba(255,255,255,.2);border-radius:16px;padding:16px;font-size:1.5rem;font-weight:800;color:#fff;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:10px;min-height:64px}
+.opt .lbl{font-size:1.05rem;font-weight:700}
+.opt:active{transform:scale(.98)}
+.opt.correct{background:rgba(76,175,80,.3);border-color:var(--green)}
+.opt.wrong{background:rgba(229,56,59,.3);border-color:var(--brand-red);animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+/* match */
+.match-hint{font-size:.95rem;color:#b8c2e0;margin-bottom:12px}
+.match-wrap{display:flex;gap:16px;justify-content:center}
+.mcol{display:flex;flex-direction:column;gap:10px;flex:1}
+.mtile{min-height:56px;border-radius:14px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.22);font-size:1.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:.15s;padding:6px}
+.mtile .ml{font-size:.8rem;font-weight:700}
+.mtile:active{transform:scale(.96)}
+.mtile.sel{border-color:var(--gold);background:rgba(255,213,74,.22);transform:scale(1.04)}
+.mtile.matched{opacity:.45;pointer-events:none;border-color:var(--green);background:rgba(76,175,80,.2)}
+.mtile.bad{animation:shake .4s;border-color:var(--brand-red)}
+.placed-line{font-size:.85rem;color:#ffe9a8;font-weight:700;min-height:20px;margin:12px 0 6px}
+.trophy{font-size:4.5rem;animation:bounce 1s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.finale-title{font-size:1.8rem;font-weight:900;color:var(--gold);margin:8px 0}
+.reward{background:rgba(255,255,255,.08);border-radius:16px;padding:16px;margin:14px 0;font-size:1.15rem;font-weight:800;line-height:2}
+.badge-big{font-size:1.3rem;color:var(--crown)}
+.xp-pop{position:fixed;top:46%;left:50%;transform:translate(-50%,-50%);font-size:2.2rem;font-weight:900;color:var(--gold);text-shadow:0 0 14px rgba(255,213,74,.8);pointer-events:none;z-index:99;animation:xpf 1s ease-out forwards}
+@keyframes xpf{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-130%) scale(.9)}}
+.confetti{position:fixed;top:-10px;font-size:1.4rem;z-index:90;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(360deg);opacity:.4}}
+</style>
+</head>
+<body>
+<div class="stars-bg" id="stars"></div>
+<div id="app">
+  <div class="topbar">
+    <button class="back-btn" onclick="location.href='akademiya-geroya.html'">← Академія</button>
+    <div class="stats">
+      <span class="stat xp" id="xp">⭐ 0</span>
+      <span class="stat coin" id="coin">🪙 0</span>
+    </div>
+  </div>
+  <div class="dots" id="dots"></div>
+  <div id="screen"></div>
+</div>
+
+<script>
+const POEM = [
+  "Хмаринка дружить з дощиком,",
+  "Квітка дружить з горщиком,",
+  "Вітерець — з листочками,",
+  "Бережок — з місточком,",
+  "Жабка — з річкою,",
+  "А я дружу з сестричкою."
+];
+
+const LEVELS = [
+  { type:"listen", badge:"🤝", name:"Рівень 1. Слухай і повторюй",
+    emoji:"☁️🌼🐸", verse:"Хмаринка дружить з дощиком,<br>квітка дружить з горщиком.", speakAll:true, xp:10 },
+  { type:"choice", badge:"☁️", name:"Рівень 2. З ким дружить хмаринка?",
+    emoji:"☁️🤝", verse:"Хмаринка дружить з дощиком.", q:"З ким дружить хмаринка?",
+    options:[{t:"🌧️",l:"Дощик"},{t:"🌳",l:"Ліс"},{t:"🪨",l:"Камінь"}], correct:0, xp:15 },
+  { type:"choice", badge:"🌼", name:"Рівень 3. З ким дружить квітка?",
+    emoji:"🌼🤝🪴", verse:"Квітка дружить з горщиком.", q:"З ким дружить квітка?",
+    options:[{t:"🌊",l:"Річка"},{t:"🪴",l:"Горщик"},{t:"🐸",l:"Жабка"}], correct:1, xp:20 },
+  { type:"choice", badge:"🐸", name:"Рівень 4. З ким дружить жабка?",
+    emoji:"🐸🤝🌊", verse:"Жабка дружить з річкою.", q:"З ким дружить жабка?",
+    options:[{t:"🌉",l:"Місток"},{t:"🍃",l:"Листя"},{t:"🌊",l:"Річка"}], correct:2, xp:25 },
+  { type:"match", badge:"🧩", name:"Рівень 5. З'єднай друзів",
+    pairs:[
+      {a:"☁️",al:"Хмаринка", b:"🌧️",bl:"Дощик",      line:"Хмаринка дружить з дощиком"},
+      {a:"🌼",al:"Квітка",   b:"🪴",bl:"Горщик",      line:"Квітка дружить з горщиком"},
+      {a:"💨",al:"Вітерець", b:"🍃",bl:"Листочки",    line:"Вітерець — з листочками"},
+      {a:"🏞️",al:"Бережок",  b:"🌉",bl:"Місточок",    line:"Бережок — з місточком"},
+      {a:"🐸",al:"Жабка",    b:"🌊",bl:"Річка",       line:"Жабка — з річкою"},
+      {a:"🙋",al:"Я",        b:"👧",bl:"Сестричка",   line:"А я дружу з сестричкою"}
+    ], xp:30 }
+];
+
+let cur = 0;
+function getXP(){ return +localStorage.getItem('druzhbaXP')||0 }
+function getCoins(){ return +localStorage.getItem('druzhbaCoins')||0 }
+function addXP(n){ localStorage.setItem('druzhbaXP', getXP()+n); refreshStats(); }
+function addCoins(n){ localStorage.setItem('druzhbaCoins', getCoins()+n); refreshStats(); }
+function refreshStats(){
+  document.getElementById('xp').textContent = '⭐ ' + getXP();
+  document.getElementById('coin').textContent = '🪙 ' + getCoins();
+}
+function speak(text){
+  try{ if('speechSynthesis' in window){ speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text); u.lang='uk-UA'; u.rate=0.8; u.pitch=1.1; speechSynthesis.speak(u); } }catch(e){}
+}
+function stripTags(s){ return s.replace(/<[^>]+>/g,' '); }
+function xpPop(n){ const p=document.createElement('div'); p.className='xp-pop'; p.textContent='+'+n+' XP'; document.body.appendChild(p); setTimeout(()=>p.remove(),1000); }
+function confetti(){ const em=['⭐','🎉','🪙','🤝','💛','✨'];
+  for(let i=0;i<28;i++){ const c=document.createElement('div'); c.className='confetti';
+    c.textContent=em[Math.floor(Math.random()*em.length)]; c.style.left=Math.random()*100+'%';
+    c.style.animationDuration=(1.5+Math.random()*2)+'s'; c.style.animationDelay=(Math.random()*0.6)+'s';
+    document.body.appendChild(c); setTimeout(()=>c.remove(),4000); } }
+function renderDots(){ const d=document.getElementById('dots'); d.innerHTML='';
+  for(let i=0;i<LEVELS.length;i++){ const s=document.createElement('div');
+    s.className='dot'+(i<cur?' done':i===cur?' active':''); d.appendChild(s); } }
+
+function render(){
+  renderDots();
+  const lv=LEVELS[cur]; const s=document.getElementById('screen');
+  if(lv.type==='listen') renderListen(lv,s);
+  else if(lv.type==='choice') renderChoice(lv,s);
+  else if(lv.type==='match') renderMatch(lv,s);
+}
+
+function renderListen(lv,s){
+  s.innerHTML=`
+    <div class="card">
+      <div class="lvl-badge">${lv.badge}</div>
+      <div class="lvl-name">${lv.name}</div>
+      <div class="emoji-row">${lv.emoji}</div>
+      <div class="verse">${lv.verse}</div>
+      <button class="btn btn-speak" id="speakBtn">🔊 Слухати</button>
+      <button class="btn btn-primary" id="repeatBtn">🎤 Повторити</button>
+      <button class="btn btn-next" id="nextBtn" style="display:none">Далі →</button>
+    </div>`;
+  const sayWhat = lv.speakAll ? POEM.join(' ') : stripTags(lv.verse);
+  setTimeout(()=>speak(sayWhat),300);
+  document.getElementById('speakBtn').onclick=()=>speak(sayWhat);
+  document.getElementById('repeatBtn').onclick=()=>{
+    addXP(lv.xp); xpPop(lv.xp);
+    document.getElementById('repeatBtn').style.display='none';
+    document.getElementById('nextBtn').style.display='block';
+  };
+  document.getElementById('nextBtn').onclick=goNext;
+}
+
+function renderChoice(lv,s){
+  s.innerHTML=`
+    <div class="card">
+      <div class="lvl-badge">${lv.badge}</div>
+      <div class="lvl-name">${lv.name}</div>
+      <div class="emoji-row">${lv.emoji}</div>
+      <div class="verse">${lv.verse}</div>
+      <div class="question">${lv.q}</div>
+      <div class="options" id="opts"></div>
+      <button class="btn btn-next" id="nextBtn" style="display:none">Далі →</button>
+    </div>`;
+  const box=document.getElementById('opts');
+  const order=lv.options.map((o,i)=>({o,i})).sort(()=>Math.random()-0.5);
+  order.forEach(({o,i})=>{
+    const b=document.createElement('button'); b.className='opt';
+    b.innerHTML=`<span>${o.t}</span>${o.l?`<span class="lbl">${o.l}</span>`:''}`;
+    b.onclick=()=>{
+      if(box.dataset.done) return;
+      if(i===lv.correct){ b.classList.add('correct'); box.dataset.done='1';
+        addXP(lv.xp); xpPop(lv.xp); speak('Правильно!');
+        document.getElementById('nextBtn').style.display='block';
+      } else { b.classList.add('wrong'); setTimeout(()=>b.classList.remove('wrong'),400); }
+    };
+    box.appendChild(b);
+  });
+  document.getElementById('nextBtn').onclick=goNext;
+}
+
+function renderMatch(lv,s){
+  s.innerHTML=`
+    <div class="card">
+      <div class="lvl-badge">${lv.badge}</div>
+      <div class="lvl-name">${lv.name}</div>
+      <div class="match-hint">Тисни картинку зліва, тоді її друга справа 🤝</div>
+      <div class="match-wrap">
+        <div class="mcol" id="colA"></div>
+        <div class="mcol" id="colB"></div>
+      </div>
+      <div class="placed-line" id="line"></div>
+      <button class="btn btn-next" id="nextBtn" style="display:none">🎉 Завершити</button>
+    </div>`;
+  const colA=document.getElementById('colA'), colB=document.getElementById('colB');
+  const lineEl=document.getElementById('line');
+  let selA=null, matched=0;
+  // ліва колонка — по порядку; права — перемішана
+  lv.pairs.forEach((p,i)=>{
+    const a=document.createElement('button'); a.className='mtile';
+    a.innerHTML=`<span>${p.a}</span><span class="ml">${p.al}</span>`; a.dataset.idx=i;
+    a.onclick=()=>{
+      if(a.classList.contains('matched')) return;
+      colA.querySelectorAll('.mtile').forEach(x=>x.classList.remove('sel'));
+      a.classList.add('sel'); selA=i; speak(p.al);
+    };
+    colA.appendChild(a);
+  });
+  const shuffled=lv.pairs.map((p,i)=>({p,i})).sort(()=>Math.random()-0.5);
+  shuffled.forEach(({p,i})=>{
+    const b=document.createElement('button'); b.className='mtile';
+    b.innerHTML=`<span>${p.b}</span><span class="ml">${p.bl}</span>`; b.dataset.idx=i;
+    b.onclick=()=>{
+      if(b.classList.contains('matched')) return;
+      if(selA===null){ b.classList.add('bad'); setTimeout(()=>b.classList.remove('bad'),400); return; }
+      if(selA===i){
+        // правильна пара
+        const aTile=colA.querySelector(`.mtile[data-idx="${i}"]`);
+        aTile.classList.remove('sel'); aTile.classList.add('matched'); b.classList.add('matched');
+        lineEl.textContent=lv.pairs[i].line; speak(lv.pairs[i].line);
+        selA=null; matched++;
+        if(matched===lv.pairs.length){ addXP(lv.xp); xpPop(lv.xp);
+          document.getElementById('nextBtn').style.display='block'; }
+      } else {
+        b.classList.add('bad'); setTimeout(()=>b.classList.remove('bad'),400);
+        colA.querySelectorAll('.mtile').forEach(x=>x.classList.remove('sel')); selA=null;
+      }
+    };
+    colB.appendChild(b);
+  });
+  document.getElementById('nextBtn').onclick=goNext;
+}
+
+function goNext(){ cur++; if(cur>=LEVELS.length) renderFinale(); else render(); }
+
+function renderFinale(){
+  renderDots();
+  if(!localStorage.getItem('druzhbaBadge')){ addXP(100); addCoins(50); localStorage.setItem('druzhbaBadge','1'); }
+  confetti(); speak('Вітаємо! Ти вивчив віршик про дружбу!');
+  const s=document.getElementById('screen');
+  s.innerHTML=`
+    <div class="card">
+      <div class="trophy">🏆</div>
+      <div class="finale-title">🎉 Вітаємо!</div>
+      <div class="verse" style="font-size:1.05rem">${POEM.join('<br>')}</div>
+      <div class="reward">
+        🏆 Нагорода:<br>⭐ 100 XP<br>🪙 50 монет<br>
+        <span class="badge-big">🤝 Значок «Вірний Друг»</span>
+      </div>
+      <button class="btn btn-primary" id="againBtn">🔁 Зіграти ще раз</button>
+      <button class="btn btn-speak" onclick="speak(POEM.join(' '))">🔊 Послухати віршик</button>
+    </div>`;
+  document.getElementById('againBtn').onclick=()=>{ cur=0; render(); };
+}
+
+function initStars(){ const c=document.getElementById('stars');
+  for(let i=0;i<60;i++){ const st=document.createElement('div'); st.className='star-dot';
+    const sz=0.8+Math.random()*2.5;
+    st.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--dur:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
+    c.appendChild(st); } }
+
+window.addEventListener('DOMContentLoaded',()=>{ initStars(); refreshStats(); render(); });
+</script>
+</body>
+</html>
