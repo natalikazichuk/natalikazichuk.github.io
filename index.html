@@ -2625,19 +2625,43 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
   const subjects = [
     {id:'math',icon:'🧮',name:'Математика',accent:'#5C6BC0',
       trainings:[{label:'Вивчаю цифри',href:'learn-math-numbers.html'}],
-      quests:[{label:'1 клас — 20 рівнів 🧮',href:'math-test.html'},{label:'Додавання',href:'addition-test.html'},{label:'Віднімання',href:'subtraction-test.html'},{label:'Множення',href:'multiplication-test.html'}]},
+      quests:[
+        {label:'1 клас — 20 рівнів 🧮',href:'math-test.html'},
+        {label:'Додавання',href:'addition-test.html'},
+        {label:'Віднімання',href:'subtraction-test.html'}
+      ]},
     {id:'ukr',icon:'🌺',name:'Українська мова',accent:'#D6577A',
-      trainings:[{label:'Вивчаю букви Абетки',href:'learn-ukrainian-letters.html'}],
-      quests:[{label:'Правопис слів',href:'spelling-test.html'}]},
+      trainings:[
+        {label:'Вивчаю букви Абетки',href:'learn-ukrainian-letters.html'},
+        {label:'🎵 Скоромовка: Рак',href:'mini-gra-rak.html'},
+        {label:'🎵 Скоромовка: Півень',href:'mini-gra-piven.html'},
+        {label:'🎵 Вірш: Дружба',href:'mini-gra-druzhba.html'}
+      ],
+      quests:[
+        {label:'Палац слів — 20 рівнів',href:'ukrainian-palace-test.html'},
+        {label:'Правопис слів',href:'spelling-test.html'}
+      ]},
     {id:'eng',icon:'🌍',name:'English',accent:'#3FB6A8',
-      trainings:[{label:'Learn ABC',href:'learn-english-letters.html'}],
+      trainings:[
+        {label:'Learn ABC (Part 1)',href:'learn-english-letters.html'},
+        {label:'Learn ABC (Part 2)',href:'learn-english-letters_2.html'}
+      ],
       quests:[{label:'Тест A1 · 10 рівнів',href:'english-test.html'}]},
     {id:'logic',icon:'🧩',name:'Світ логіки',accent:'#8B6FCE',
       trainings:[],
-      quests:[{label:'Логіка і пам\'ять',href:'logic-memory-test.html'}]},
+      quests:[
+        {label:'Логіка і пам\'ять (logika)',href:'logika-pamyat-test.html'},
+        {label:'Логіка і пам\'ять',href:'logic-memory-test.html'}
+      ]},
     {id:'geo',icon:'🗺️',name:'Географія',accent:'#E0954E',
       trainings:[],
-      quests:[{label:'Столиці світу',href:'capitals-test.html'}]}
+      quests:[{label:'Столиці світу',href:'capitals-test.html'}]},
+    {id:'world',icon:'🌍',name:'Мій Світ',accent:'#4ECDC4',
+      trainings:[
+        {label:'Відкрити Мій Світ',href:'learn_play_moi_svit.html'},
+        {label:'Реєстрація / Авторизація',href:'reg_auth_proto_moi_svit.html'}
+      ],
+      quests:[]}
   ];
 
   function chipHtml(t, accent){
