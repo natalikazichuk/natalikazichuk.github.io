@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🔢 Вивчаю цифри 1–10</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0d1b3e;--indigo:#1a2a5e;--violet:#2d1b4e;--brand-red:#E5383B;--gold:#ffd54a;--green:#4CAF50}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,var(--navy) 0%,var(--indigo) 50%,var(--violet) 100%);min-height:100vh;color:#fff;overflow-x:hidden;touch-action:manipulation}
+.stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star-dot{position:absolute;background:#fff;border-radius:50%;animation:tw var(--dur,3s) infinite ease-in-out}
+@keyframes tw{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+#app{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:14px 14px 28px;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.brand{font-family:'Fredoka One',cursive;font-size:1.05rem;color:var(--gold)}
+.back-btn{background:rgba(255,255,255,.1);border:none;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;padding:8px 14px;border-radius:12px;font-size:.85rem;cursor:pointer;transition:.15s}
+.back-btn:active{transform:scale(.95)}
+.xp-badge{background:rgba(255,213,74,.15);border:1px solid rgba(255,213,74,.35);color:var(--gold);padding:6px 12px;border-radius:12px;font-weight:800;font-size:.85rem;transition:background .3s}
+.xp-badge.flash{background:rgba(255,213,74,.4)}
+
+/* ── MENU ── */
+.page-title{text-align:center;margin:4px 0 14px}
+.page-title h1{font-family:'Fredoka One',cursive;font-size:2.2rem;color:var(--gold);text-shadow:0 0 28px rgba(255,213,74,.55)}
+.page-title p{color:rgba(255,255,255,.5);font-size:.88rem;margin-top:4px}
+
+.num-gallery{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.num-chip{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  aspect-ratio:1;border-radius:18px;cursor:pointer;border:2px solid;
+  background:rgba(255,255,255,.06);font-family:'Fredoka One',cursive;
+  padding:4px 2px;transition:.2s;
+}
+.num-chip:active{transform:scale(.87)}
+.chip-num{font-size:clamp(1.15rem,4vw,1.6rem);line-height:1}
+.chip-emoji{font-size:clamp(.65rem,1.8vw,.9rem);margin-top:2px;line-height:1}
+
+.sep{text-align:center;font-size:.75rem;color:rgba(255,255,255,.28);margin:4px 0 10px;letter-spacing:3px}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.mode-card{
+  background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);
+  border-radius:16px;padding:13px 8px 12px;cursor:pointer;transition:.2s;
+  display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center
+}
+.mode-card:active{transform:scale(.95);background:rgba(255,255,255,.14)}
+.mode-icon{font-size:1.6rem}
+.mode-title{font-weight:800;font-size:.85rem}
+.mode-sub{font-size:.7rem;color:rgba(255,255,255,.45);line-height:1.3}
+
+/* ── LEARN ── */
+.prog-row{display:flex;gap:5px;justify-content:center;margin-bottom:10px}
+.prog-dot{width:22px;height:6px;border-radius:4px;background:rgba(255,255,255,.18);transition:.3s}
+.prog-dot.done{background:var(--gold)}
+.prog-dot.active{background:var(--brand-red);width:32px}
+
+.learn-card{
+  background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);
+  border-radius:24px;padding:18px 16px 16px;display:flex;flex-direction:column;
+  align-items:center;gap:10px;text-align:center;animation:pop .32s ease;
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch
+}
+@keyframes pop{0%{opacity:0;transform:scale(.93)}100%{opacity:1;transform:scale(1)}}
+
+.big-num{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(100px,26vw,156px);
+  line-height:.88;margin:2px 0;
+  animation:numPop .4s cubic-bezier(.34,1.56,.64,1)
+}
+@keyframes numPop{0%{transform:scale(.5) rotate(-8deg);opacity:0}100%{transform:scale(1) rotate(0deg);opacity:1}}
+
+.num-emoji-row{display:flex;align-items:center;justify-content:center;gap:12px;margin:2px 0}
+.num-emoji{font-size:2.6rem;display:inline-block;animation:bob 2s infinite ease-in-out}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.num-like-label{font-size:.88rem;font-weight:700;color:rgba(255,255,255,.65);line-height:1.5;text-align:left}
+.num-like-label strong{display:block;color:var(--gold);font-size:.98rem;font-weight:900}
+
+.poem-block{
+  background:rgba(255,255,255,.07);border-left:3px solid var(--gold);
+  border-radius:0 12px 12px 0;padding:10px 14px;width:100%;text-align:left
+}
+.poem-line{font-size:.92rem;font-weight:700;line-height:1.65;color:#fff}
+
+.tts-btn{
+  background:linear-gradient(135deg,#3949ab,#283593);border:none;color:#fff;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:.87rem;
+  padding:9px 18px;border-radius:14px;cursor:pointer;
+  display:flex;align-items:center;gap:7px;transition:.15s
+}
+.tts-btn:active{transform:scale(.97)}
+
+.objs-display{width:100%;text-align:center;padding-bottom:2px}
+.objs-row{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;font-size:1.5rem;margin-bottom:4px;line-height:1.4}
+.objs-label{font-size:.92rem;font-weight:800;color:rgba(255,255,255,.5)}
+
+/* ── NAV BUTTONS ── */
+.nav-row{display:flex;gap:10px;margin-top:10px}
+.nav-btn{
+  flex:1;background:rgba(255,255,255,.1);border:none;color:#fff;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;
+  padding:13px;border-radius:16px;cursor:pointer;transition:.15s
+}
+.nav-btn.primary{background:linear-gradient(135deg,var(--brand-red),#c62828);box-shadow:0 4px 16px rgba(229,56,59,.35)}
+.nav-btn.full{width:100%;flex:none;margin-top:4px}
+.nav-btn:active{transform:scale(.97)}
+
+/* ── QUIZ ── */
+.quiz-prog{height:6px;background:rgba(255,255,255,.15);border-radius:3px;margin-bottom:6px;overflow:hidden}
+.quiz-prog-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .35s ease}
+.quiz-counter{text-align:right;font-size:.8rem;color:rgba(255,255,255,.38);margin-bottom:10px}
+
+.quiz-big-num{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(72px,19vw,100px);
+  text-align:center;line-height:1;margin:4px 0;
+  animation:numPop .35s cubic-bezier(.34,1.56,.64,1)
+}
+.quiz-objs{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:7px;
+  font-size:1.7rem;max-width:268px;margin:6px auto;padding:6px;
+  animation:pop .3s ease
+}
+.quiz-q-text{font-size:1.05rem;font-weight:800;color:#ffe9a8;text-align:center;margin-bottom:12px;line-height:1.4}
+
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{
+  background:rgba(255,255,255,.09);border:2px solid rgba(255,255,255,.2);
+  border-radius:18px;padding:14px 8px;cursor:pointer;transition:.15s;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  font-family:'Nunito',sans-serif;color:#fff;min-height:78px
+}
+.opt:active{transform:scale(.96)}
+.opt.correct{background:rgba(76,175,80,.3);border-color:#4CAF50;animation:pulse-green .4s ease}
+.opt.wrong{background:rgba(229,56,59,.3);border-color:var(--brand-red);animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+@keyframes pulse-green{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+
+.opt-emoji{font-size:1.95rem}
+.opt-num{font-family:'Fredoka One',cursive;font-size:2.2rem;line-height:1}
+.opt-label{font-size:.76rem;font-weight:700;color:rgba(255,255,255,.58)}
+
+.feedback{text-align:center;font-size:1rem;font-weight:800;min-height:34px;margin:8px 0;line-height:34px;transition:opacity .2s}
+
+/* ── RESULT ── */
+.result-box{display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 0;flex:1;justify-content:center}
+.result-stars{font-size:3rem;letter-spacing:8px;animation:pop .4s ease}
+.result-title{font-family:'Fredoka One',cursive;font-size:2rem;color:var(--gold)}
+.result-score{font-size:1rem;color:rgba(255,255,255,.65)}
+.result-xp{font-size:1.3rem;font-weight:800;color:var(--gold);background:rgba(255,213,74,.12);border:1px solid rgba(255,213,74,.3);padding:8px 24px;border-radius:14px}
+.result-mode-label{font-size:.8rem;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="stars-bg" id="stars"></div>
+<div id="app"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ─── DATA ─────────────────────────────────────────────────────────── */
+const NUMS = [
+  {n:1,  word:"один",    color:"#FF6B6B", glow:"rgba(255,107,107,.55)",
+   like:"Свічка",              emoji:"🕯️",
+   poem:["Одиниця — свічечка рівненька стоїть,",
+         "Тоненька й стрункенька — і яскраво горить!"],
+   obj:"⭐"},
+  {n:2,  word:"два",     color:"#FFB347", glow:"rgba(255,179,71,.55)",
+   like:"Лебідь",              emoji:"🦢",
+   poem:["Двійка — то лебідь на синьому ставку,",
+         "Шию вигнув гарно — пливе по рядку!"],
+   obj:"🌸"},
+  {n:3,  word:"три",     color:"#FFD700", glow:"rgba(255,215,0,.55)",
+   like:"Вушка зайчика",       emoji:"🐰",
+   poem:["Трійка схожа на вушка зайченяти,",
+         "Гострі й пухнасті — так хочеться стрибати!"],
+   obj:"🌟"},
+  {n:4,  word:"чотири",  color:"#69DB7C", glow:"rgba(105,219,124,.55)",
+   like:"Стілець",             emoji:"🪑",
+   poem:["Четвірка — є спинка й є ніжки у ній,",
+         "Наче стілець стоїть, відпочинь з ним скоріш!"],
+   obj:"🍀"},
+  {n:5,  word:"п'ять",   color:"#4FC3F7", glow:"rgba(79,195,247,.55)",
+   like:"Гачок",               emoji:"🪝",
+   poem:["П'ятірка — гачок у рибалки в руці,",
+         "Спіймав він рибину у срібній річці!"],
+   obj:"🐟"},
+  {n:6,  word:"шість",   color:"#81C784", glow:"rgba(129,199,132,.55)",
+   like:"Равлик",              emoji:"🐌",
+   poem:["Шістка — наче равлик у траві повзе,",
+         "Хатку кругленьку на спині несе!"],
+   obj:"🍄"},
+  {n:7,  word:"сім",     color:"#FF79C6", glow:"rgba(255,121,198,.55)",
+   like:"Коса",                emoji:"🌾",
+   poem:["Сімка — наче коса в умілих руках,",
+         "Жнуть пшеничку ранком у золотих полях!"],
+   obj:"🌻"},
+  {n:8,  word:"вісім",   color:"#CE93D8", glow:"rgba(206,147,216,.55)",
+   like:"Сніговик",            emoji:"⛄",
+   poem:["Вісімка — сніговик веселий у дворі,",
+         "Два кружечки зліпили — стоїть на горі!"],
+   obj:"❄️"},
+  {n:9,  word:"дев'ять", color:"#FFF176", glow:"rgba(255,241,118,.55)",
+   like:"Кулька",              emoji:"🎈",
+   poem:["Дев'ятка — кулька на мотузці у руці,",
+         "Рветься вгору в небеса — лети, лети!"],
+   obj:"🌙"},
+  {n:10, word:"десять",  color:"#80DEEA", glow:"rgba(128,222,234,.55)",
+   like:"Паличка й сонечко",   emoji:"🌞",
+   poem:["Десятка — паличка й кружечок разом стоять,",
+         "Мов дитина й сонечко — разом ідуть у путь!"],
+   obj:"💫"}
+];
+
+const XP_KEY = 'sk_nums_xp_v2';
+let xp = parseInt(localStorage.getItem(XP_KEY)||'0');
+let ST = {screen:'menu'};
+
+/* ─── STARS ─────────────────────────────────────────────────────────── */
+(function(){
+  const c = document.getElementById('stars');
+  for(let i=0;i<60;i++){
+    const d = document.createElement('div');
+    d.className = 'star-dot';
+    const s = Math.random()*2.5+.8;
+    d.style.cssText = `width:${s}px;height:${s}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${(2+Math.random()*4).toFixed(1)}s;animation-delay:${(Math.random()*6).toFixed(1)}s`;
+    c.appendChild(d);
+  }
+})();
+
+/* ─── HELPERS ───────────────────────────────────────────────────────── */
+function speak(text){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang='uk-UA'; u.rate=0.82; u.pitch=1.1;
+  window.speechSynthesis.speak(u);
+}
+
+function shuffle(a){
+  const r=a.slice();
+  for(let i=r.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [r[i],r[j]]=[r[j],r[i]];
+  }
+  return r;
+}
+
+function saveXP(){ try{localStorage.setItem(XP_KEY,String(xp));}catch(e){} }
+
+function flashXP(){
+  document.querySelectorAll('.xp-badge').forEach(el=>{
+    el.textContent='⭐ '+xp+' XP';
+    el.classList.add('flash');
+    setTimeout(()=>el.classList.remove('flash'),500);
+  });
+}
+
+function getObjName(e){
+  const m={'⭐':'зірочок','🌸':'квіточок','🌟':'зірочок','🍀':'конюшинок',
+           '🐟':'рибок','🍄':'грибочків','🌻':'соняшників','❄️':'сніжинок',
+           '🌙':'місяців','💫':'зірочок'};
+  return m[e]||'предметів';
+}
+
+/* ─── SWIPE for learn mode ──────────────────────────────────────────── */
+let _tx=0,_ty=0;
+document.addEventListener('touchstart',e=>{
+  _tx=e.changedTouches[0].screenX;
+  _ty=e.changedTouches[0].screenY;
+},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(ST.screen!=='learn') return;
+  const dx=e.changedTouches[0].screenX-_tx;
+  const dy=e.changedTouches[0].screenY-_ty;
+  if(Math.abs(dx)>65 && Math.abs(dx)>Math.abs(dy)*1.5)
+    window.__app.navLearn(dx<0?1:-1);
+},{passive:true});
+
+/* ─── APP ROOT ──────────────────────────────────────────────────────── */
+const app = document.getElementById('app');
+
+/* ─── RENDER MENU ───────────────────────────────────────────────────── */
+function renderMenu(){
+  app.innerHTML=`
+    <div class="topbar">
+      <span class="brand">🔢 Цифри 1–10</span>
+      <span class="xp-badge">⭐ ${xp} XP</span>
+    </div>
+    <div class="page-title">
+      <h1>Вивчаю Цифри</h1>
+      <p>Натисни на цифру або оберіть режим</p>
+    </div>
+
+    <div class="num-gallery">
+      ${NUMS.map((d,i)=>`
+        <button class="num-chip"
+          style="color:${d.color};border-color:${d.color}55;box-shadow:0 0 12px ${d.glow.replace('.55)','.18)')}"
+          onclick="window.__app.openLearn(${i})">
+          <span class="chip-num">${d.n}</span>
+          <span class="chip-emoji">${d.emoji}</span>
+        </button>
+      `).join('')}
+    </div>
+
+    <div class="sep">── або обери режим ──</div>
+
+    <div class="mode-grid">
+      <div class="mode-card" onclick="window.__app.startLearn()">
+        <span class="mode-icon">📖</span>
+        <span class="mode-title">Знайомство</span>
+        <span class="mode-sub">Всі цифри з віршиками</span>
+      </div>
+      <div class="mode-card" onclick="window.__app.startQuiz('look')">
+        <span class="mode-icon">🔎</span>
+        <span class="mode-title">На що схожа?</span>
+        <span class="mode-sub">Вгадай цифру за описом</span>
+      </div>
+      <div class="mode-card" onclick="window.__app.startQuiz('count')">
+        <span class="mode-icon">🍎</span>
+        <span class="mode-title">Порахуй!</span>
+        <span class="mode-sub">Порахуй і вибери число</span>
+      </div>
+    </div>
+  `;
+}
+
+/* ─── RENDER LEARN ──────────────────────────────────────────────────── */
+function renderLearn(){
+  const d = NUMS[ST.idx];
+  const isLast = ST.idx === NUMS.length-1;
+
+  let objsHtml='';
+  for(let i=0;i<d.n;i++) objsHtml+=`<span>${d.obj}</span>`;
+
+  app.innerHTML=`
+    <div class="topbar">
+      <button class="back-btn" onclick="window.__app.goMenu()">← Меню</button>
+      <span class="xp-badge">⭐ ${xp} XP</span>
+    </div>
+
+    <div class="prog-row">
+      ${NUMS.map((_,i)=>`<div class="prog-dot ${i===ST.idx?'active':i<ST.idx?'done':''}"></div>`).join('')}
+    </div>
+
+    <div class="learn-card">
+      <div class="big-num"
+        style="color:${d.color};filter:drop-shadow(0 0 22px ${d.glow})">${d.n}</div>
+
+      <div class="num-emoji-row">
+        <span class="num-emoji">${d.emoji}</span>
+        <span class="num-like-label">схожа на
+          <strong>${d.like}</strong>
+        </span>
+      </div>
+
+      <div class="poem-block">
+        <div class="poem-line">${d.poem[0]}</div>
+        <div class="poem-line">${d.poem[1]}</div>
+      </div>
+
+      <button class="tts-btn" onclick="window.__app.speakCard(${ST.idx})">
+        🔊 Прочитати вірш
+      </button>
+
+      <div class="objs-display">
+        <div class="objs-row">${objsHtml}</div>
+        <div class="objs-label">${d.n} — ${d.word}</div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" onclick="window.__app.navLearn(-1)">
+        ← ${ST.idx===0?'Меню':'Назад'}
+      </button>
+      <button class="nav-btn primary" onclick="window.__app.navLearn(1)">
+        ${isLast?'🎉 Готово!':'Далі →'}
+      </button>
+    </div>
+  `;
+}
+
+/* ─── RENDER QUIZ ───────────────────────────────────────────────────── */
+function renderQuiz(){
+  const q = ST.quizQ[ST.qIdx];
+  const correct = NUMS[q.correctIdx];
+  const pct = Math.round(ST.qIdx / ST.quizQ.length * 100);
+
+  let qBody = '';
+
+  if(ST.mode==='look'){
+    // Show big number → pick what it looks like
+    qBody=`
+      <div class="quiz-big-num"
+        style="color:${correct.color};filter:drop-shadow(0 0 28px ${correct.glow})">${correct.n}</div>
+      <div class="quiz-q-text">На що схожа ця цифра?</div>
+      <div class="quiz-opts">
+        ${q.opts.map((ni,i)=>`
+          <button class="opt" id="opt${i}" onclick="window.__app.answer(${i})">
+            <span class="opt-emoji">${NUMS[ni].emoji}</span>
+            <span class="opt-label">${NUMS[ni].like}</span>
+          </button>
+        `).join('')}
+      </div>`;
+  } else {
+    // Show N objects → pick number
+    let objs='';
+    for(let i=0;i<correct.n;i++) objs+=`<span>${correct.obj}</span>`;
+    qBody=`
+      <div class="quiz-objs">${objs}</div>
+      <div class="quiz-q-text">Скільки тут ${getObjName(correct.obj)}?</div>
+      <div class="quiz-opts">
+        ${q.opts.map((ni,i)=>`
+          <button class="opt" id="opt${i}" onclick="window.__app.answer(${i})">
+            <span class="opt-num" style="color:${NUMS[ni].color}">${NUMS[ni].n}</span>
+            <span class="opt-label">${NUMS[ni].word}</span>
+          </button>
+        `).join('')}
+      </div>`;
+  }
+
+  app.innerHTML=`
+    <div class="topbar">
+      <button class="back-btn" onclick="window.__app.goMenu()">← Меню</button>
+      <span class="xp-badge">⭐ ${xp} XP</span>
+    </div>
+    <div class="quiz-prog"><div class="quiz-prog-fill" style="width:${pct}%"></div></div>
+    <div class="quiz-counter">${ST.qIdx+1} / ${ST.quizQ.length}</div>
+    ${qBody}
+    <div class="feedback" id="fb"></div>
+    <button class="nav-btn primary full" id="nxtBtn" style="display:none"
+      onclick="window.__app.nextQ()">Далі →</button>
+  `;
+}
+
+/* ─── RENDER RESULT ─────────────────────────────────────────────────── */
+function renderResult(){
+  const total = ST.quizQ.length;
+  const stars = ST.qScore>=total ? 3 : ST.qScore>=Math.ceil(total*.7) ? 2 : 1;
+  const gained = ST.qScore * 5;
+  const modeName = ST.mode==='look' ? 'На що схожа?' : 'Порахуй!';
+
+  app.innerHTML=`
+    <div class="topbar">
+      <button class="back-btn" onclick="window.__app.goMenu()">← Меню</button>
+      <span class="xp-badge">⭐ ${xp} XP</span>
+    </div>
+    <div class="result-box">
+      <div class="result-mode-label">${modeName}</div>
+      <div class="result-stars">${'⭐'.repeat(stars)}</div>
+      <div class="result-title">${stars===3?'Чудово!':stars===2?'Молодець!':'Добре!'}</div>
+      <div class="result-score">${ST.qScore} з ${total} правильно</div>
+      <div class="result-xp">+${gained} XP</div>
+      <button class="nav-btn primary full"
+        onclick="window.__app.startQuiz('${ST.mode}')">Ще раз</button>
+      <button class="nav-btn full"
+        onclick="window.__app.goMenu()">← До меню</button>
+    </div>
+  `;
+}
+
+/* ─── WINDOW API ────────────────────────────────────────────────────── */
+window.__app = {
+  goMenu(){
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    ST = {screen:'menu'};
+    renderMenu();
+  },
+
+  openLearn(i){
+    ST = {screen:'learn', idx:i};
+    renderLearn();
+    setTimeout(()=>speak(NUMS[i].poem.join(' ')), 400);
+  },
+
+  startLearn(){
+    ST = {screen:'learn', idx:0};
+    renderLearn();
+  },
+
+  navLearn(dir){
+    const ni = ST.idx + dir;
+    if(ni < 0){ this.goMenu(); return; }
+    if(ni >= NUMS.length){ this.goMenu(); return; }
+    ST.idx = ni;
+    renderLearn();
+  },
+
+  speakCard(i){
+    speak(NUMS[i].poem.join(' '));
+  },
+
+  startQuiz(mode){
+    ST.mode = mode;
+    ST.qScore = 0;
+    ST.answered = false;
+
+    const ids = shuffle(NUMS.map((_,i)=>i));
+    ST.quizQ = ids.map(ci=>{
+      const others = shuffle(NUMS.map((_,i)=>i).filter(x=>x!==ci)).slice(0,3);
+      return {correctIdx:ci, opts:shuffle([ci,...others])};
+    });
+
+    ST.qIdx = 0;
+    ST.screen = 'quiz';
+    renderQuiz();
+  },
+
+  answer(btnIdx){
+    if(ST.answered) return;
+    ST.answered = true;
+
+    const q = ST.quizQ[ST.qIdx];
+    const ok = (q.opts[btnIdx] === q.correctIdx);
+
+    const btn = document.getElementById('opt'+btnIdx);
+    if(btn) btn.classList.add(ok ? 'correct' : 'wrong');
+
+    const fb = document.getElementById('fb');
+    if(ok){
+      ST.qScore++;
+      xp += 5; saveXP(); flashXP();
+      if(fb){ fb.textContent='✅ Правильно! +5 XP'; fb.style.color='#69DB7C'; }
+    } else {
+      // reveal correct
+      const ci = q.opts.indexOf(q.correctIdx);
+      const cb = document.getElementById('opt'+ci);
+      if(cb) cb.classList.add('correct');
+      if(fb){ fb.textContent='❌ Помилка!'; fb.style.color='#FF6B6B'; }
+    }
+
+    const nb = document.getElementById('nxtBtn');
+    if(nb) nb.style.display = 'block';
+  },
+
+  nextQ(){
+    ST.answered = false;
+    ST.qIdx++;
+    if(ST.qIdx >= ST.quizQ.length){
+      ST.screen = 'result';
+      renderResult();
+    } else {
+      renderQuiz();
+    }
+  }
+};
+
+renderMenu();
+})();
+</script>
+</body>
+</html>
