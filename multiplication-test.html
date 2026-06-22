@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>✖️ Весела таблиця множення</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0d1b3e;--indigo:#1a2a5e;--violet:#2d1b4e;--brand-red:#E5383B;--gold:#ffd54a;--green:#4CAF50;--accent:#ff79c6}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,var(--navy) 0%,var(--indigo) 50%,var(--violet) 100%);min-height:100vh;color:#fff;overflow-x:hidden;touch-action:manipulation}
+.stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star-dot{position:absolute;background:#fff;border-radius:50%;animation:tw var(--dur,3s) infinite ease-in-out}
+@keyframes tw{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+#app{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:14px 14px 28px;min-height:100vh;display:flex;flex-direction:column}
+
+/* confetti */
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+.confetti-bit{position:absolute;top:-30px;font-size:1.4rem;animation:fall linear forwards}
+@keyframes fall{0%{transform:translateY(-30px) rotate(0)}100%{transform:translateY(105vh) rotate(540deg);opacity:.3}}
+
+/* TOPBAR */
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.back-btn{background:rgba(255,255,255,.1);border:none;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;padding:8px 14px;border-radius:12px;font-size:.85rem;cursor:pointer;transition:.15s;text-decoration:none;display:inline-block}
+.back-btn:active{transform:scale(.95)}
+.xp-badge{background:rgba(255,213,74,.15);border:1px solid rgba(255,213,74,.35);color:var(--gold);padding:6px 12px;border-radius:12px;font-weight:800;font-size:.85rem;transition:background .3s;white-space:nowrap}
+.xp-badge.flash{background:rgba(255,213,74,.45)}
+
+/* MENU */
+.page-title{text-align:center;margin:4px 0 14px}
+.page-title h1{font-family:'Fredoka One',cursive;font-size:1.7rem;color:var(--gold);text-shadow:0 0 26px rgba(255,213,74,.5)}
+.page-title p{color:rgba(255,255,255,.5);font-size:.86rem;margin-top:4px}
+
+.lv-list{display:flex;flex-direction:column;gap:11px}
+.lv-card{
+  display:flex;align-items:center;gap:14px;cursor:pointer;transition:.18s;
+  background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);
+  border-radius:20px;padding:14px 16px;position:relative;overflow:hidden
+}
+.lv-card:active{transform:scale(.98)}
+.lv-card.locked{opacity:.45;cursor:not-allowed}
+.lv-card.done{border-color:rgba(255,213,74,.4)}
+.lv-mascot{font-size:2.4rem;flex-shrink:0;filter:drop-shadow(0 3px 8px rgba(0,0,0,.3))}
+.lv-mid{flex:1;min-width:0}
+.lv-name{font-family:'Fredoka One',cursive;font-size:1.1rem;line-height:1.1}
+.lv-sub{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:2px}
+.lv-stars{font-size:.85rem;letter-spacing:1px;min-height:16px;color:var(--gold);margin-top:3px}
+.lv-right{font-size:1.3rem;flex-shrink:0}
+
+/* QUIZ */
+.quiz-prog{height:8px;background:rgba(255,255,255,.15);border-radius:5px;margin-bottom:6px;overflow:hidden}
+.quiz-prog-fill{height:100%;border-radius:5px;transition:width .3s ease;background:var(--accent)}
+.quiz-top{display:flex;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:12px}
+.quiz-lvl{font-weight:800}
+
+.q-card{
+  background:rgba(255,255,255,.07);border:2px solid var(--accent);
+  border-radius:24px;padding:16px 14px 18px;text-align:center;margin-bottom:12px;
+  animation:pop .3s ease;display:flex;flex-direction:column;align-items:center;gap:10px;
+  box-shadow:0 0 30px -8px var(--accent)
+}
+@keyframes pop{0%{opacity:0;transform:scale(.93)}100%{opacity:1;transform:scale(1)}}
+.q-mascot{font-size:2.6rem;animation:bob 1.8s infinite ease-in-out}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+
+.groups{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:340px}
+.grp{
+  background:rgba(255,255,255,.08);border:2px dashed var(--accent);border-radius:14px;
+  padding:7px 9px;display:flex;flex-wrap:wrap;gap:3px;justify-content:center;
+  max-width:108px;animation:popIn .3s ease backwards
+}
+@keyframes popIn{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}
+.grp span{font-size:1.45rem;line-height:1}
+
+.q-sym{font-family:'Fredoka One',cursive;font-size:2.4rem;line-height:1;margin-top:2px}
+.q-sym .x{color:var(--accent)}
+.q-sym .eq{color:rgba(255,255,255,.5)}
+.q-sym .blank{color:var(--gold)}
+.q-hint{font-size:.92rem;font-weight:700;color:rgba(255,255,255,.6)}
+.tts-btn{background:linear-gradient(135deg,#3949ab,#283593);border:none;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:.83rem;padding:7px 15px;border-radius:13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s}
+.tts-btn:active{transform:scale(.97)}
+
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{
+  background:rgba(255,255,255,.09);border:2px solid rgba(255,255,255,.2);
+  border-radius:18px;padding:16px;cursor:pointer;transition:.13s;
+  font-family:'Fredoka One',cursive;font-size:2rem;color:#fff;min-height:72px;
+  display:flex;align-items:center;justify-content:center
+}
+.opt:active{transform:scale(.96)}
+.opt.correct{background:rgba(76,175,80,.32);border-color:var(--green);animation:pg .45s ease}
+.opt.wrong{background:rgba(229,56,59,.32);border-color:var(--brand-red);animation:shake .4s}
+.opt.disabled{pointer-events:none}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+@keyframes pg{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+
+.feedback{text-align:center;font-size:1.1rem;font-weight:900;min-height:32px;margin:10px 0;line-height:32px}
+
+/* RESULT */
+.result-box{display:flex;flex-direction:column;align-items:center;gap:13px;padding:18px 0;flex:1;justify-content:center}
+.result-mascot{font-size:4rem;animation:bob 1.8s infinite ease-in-out}
+.result-stars{font-size:3rem;letter-spacing:8px;animation:pop .4s ease}
+.result-title{font-family:'Fredoka One',cursive;font-size:1.9rem;color:var(--gold)}
+.result-score{font-size:1rem;color:rgba(255,255,255,.65)}
+.result-xp{font-size:1.25rem;font-weight:800;color:var(--gold);background:rgba(255,213,74,.12);border:1px solid rgba(255,213,74,.3);padding:8px 24px;border-radius:14px}
+.nav-btn{width:100%;background:linear-gradient(135deg,var(--brand-red),#c62828);border:none;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;padding:14px;border-radius:16px;cursor:pointer;box-shadow:0 4px 16px rgba(229,56,59,.32);transition:.15s}
+.nav-btn:active{transform:scale(.97)}
+.nav-btn.ghost{background:rgba(255,255,255,.1);box-shadow:none}
+</style>
+</head>
+<body>
+<div class="stars-bg" id="stars"></div>
+<div id="confetti"></div>
+<div id="app"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ─── THEMES (one per level) ─── */
+// factor 0 = mixed (level 5)
+const THEMES = [
+  {factor:2, name:'Парочки',   sub:'множимо на 2',      mascot:'🐰', accent:'#ff79c6', items:['🥕','🌸','🍓','⭐']},
+  {factor:3, name:'Трійчата',  sub:'множимо на 3',      mascot:'🐱', accent:'#4fc3f7', items:['🐟','🍪','🎈','🍀']},
+  {factor:4, name:'Четвірки',  sub:'множимо на 4',      mascot:'🐶', accent:'#69db7c', items:['🦴','🍎','🌟','🍊']},
+  {factor:5, name:"П'ятірки",  sub:'множимо на 5',      mascot:'🐝', accent:'#ffd54a', items:['🌼','🍯','🌟','🍓']},
+  {factor:0, name:'Чарівник',  sub:'усе перемішалось!', mascot:'🦄', accent:'#ce93d8', items:['🌈','⭐','🍭','💎','🎀']}
+];
+const LEVEL_COUNT = THEMES.length;
+const Q_PER_LEVEL = 6;
+
+const WORDS = ['нуль','один','два','три','чотири','п\'ять'];
+const PRAISE = ['Супер! 🎉','Вау! ✨','Молодчинка! 🌟','Так тримати! 💪','Ти зірочка! ⭐','Геній! 🧠','Клас! 🚀'];
+const SOFT   = ['Майже! 🙂','Нічого, далі вийде!','Запам\'ятаймо це!','Ще трішки!'];
+
+const XP_KEY  = 'sk_mult_xp_v1';
+const UNL_KEY = 'sk_mult_unlocked_v1';
+const STAR_KEY= 'sk_mult_stars_v1';
+
+let xp       = parseInt(localStorage.getItem(XP_KEY) || '0');
+let unlocked = parseInt(localStorage.getItem(UNL_KEY) || '1');
+let starsMap = {};
+try { starsMap = JSON.parse(localStorage.getItem(STAR_KEY) || '{}'); } catch(e){ starsMap = {}; }
+
+let ST = {screen:'menu'};
+
+/* ─── STARS BG ─── */
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<55;i++){
+    const d=document.createElement('div');
+    d.className='star-dot';
+    const s=Math.random()*2.5+.8;
+    d.style.cssText=`width:${s}px;height:${s}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${(2+Math.random()*4).toFixed(1)}s;animation-delay:${(Math.random()*6).toFixed(1)}s`;
+    c.appendChild(d);
+  }
+})();
+
+/* ─── HELPERS ─── */
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function shuffle(a){ const r=a.slice(); for(let i=r.length-1;i>0;i--){ const j=randInt(0,i); [r[i],r[j]]=[r[j],r[i]]; } return r; }
+function pick(a){ return a[randInt(0,a.length-1)]; }
+function save(k,v){ try{ localStorage.setItem(k, typeof v==='string'?v:JSON.stringify(v)); }catch(e){} }
+
+function speak(text){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='uk-UA'; u.rate=0.82; u.pitch=1.15;
+  window.speechSynthesis.speak(u);
+}
+function flashXP(){
+  document.querySelectorAll('.xp-badge').forEach(el=>{
+    el.textContent='⭐ '+xp+' XP'; el.classList.add('flash');
+    setTimeout(()=>el.classList.remove('flash'),500);
+  });
+}
+function celebrate(){
+  const box=document.getElementById('confetti');
+  const emojis=['⭐','🎉','✨','🌟','🎈','💫'];
+  for(let i=0;i<18;i++){
+    const b=document.createElement('div');
+    b.className='confetti-bit';
+    b.textContent=pick(emojis);
+    b.style.left=randInt(2,96)+'%';
+    b.style.animationDuration=(1+Math.random()*0.9).toFixed(2)+'s';
+    b.style.animationDelay=(Math.random()*0.25).toFixed(2)+'s';
+    box.appendChild(b);
+    setTimeout(()=>b.remove(),2200);
+  }
+}
+
+/* ─── QUESTION GENERATION ─── */
+function genQuestion(level){
+  const theme=THEMES[level-1];
+  let factor, groups;
+  if(level<LEVEL_COUNT){ factor=theme.factor; groups=randInt(2,5); }
+  else { factor=randInt(2,5); groups=randInt(2,5); }
+  const product=groups*factor;
+  const item=pick(theme.items);
+  const raz = groups===5 ? 'разів' : 'рази';
+  return {groups, factor, product, item, answer:product,
+          speech:`${WORDS[groups]} ${raz} по ${WORDS[factor]}. Скільки всього?`};
+}
+
+function makeOptions(answer){
+  const set=new Set([answer]);
+  const cand=shuffle([answer-1,answer+1,answer-2,answer+2,answer-3,answer+3,answer-4,answer+4,answer-5,answer+5]);
+  for(const c of cand){ if(set.size>=4) break; if(c>0 && c<=30 && !set.has(c)) set.add(c); }
+  let f=1; while(set.size<4 && f<=30){ if(!set.has(f)) set.add(f); f++; }
+  return shuffle([...set]);
+}
+
+function buildQuestions(level){
+  const list=[];
+  for(let i=0;i<Q_PER_LEVEL;i++){
+    let q=genQuestion(level);
+    let tries=0;
+    while(tries<8 && list.length && list[list.length-1].answer===q.answer && list[list.length-1].groups===q.groups){
+      q=genQuestion(level); tries++;
+    }
+    q.opts=makeOptions(q.answer);
+    list.push(q);
+  }
+  return list;
+}
+
+/* ─── RENDER: MENU ─── */
+const app=document.getElementById('app');
+
+function renderMenu(){
+  document.documentElement.style.setProperty('--accent','#ff79c6');
+  app.innerHTML=`
+    <div class="topbar">
+      <a class="back-btn" href="akademiya-geroya.html">← Академія</a>
+      <span class="xp-badge">⭐ ${xp} XP</span>
+    </div>
+    <div class="page-title">
+      <h1>✖️ Весела таблиця множення</h1>
+      <p>Множення для початківців · 5 рівнів</p>
+    </div>
+    <div class="lv-list">
+      ${THEMES.map((t,i)=>{
+        const lv=i+1;
+        const locked=lv>unlocked;
+        const stars=starsMap[lv]||0;
+        const done=stars>0;
+        return `
+          <div class="lv-card ${locked?'locked':''} ${done?'done':''}"
+            style="--accent:${t.accent}; ${done?'box-shadow:0 0 22px -10px '+t.accent:''}"
+            ${locked?'':`onclick="window.__app.startLevel(${lv})"`}>
+            <span class="lv-mascot">${locked?'🔒':t.mascot}</span>
+            <span class="lv-mid">
+              <span class="lv-name" style="color:${t.accent}">${t.name}</span>
+              <span class="lv-sub">${t.sub}</span>
+              <span class="lv-stars">${done?'⭐'.repeat(stars):(locked?'відкриється далі':'нумо грати!')}</span>
+            </span>
+            <span class="lv-right">${locked?'':'▶'}</span>
+          </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+/* ─── RENDER: QUIZ ─── */
+function renderQuiz(){
+  const q=ST.questions[ST.qIdx];
+  const theme=THEMES[ST.level-1];
+  document.documentElement.style.setProperty('--accent',theme.accent);
+  const total=ST.questions.length;
+  const pct=Math.round(ST.qIdx/total*100);
+
+  // groups visual
+  let groupsHtml='';
+  for(let g=0; g<q.groups; g++){
+    let inner='';
+    for(let k=0;k<q.factor;k++) inner+=`<span>${q.item}</span>`;
+    groupsHtml+=`<div class="grp" style="animation-delay:${(g*0.06).toFixed(2)}s">${inner}</div>`;
+  }
+  const raz = q.groups===5 ? 'разів' : 'рази';
+
+  app.innerHTML=`
+    <div class="topbar">
+      <button class="back-btn" onclick="window.__app.goMenu()">← Меню</button>
+      <span class="xp-badge">⭐ ${xp} XP</span>
+    </div>
+    <div class="quiz-prog"><div class="quiz-prog-fill" style="width:${pct}%"></div></div>
+    <div class="quiz-top">
+      <span class="quiz-lvl" style="color:${theme.accent}">${theme.mascot} ${theme.name}</span>
+      <span>${ST.qIdx+1} / ${total}</span>
+    </div>
+    <div class="q-card">
+      <div class="q-mascot">${theme.mascot}</div>
+      <div class="groups">${groupsHtml}</div>
+      <div class="q-sym"><span>${q.groups}</span> <span class="x">×</span> <span>${q.factor}</span> <span class="eq">=</span> <span class="blank">?</span></div>
+      <div class="q-hint">${q.groups} ${raz} по ${q.factor} — скільки всього?</div>
+      <button class="tts-btn" onclick="window.__app.speakQ()">🔊 Послухати</button>
+    </div>
+    <div class="opts">
+      ${q.opts.map((v,i)=>`<button class="opt" id="opt${i}" onclick="window.__app.answer(${i})">${v}</button>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+  `;
+}
+
+/* ─── RENDER: RESULT ─── */
+function renderResult(){
+  const theme=THEMES[ST.level-1];
+  const total=ST.questions.length;
+  const pct=ST.correct/total;
+  const stars = pct>=0.9?3 : pct>=0.6?2 : 1;
+  const gained=ST.correct;
+  const isLast=ST.level>=LEVEL_COUNT;
+
+  app.innerHTML=`
+    <div class="topbar">
+      <button class="back-btn" onclick="window.__app.goMenu()">← Меню</button>
+      <span class="xp-badge">⭐ ${xp} XP</span>
+    </div>
+    <div class="result-box">
+      <div class="result-mascot">${stars===3?'🏆':theme.mascot}</div>
+      <div class="result-stars">${'⭐'.repeat(stars)}</div>
+      <div class="result-title">${stars===3?'Бездоганно!':stars===2?'Чудово!':'Гарна спроба!'}</div>
+      <div class="result-score">${ST.correct} з ${total} правильно</div>
+      <div class="result-xp">+${gained} XP</div>
+      ${isLast
+        ? `<button class="nav-btn" onclick="window.__app.goMenu()">🏆 Усі рівні</button>`
+        : `<button class="nav-btn" onclick="window.__app.startLevel(${ST.level+1})">Наступний рівень →</button>`}
+      <button class="nav-btn ghost" onclick="window.__app.startLevel(${ST.level})">🔄 Ще раз</button>
+      <button class="nav-btn ghost" onclick="window.__app.goMenu()">← Усі рівні</button>
+    </div>
+  `;
+  if(stars>=2) celebrate();
+}
+
+/* ─── APP API ─── */
+window.__app={
+  goMenu(){
+    if(ST.advanceTimer){ clearTimeout(ST.advanceTimer); ST.advanceTimer=null; }
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    ST={screen:'menu'};
+    renderMenu();
+  },
+  startLevel(lv){
+    if(ST.advanceTimer){ clearTimeout(ST.advanceTimer); ST.advanceTimer=null; }
+    ST={screen:'quiz', level:lv, questions:buildQuestions(lv), qIdx:0, correct:0, answered:false};
+    renderQuiz();
+  },
+  speakQ(){ speak(ST.questions[ST.qIdx].speech); },
+  answer(i){
+    if(ST.answered) return;
+    ST.answered=true;
+    const q=ST.questions[ST.qIdx];
+    const ok=(q.opts[i]===q.answer);
+    document.querySelectorAll('.opt').forEach(b=>b.classList.add('disabled'));
+
+    const btn=document.getElementById('opt'+i);
+    const fb=document.getElementById('fb');
+    if(ok){
+      btn.classList.add('correct');
+      ST.correct++;
+      xp+=1; save(XP_KEY,String(xp)); flashXP();
+      celebrate();
+      if(fb){ fb.textContent=pick(PRAISE)+' +1 XP'; fb.style.color='#69DB7C'; }
+    } else {
+      btn.classList.add('wrong');
+      const ci=q.opts.indexOf(q.answer);
+      const cb=document.getElementById('opt'+ci);
+      if(cb) cb.classList.add('correct');
+      if(fb){ fb.textContent=pick(SOFT)+' Це '+q.answer; fb.style.color='#ffd54a'; }
+    }
+    // грайливо й без покарань: завжди йдемо далі
+    if(ST.advanceTimer) clearTimeout(ST.advanceTimer);
+    ST.advanceTimer=setTimeout(()=>this.next(), ok?950:1700);
+  },
+  next(){
+    if(ST.advanceTimer){ clearTimeout(ST.advanceTimer); ST.advanceTimer=null; }
+    ST.answered=false;
+    ST.qIdx++;
+    if(ST.qIdx>=ST.questions.length){
+      const total=ST.questions.length;
+      const pct=ST.correct/total;
+      const stars=pct>=0.9?3:pct>=0.6?2:1;
+      if((starsMap[ST.level]||0)<stars){ starsMap[ST.level]=stars; save(STAR_KEY,starsMap); }
+      if(ST.level===unlocked && unlocked<LEVEL_COUNT){ unlocked++; save(UNL_KEY,String(unlocked)); }
+      ST.screen='result';
+      renderResult();
+    } else {
+      renderQuiz();
+    }
+  }
+};
+
+renderMenu();
+})();
+</script>
+</body>
+</html>
