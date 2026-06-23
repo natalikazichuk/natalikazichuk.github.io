@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📝 Правопис слів — SchoolKingdom</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#1a1040 0%,#2d1b6b 50%,#0d2647 100%);min-height:100vh;color:#fff;-webkit-tap-highlight-color:transparent}
+
+  .back-bar{padding:12px 16px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.08)}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(108,99,255,0.2);border:1px solid rgba(108,99,255,0.4);border-radius:10px;padding:7px 14px;color:#c3b8ff;font-size:0.85rem;font-weight:700;text-decoration:none;transition:background .15s}
+  .back-btn:hover{background:rgba(108,99,255,0.35)}
+  .back-bar-title{color:#9B8FCC;font-size:0.85rem}
+
+  .wrap{max-width:640px;margin:0 auto;padding:24px 16px 60px;user-select:none;touch-action:manipulation}
+
+  .header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .header .emoji{font-size:42px;line-height:1}
+  .header h1{font-size:clamp(20px,5vw,28px);font-weight:800;letter-spacing:-.5px}
+  .header p{font-size:13px;color:#9B8FCC;margin-top:2px}
+  .xp-badge{background:linear-gradient(135deg,rgba(255,179,0,.2),rgba(255,138,0,.13));border:2px solid #FFB300;border-radius:30px;padding:8px 18px;margin-bottom:22px;display:inline-flex;align-items:center;gap:8px}
+  .xp-badge .ico{font-size:18px}
+  .xp-badge .val{color:#FFD54F;font-weight:800;font-size:17px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+  .level-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;padding:16px;min-height:108px;border-radius:16px;border:2px solid #5040A0;background:#26185A;color:#fff;font-family:inherit;cursor:pointer;transition:transform .15s,background .15s}
+  .level-card:hover{transform:translateY(-3px);background:#2d2068}
+  .level-card:active{transform:scale(.98)}
+  .level-card.done{border-color:#FFD700}
+  .level-num{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#FFD54F}
+  .level-title{font-weight:700;font-size:14px}
+  .level-sub{font-size:12px;color:#9B8FCC;line-height:1.3}
+  .badge-timed{font-size:11px;color:#FFB74D;font-weight:700}
+  .level-check{position:absolute;top:8px;right:10px;font-size:14px}
+
+  .top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:13px;color:#9B8FCC}
+  .top-row .prog{color:#6C63FF;font-weight:700}
+  .progress-track{background:rgba(255,255,255,0.1);border-radius:12px;height:12px;overflow:hidden;margin-bottom:16px}
+  .progress-fill{height:100%;border-radius:12px;background:linear-gradient(90deg,#6C63FF,#A06CFF);transition:width .35s cubic-bezier(.4,0,.2,1)}
+  .timer-row{display:flex;align-items:center;gap:6px;margin-bottom:14px;font-size:14px;color:#FFB74D;font-weight:700}
+  .problem-card{background:#1e1450;border:2px solid #5040A0;border-radius:24px;padding:30px 22px;margin-bottom:18px;text-align:center;transition:background .25s,border .25s}
+  .problem-card.correct{background:#1b3a1b;border-color:#4CAF50}
+  .problem-card.wrong{background:#3a1b1b;border-color:#F44336}
+  .problem-card .direction{font-size:13px;color:#9B8FCC;margin-bottom:12px;font-weight:600}
+  .problem-card .word{font-size:38px;font-weight:800;letter-spacing:1px;color:#FFD54F}
+  .problem-card .status{font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px}
+  .problem-card .hint{font-size:13px;color:#9B8FCC;margin-top:8px}
+
+  .answer-row{display:flex;gap:8px}
+  input[type="text"]{flex:1;height:50px;font-size:18px;font-family:inherit;font-weight:700;text-align:center;border:2px solid #5040A0;border-radius:14px;background:#2d2060;color:#fff;padding:0 12px;outline:none}
+  input[type="text"]:focus{border-color:#6C63FF}
+  input[type="text"]::placeholder{color:#7a6fb0;font-weight:400}
+  .answer-row button{padding:0 20px;font-weight:700;font-size:15px;white-space:nowrap;border-radius:14px;border:none;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#6C63FF,#A06CFF);color:#fff}
+  .answer-row button:active{transform:scale(.97)}
+  .xp-ticker{display:flex;align-items:center;justify-content:center;gap:6px;color:#FFD54F;font-size:14px;font-weight:700;margin-top:16px}
+
+  .result-card{background:#1e1450;border:2px solid #FFD700;border-radius:24px;padding:32px 24px;text-align:center}
+  .medal{font-size:60px}
+  .result-kicker{font-size:13px;color:#9B8FCC;margin:12px 0 2px}
+  .result-badge{font-size:23px;font-weight:800;margin-bottom:4px;color:#FFD700}
+  .result-sub{font-size:13px;color:#9B8FCC;margin-bottom:18px}
+  .xp-box{background:linear-gradient(135deg,rgba(255,179,0,.2),rgba(255,138,0,.13));border:2px solid #FFB300;border-radius:14px;padding:12px 14px;margin-bottom:18px}
+  .xp-box .earned{color:#FFD54F;font-weight:800;font-size:22px}
+  .xp-box .total{color:#9B8FCC;font-size:13px;margin-top:2px}
+  .stars{font-size:30px;letter-spacing:4px;margin-bottom:14px}
+  .result-actions{display:flex;gap:8px;flex-direction:column}
+  .result-actions button{width:100%;padding:14px;font-weight:700;font-size:15px;border-radius:14px;font-family:inherit;cursor:pointer}
+  .btn-main{background:linear-gradient(135deg,#6C63FF,#A06CFF);border:none;color:#fff}
+  .btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#c3b8ff}
+</style>
+</head>
+<body>
+
+<div class="back-bar">
+  <a class="back-btn" href="index.html?view=child-academy">← До кабінету</a>
+  <span class="back-bar-title">Академія Героїв · Українська мова</span>
+</div>
+
+<div class="wrap"><div id="root"></div></div>
+
+<script>
+(function(){
+  const root = document.getElementById('root');
+  const XP_KEY   = 'sk_spell_pts_v1';   // XP квесту (поки не пов'язано з характеристиками Героя)
+  const DONE_KEY = 'sk_spell_done_v1';  // пройдені рівні
+  let totalXp = 0, doneSet = {};
+  try { totalXp = parseInt(localStorage.getItem(XP_KEY)||'0') || 0; } catch(e){}
+  try { doneSet = JSON.parse(localStorage.getItem(DONE_KEY)||'{}') || {}; } catch(e){}
+  function save(){ try{ localStorage.setItem(XP_KEY,String(totalXp)); localStorage.setItem(DONE_KEY,JSON.stringify(doneSet)); }catch(e){} }
+
+  function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=randInt(0,i); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+
+  const wordLists = {
+    1: [
+      {template:"к_шеня", answer:"и"}, {template:"л_вада", answer:"е"}, {template:"л_ман", answer:"и"},
+      {template:"п_тля", answer:"е"}, {template:"тр_вога", answer:"и"}, {template:"лев_ця", answer:"и"},
+      {template:"м_телик", answer:"е"}, {template:"с_рпень", answer:"е"}, {template:"кр_ниця", answer:"и"},
+      {template:"оч_рет", answer:"е"}
+    ],
+    2: [
+      {template:"ро_казати", answer:"з"}, {template:"ро_сипати", answer:"з"}, {template:"ро_повісти", answer:"з"},
+      {template:"ро_цвісти", answer:"з"}, {template:"ро_тягнути", answer:"з"}, {template:"ро_хитати", answer:"з"},
+      {template:"бе_коштовний", answer:"з"}, {template:"бе_печний", answer:"з"}, {template:"бе_сонний", answer:"з"},
+      {template:"бе_сторонній", answer:"з"}
+    ],
+    3: [
+      {template:"_казати", answer:"с"}, {template:"_ходити", answer:"с"}, {template:"_питати", answer:"с"},
+      {template:"_терти", answer:"с"}, {template:"_хопити", answer:"с"}, {template:"_кликати", answer:"с"},
+      {template:"_палити", answer:"с"}, {template:"_фотографувати", answer:"с"}, {template:"_тиснути", answer:"с"},
+      {template:"_хитрити", answer:"с"}
+    ],
+    4: [
+      {template:"жит_я", answer:"т"}, {template:"облич_я", answer:"ч"}, {template:"знан_я", answer:"н"},
+      {template:"насін_я", answer:"н"}, {template:"зіл_я", answer:"л"}, {template:"колос_я", answer:"с"},
+      {template:"весіл_я", answer:"л"}, {template:"сторіч_я", answer:"ч"}, {template:"узбіч_я", answer:"ч"},
+      {template:"стат_я", answer:"т"}
+    ],
+    5: [
+      {template:"тін_", answer:"ь"}, {template:"кін_", answer:"ь"}, {template:"сіл_", answer:"ь"},
+      {template:"осін_", answer:"ь"}, {template:"нян_ку", answer:"ь"}, {template:"бат_ко", answer:"ь"},
+      {template:"ган_ба", answer:"ь"}, {template:"пал_ці", answer:"ь"}, {template:"дон_ка", answer:"ь"},
+      {template:"рибал_ство", answer:"ь"}
+    ],
+    6: [
+      {template:"п_ять", answer:"'"}, {template:"м_ясо", answer:"'"}, {template:"в_язати", answer:"'"},
+      {template:"сім_я", answer:"'"}, {template:"пір_я", answer:"'"}, {template:"торф_яний", answer:"'"},
+      {template:"кур_єр", answer:"'"}, {template:"об_єкт", answer:"'"}, {template:"суб_єкт", answer:"'"},
+      {template:"комп_ютер", answer:"'"}
+    ],
+    7: [
+      {template:"_країна", answer:"У", caseSensitive:true}, {template:"_иїв", answer:"К", caseSensitive:true},
+      {template:"_ніпро", answer:"Д", caseSensitive:true}, {template:"_арпати", answer:"К", caseSensitive:true},
+      {template:"_евченко", answer:"Ш", caseSensitive:true}, {template:"_ьвів", answer:"Л", caseSensitive:true},
+      {template:"_унай", answer:"Д", caseSensitive:true}, {template:"_орне море", answer:"Ч", caseSensitive:true},
+      {template:"_еликдень", answer:"В", caseSensitive:true}, {template:"_овий рік", answer:"Н", caseSensitive:true}
+    ],
+    8: [
+      {template:"д_ректор", answer:"и"}, {template:"с_стема", answer:"и"}, {template:"фіз_ка", answer:"и"},
+      {template:"ц_рк", answer:"и"}, {template:"ж_раф", answer:"и"}, {template:"ш_рина", answer:"и"},
+      {template:"р_ф", answer:"и"}, {template:"т_раж", answer:"и"}, {template:"д_сципліна", answer:"и"},
+      {template:"с_лует", answer:"и"}
+    ]
+  };
+
+  const levelsMeta = [
+    {id:1, title:'Рівень 1', subtitle:"Ненаголошені е, и", timed:false, badge:'Знавець словникових слів'},
+    {id:2, title:'Рівень 2', subtitle:"Префікси роз-, без-", timed:false, badge:'Знавець префіксів'},
+    {id:3, title:'Рівень 3', subtitle:"Префікс з- (чергування з/с)", timed:false, badge:'Майстер чергувань'},
+    {id:4, title:'Рівень 4', subtitle:"Подвоєння букв", timed:false, badge:'Знавець подвоєння'},
+    {id:5, title:'Рівень 5', subtitle:"М'який знак", timed:false, badge:"Знавець м'якого знака"},
+    {id:6, title:'Рівень 6', subtitle:"Апостроф", timed:false, badge:'Знавець апострофа'},
+    {id:7, title:'Рівень 7', subtitle:"Велика буква (власні назви)", timed:false, badge:'Знавець власних назв'},
+    {id:8, title:'Рівень 8', subtitle:"Правило дев'ятки (и/і)", timed:false, badge:"Знавець правила дев'ятки"},
+    {id:9, title:'Рівень 9', subtitle:'Змішані приклади, на час', timed:true, perTime:15, badge:'Швидкий мовознавець'},
+    {id:10, title:'Рівень 10', subtitle:'Майстер правопису', timed:true, perTime:12, badge:'Майстер правопису'}
+  ];
+
+  function generateProblems(id){
+    if(id<=8) return shuffle(wordLists[id]);
+    let pool = [];
+    for(let i=1;i<=8;i++) pool = pool.concat(wordLists[i]);
+    return shuffle(pool).slice(0,10);
+  }
+
+  function normalize(s, caseSensitive){
+    if(s===null || s===undefined) return '';
+    let t = s.toString().trim();
+    t = t.replace(/[\u2018\u2019\u0060]/g, "'");
+    if(!caseSensitive) t = t.toLowerCase();
+    return t;
+  }
+
+  let state = {screen:'menu'};
+
+  function clearAllTimers(){
+    if(state.timerId){ clearInterval(state.timerId); state.timerId=null; }
+    if(state.feedbackTimer){ clearTimeout(state.feedbackTimer); state.feedbackTimer=null; }
+  }
+
+  function startLevel(id){
+    clearAllTimers();
+    const meta = levelsMeta.find(l=>l.id===id);
+    state = {screen:'quiz', levelId:id, problems:generateProblems(id), index:0, earnedXp:0,
+             timeLeft:meta.timed?meta.perTime:0, timerId:null, feedbackTimer:null};
+    render();
+    if(meta.timed) startTimer();
+  }
+
+  function startTimer(){
+    if(state.timerId) clearInterval(state.timerId);
+    state.timerId = setInterval(()=>{
+      state.timeLeft--;
+      if(state.timeLeft<=0){ submitAnswer(true); }
+      else {
+        const el = document.getElementById('timer-val');
+        if(el) el.textContent = state.timeLeft;
+      }
+    },1000);
+  }
+
+  function fullWord(p){ return p.template.replace('_', p.answer); }
+
+  function submitAnswer(timeout){
+    if(state.screen!=='quiz') return;
+    const input = document.getElementById('answer-input');
+    const val = timeout ? null : (input ? input.value : null);
+    const p = state.problems[state.index];
+    const isCorrect = !timeout && normalize(val, p.caseSensitive)===normalize(p.answer, p.caseSensitive);
+    clearAllTimers();
+    state.lastGiven = val;
+    state.lastTimeout = timeout;
+    if(isCorrect){
+      state.earnedXp++;                         // +1 XP за правильну відповідь
+      state.screen = 'correct';
+      render();
+      state.feedbackTimer = setTimeout(advanceAfterCorrect, 700);
+    } else {
+      state.screen = 'wrong';                   // помилка — рівень спочатку, XP рівня обнуляється
+      render();
+      state.feedbackTimer = setTimeout(()=>{ startLevel(state.levelId); }, 2200);
+    }
+  }
+
+  function advanceAfterCorrect(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    state.index++;
+    if(state.index>=state.problems.length){
+      totalXp += state.earnedXp;                // зараховуємо XP рівня в загальний баланс
+      doneSet[state.levelId] = true;
+      save();
+      state.screen='result'; render(); return;
+    }
+    state.screen='quiz';
+    if(meta.timed) state.timeLeft = meta.perTime;
+    render();
+    if(meta.timed) startTimer();
+    const input = document.getElementById('answer-input');
+    if(input) input.focus();
+  }
+
+  function nextLevel(){ const id = Math.min(10, state.levelId+1); startLevel(id); }
+  function restart(){ clearAllTimers(); state={screen:'menu'}; render(); }
+  function handleKey(e){ if(e.key==='Enter') submitAnswer(false); }
+
+  window.__app = {startLevel, submitAnswer, nextLevel, restart, handleKey};
+
+  function render(){
+    if(state.screen==='menu') renderMenu();
+    else if(state.screen==='quiz') renderQuiz();
+    else if(state.screen==='correct') renderFeedback(true);
+    else if(state.screen==='wrong') renderFeedback(false);
+    else renderResult();
+  }
+
+  function renderMenu(){
+    root.innerHTML = `
+      <div class="header">
+        <span class="emoji">📝</span>
+        <div><h1>Правопис слів</h1><p>10 рівнів · обери правило</p></div>
+      </div>
+      <div class="xp-badge"><span class="ico">⚡</span><span class="val">${totalXp} XP</span></div>
+      <div class="grid">
+        ${levelsMeta.map(l=>{
+          const done = !!doneSet[l.id];
+          return `
+            <button class="level-card ${done?'done':''}" onclick="window.__app.startLevel(${l.id})">
+              <span class="level-num">${l.id}</span>
+              <span class="level-title">${l.title}</span>
+              <span class="level-sub">${l.subtitle}</span>
+              ${l.timed?'<span class="badge-timed">⏱ на час</span>':''}
+              ${done?'<span class="level-check">✓</span>':''}
+            </button>`;
+        }).join('')}
+      </div>`;
+  }
+
+  function quizTopHtml(meta){
+    const total = state.problems.length;
+    const pct = Math.round(state.index/total*100);
+    return `
+      <div class="top-row">
+        <span>${meta.title} · ${meta.subtitle}</span>
+        <span class="prog">${state.index+1} / ${total}</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%;"></div></div>`;
+  }
+
+  function renderQuiz(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const p = state.problems[state.index];
+    root.innerHTML = `
+      ${quizTopHtml(meta)}
+      ${meta.timed?`<div class="timer-row">⏱ <span id="timer-val">${state.timeLeft}</span> с</div>`:''}
+      <div class="problem-card">
+        <p class="direction">Встав потрібну букву:</p>
+        <p class="word">${p.template}</p>
+      </div>
+      <div class="answer-row">
+        <input id="answer-input" type="text" placeholder="?" autocomplete="off" autocapitalize="off" onkeydown="window.__app.handleKey(event)" />
+        <button onclick="window.__app.submitAnswer(false)">Перевірити</button>
+      </div>
+      <div class="xp-ticker"><span>⚡</span><span>+${state.earnedXp} XP за рівень</span></div>`;
+    setTimeout(()=>{ const i=document.getElementById('answer-input'); if(i) i.focus(); },0);
+  }
+
+  function renderFeedback(correct){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const p = state.problems[state.index];
+    const statusHtml = correct
+      ? `<div class="status" style="color:#6EE86E">✅ Правильно!</div>`
+      : `<div class="status" style="color:#FF7070">❌ ${state.lastTimeout?'Час вийшов':'Правильно: '+fullWord(p)}</div>
+         <p class="hint">Рівень починається знову…</p>`;
+    root.innerHTML = `
+      ${quizTopHtml(meta)}
+      <div class="problem-card ${correct?'correct':'wrong'}">
+        <p class="word">${fullWord(p)}</p>
+        ${statusHtml}
+      </div>
+      <div class="xp-ticker"><span>⚡</span><span>+${state.earnedXp} XP за рівень</span></div>`;
+  }
+
+  function renderResult(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const isLast = state.levelId===10;
+    root.innerHTML = `
+      <div class="result-card">
+        <div class="medal">🏅</div>
+        <p class="result-kicker">Ти отримав звання</p>
+        <p class="result-badge">«${meta.badge}»</p>
+        <p class="result-sub">${meta.title} пройдено без жодної помилки</p>
+        <div class="stars">⭐⭐⭐</div>
+        <div class="xp-box">
+          <div class="earned">⚡ +${state.earnedXp} XP</div>
+          <div class="total">Всього: ${totalXp} XP</div>
+        </div>
+        <div class="result-actions">
+          ${isLast
+            ? `<button class="btn-main" onclick="window.__app.restart()">До меню 👑</button>`
+            : `<button class="btn-main" onclick="window.__app.nextLevel()">Наступний рівень →</button>
+               <button class="btn-ghost" onclick="window.__app.restart()">До меню рівнів</button>`}
+        </div>
+      </div>`;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
