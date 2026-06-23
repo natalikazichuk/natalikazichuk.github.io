@@ -203,6 +203,14 @@ const SK = {
     return SK.activeHeroId;
   },
 
+  // Повний документ героя активної дитини (для відображення всіх характеристик)
+  async getHero() {
+    const heroId = await SK._resolveHero();
+    if (!heroId) return null;
+    const s = await getDoc(doc(db, 'heroes', heroId));
+    return s.exists() ? s.data() : null;
+  },
+
   // Зберегти характеристики героя активної дитини (похідні від прогресу).
   // Монети НЕ чіпаємо — ними керує система нагород, а не XP.
   async saveHeroStats(stats) {

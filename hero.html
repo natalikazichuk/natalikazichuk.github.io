@@ -240,6 +240,7 @@ a{color:inherit;text-decoration:none}
 .m20-go{background:var(--acc);color:#06281f;font-weight:900;text-decoration:none;padding:9px 18px;border-radius:12px;font-size:.92rem;transition:transform .15s,box-shadow .15s}
 .m20-go:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(78,205,196,.4)}
 </style>
+<script type="module" src="firebase-config.js"></script>
 </head>
 <body>
 
@@ -298,6 +299,7 @@ a{color:inherit;text-decoration:none}
 
     <div class="info">
       <div class="info-row"><span class="ic">🎖️</span><span class="k">Титул:</span><span class="v" id="heroTitle">Лицар Знань</span></div>
+      <div class="info-row"><span class="ic">🆙</span><span class="k">Рівень:</span><span class="v" id="heroLevel">1</span></div>
       <div class="xp-wrap">
         <div class="xp-line"><span class="ic">⭐</span><span class="k">XP:</span><span class="v"><span id="xpCur">2450</span> / <span id="xpMax">3000</span></span></div>
         <div class="xp-bar"><span id="xpFill" style="width:81%"></span></div>
@@ -387,13 +389,13 @@ a{color:inherit;text-decoration:none}
       <div>
         <h2 class="sec-title" style="font-size:1.05rem;margin:0 0 10px">Неактивні характеристики <span class="sec-sub">(поки недоступні в першому класі)</span></h2>
         <div class="locked-grid">
-          <div class="lock-card"><span class="ic">⚔️</span><span class="nm">Сила <small>(Strength)</small></span><span class="lv">1</span><span class="pad">🔒</span></div>
-          <div class="lock-card"><span class="ic">🛡️</span><span class="nm">Захист <small>(Defense)</small></span><span class="lv">1</span><span class="pad">🔒</span></div>
-          <div class="lock-card"><span class="ic">🧠</span><span class="nm">Інтелект <small>(Intelligence)</small></span><span class="lv">1</span><span class="pad">🔒</span></div>
-          <div class="lock-card"><span class="ic">💎</span><span class="nm">Мудрість <small>(Wisdom)</small></span><span class="lv">1</span><span class="pad">🔒</span></div>
-          <div class="lock-card"><span class="ic">🍀</span><span class="nm">Удача <small>(Luck)</small></span><span class="lv">1</span><span class="pad">🔒</span></div>
-          <div class="lock-card"><span class="ic">⭐</span><span class="nm">Пам'ять <small>(Memory)</small></span><span class="lv">1</span><span class="pad">🔒</span></div>
-          <div class="lock-card"><span class="ic">👥</span><span class="nm">Харизма <small>(Charisma)</small></span><span class="lv">1</span><span class="pad">🔒</span></div>
+          <div class="lock-card"><span class="ic">⚔️</span><span class="nm">Сила <small>(Strength)</small></span><span class="lv" id="lk-str">1</span><span class="pad">🔒</span></div>
+          <div class="lock-card"><span class="ic">🛡️</span><span class="nm">Захист <small>(Defense)</small></span><span class="lv" id="lk-def">1</span><span class="pad">🔒</span></div>
+          <div class="lock-card"><span class="ic">🧠</span><span class="nm">Інтелект <small>(Intelligence)</small></span><span class="lv" id="lk-int">1</span><span class="pad">🔒</span></div>
+          <div class="lock-card"><span class="ic">💎</span><span class="nm">Мудрість <small>(Wisdom)</small></span><span class="lv" id="lk-wis">1</span><span class="pad">🔒</span></div>
+          <div class="lock-card"><span class="ic">🍀</span><span class="nm">Удача <small>(Luck)</small></span><span class="lv" id="lk-luck">1</span><span class="pad">🔒</span></div>
+          <div class="lock-card"><span class="ic">⭐</span><span class="nm">Пам'ять <small>(Memory)</small></span><span class="lv" id="lk-mem">1</span><span class="pad">🔒</span></div>
+          <div class="lock-card"><span class="ic">👥</span><span class="nm">Харизма <small>(Charisma)</small></span><span class="lv" id="lk-cha">1</span><span class="pad">🔒</span></div>
           <div class="lock-card" style="opacity:.55;border-style:dashed"><span class="ic">➕</span><span class="nm" style="color:#9aa6b8">Скоро…</span><span class="lv">?</span></div>
           <div class="lock-note"><span class="ic">🔒</span>Ці характеристики стануть доступними в наступних класах або після відкриття нових активностей.</div>
         </div>
@@ -493,6 +495,7 @@ function saveProfile(){ try{ localStorage.setItem('sk_hero_profile',JSON.stringi
 /* підсумкові числа: реальні, якщо є дані; інакше демо як на концепті */
 const data = hasData ? {
   hp, agi, mp, acc,
+  level: Math.floor(totalXP/3000)+1,
   coins: totalXP,
   gems: Math.max(profile.gems||0, Math.floor(stars)),
   achievements: stars,
@@ -500,9 +503,13 @@ const data = hasData ? {
   medals: stars, tests: passed, langs: langs||1,
   books: profile.books, sport: profile.sport
 } : {
-  hp:50, agi:1, mp:10, acc:1, coins:540, gems:35, achievements:24,
+  hp:50, agi:1, mp:10, acc:1, level:1, coins:540, gems:35, achievements:24,
   xpCur:2450, xpMax:3000, medals:24, tests:320, langs:2, books:18, sport:15
 };
+
+// заблоковані стати 1 класу — стартові значення з шаблону героя
+const lockedStats = {strength:2, defense:1, intelligence:1, wisdom:1, luck:1, memory:1, charisma:1};
+const lockedMap = {strength:'lk-str',defense:'lk-def',intelligence:'lk-int',wisdom:'lk-wis',luck:'lk-luck',memory:'lk-mem',charisma:'lk-cha'};
 
 /* ════ RENDER ════ */
 const $=id=>document.getElementById(id);
@@ -514,6 +521,9 @@ function render(){
   $('heroGrade').textContent=profile.grade;
   $('heroTitle').textContent=profile.title;
   $('heroAbout').textContent=profile.about;
+  if($('heroLevel')) $('heroLevel').textContent=data.level;
+  // заблоковані стати
+  Object.keys(lockedMap).forEach(k=>{ const el=$(lockedMap[k]); if(el) el.textContent=lockedStats[k]; });
 
   // wallet
   $('w-coins').textContent=data.coins;
@@ -559,6 +569,28 @@ function render(){
   $('avatarMini').textContent=(profile.name||'🧒').trim().charAt(0).toUpperCase()||'🧒';
 }
 render();
+
+/* ── якщо дитина в системі — перекриваємо індикатори реальними даними з бази ── */
+(function(){
+  if(!window.SK || !window.SK.ready) return;
+  window.SK.ready.then(async function(u){
+    if(!u) return;
+    try{
+      const h = await window.SK.getHero();
+      if(!h) return;
+      if(h.health!=null){ $('hpCur').textContent=h.health; $('hpBar').style.width=pct(h.health,100)+'%'; }
+      if(h.agility!=null){ $('agiCur').textContent=h.agility; $('agiBar').style.width=pct(h.agility,10)+'%'; }
+      if(h.mana!=null){ $('mpCur').textContent=h.mana; $('mpBar').style.width=pct(h.mana,20)+'%'; }
+      if(h.accuracy!=null){ $('accCur').textContent=h.accuracy; $('accBar').style.width=pct(h.accuracy,10)+'%'; var ma=$('m20Acc'); if(ma) ma.textContent=h.accuracy; }
+      if(h.level!=null && $('heroLevel')) $('heroLevel').textContent=h.level;
+      if(h.xp!=null){ $('xpCur').textContent=h.xp%3000; $('xpFill').style.width=pct(h.xp%3000,3000)+'%'; }
+      if(h.coins!=null){ $('w-coins').textContent=h.coins; $('coins2').textContent=h.coins; }
+      if(h.name){ $('heroName').textContent=h.name; $('avatarMini').textContent=(h.name||'🧒').trim().charAt(0).toUpperCase()||'🧒'; }
+      if(h.title) $('heroTitle').textContent=h.title;
+      Object.keys(lockedMap).forEach(function(k){ if(h[k]!=null){ var el=$(lockedMap[k]); if(el) el.textContent=h[k]; } });
+    }catch(e){}
+  });
+})();
 
 /* edit name */
 $('editName').addEventListener('click',()=>{
