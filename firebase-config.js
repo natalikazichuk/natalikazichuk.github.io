@@ -1,20 +1,21 @@
 /* ============================================================
    firebase-config.js — спільний модуль Firebase для SchoolKingdom
-   Підключення (на будь-якій сторінці, у <head> або перед </body>):
+   Підключення на будь-якій сторінці:
        <script type="module" src="firebase-config.js"></script>
    CDN-імпорти — працюють на GitHub Pages без build-інструментів.
 
-   Дані в хмарі (Cloud Firestore):
-     families/{uid} .......... акаунт батьків:
-            { parentName, parentRole, email, childrenOrder:[], createdAt }
-     families/{uid}/children/{childId} ... профіль дитини:
-            { name, avatar, age, grade, pin, progress:{ ключ:значення } }
+   СТРУКТУРА БАЗИ (пласка, як у консолі):
+     users/{uid} ........ батьки:  { email, name, role:"parent" }
+     children/{autoId} .. діти:    { name, avatar, age, grade, pin,
+                                     parentEmail, heroID, HP, coins,
+                                     level, xp, progress:{...} }
+     heroes/{autoId} .... герої:   { name, title, health, mana,
+                                     agility, accuracy, level, xp,
+                                     coins, parentEmail }
+   Зв'язки: дитина→батьки через parentEmail; дитина→герой через heroID.
 
-   Модель доступу:
-     • Один сімейний акаунт (email+пароль батьків).
-     • «Вхід дитини» = вибір профілю + перевірка PIN усередині сесії сім'ї.
-       Сесія Firebase зберігається на пристрої, тож після першого входу
-       батьків дитина заходить лише за PIN.
+   Модель доступу: один сімейний акаунт (email+пароль батьків).
+   «Вхід дитини» = вибір профілю + перевірка PIN усередині сесії сім'ї.
    ============================================================ */
 
 import { initializeApp }
@@ -25,8 +26,8 @@ import {
   signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, updateDoc,
-  collection, getDocs, serverTimestamp, deleteField
+  getFirestore, doc, getDoc, setDoc, updateDoc, addDoc,
+  collection, getDocs, query, where, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -43,10 +44,8 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-// Зберігати сесію між заходами (за замовчуванням так і є, але робимо явно)
 try { await setPersistence(auth, browserLocalPersistence); } catch (e) {}
 
-// Analytics — необов'язково; у деяких середовищах падає, тому в try/catch
 try {
   const { getAnalytics, isSupported } =
     await import("https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js");
@@ -54,43 +53,48 @@ try {
 } catch (e) {}
 
 /* ---------- допоміжне ---------- */
-
-// які ключі localStorage синхронізуємо з хмарою (увесь прогрес)
 function progressKeys() {
   const keys = [];
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i);
     if (!k) continue;
-    if (k === 'sk_active_family' || k === 'sk_active_child') continue; // службові
+    if (k === 'sk_active_family' || k === 'sk_active_child') continue;
     keys.push(k);
   }
   return keys;
 }
 
-function genId(name) {
-  return 'c_' + (name || 'child').toLowerCase()
-    .replace(/[^a-zа-яіїєґ0-9]+/gi, '_').slice(0, 20) + '_' + Date.now().toString(36);
+// стандартний герой для нової дитини (за зразком ваших даних)
+function defaultHero(name, email) {
+  return {
+    name: name || 'Герой',
+    title: 'Початківець',
+    health: 10, mana: 10, agility: 10, accuracy: 10,
+    level: 1, xp: 0, coins: 0,
+    parentEmail: email,
+    createdAt: serverTimestamp()
+  };
 }
 
 /* ---------- публічний API: window.SK ---------- */
-
 const SK = {
   _userResolve: null,
-  ready: null,              // проміс, який резолвиться після першої перевірки auth
-  user: null,               // поточний Firebase-користувач (батьки) або null
+  ready: null,
+  user: null,
   activeChildId: localStorage.getItem('sk_active_child') || null,
+  activeHeroId: null,
+  _userCbs: [],
 
   currentUser() { return auth.currentUser; },
 
-  // Реєстрація сім'ї: створює акаунт + документ families/{uid}
+  // Реєстрація батьків → users/{uid}
   async registerFamily({ parentName, parentRole, email, password }) {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     const uid = cred.user.uid;
-    await setDoc(doc(db, 'families', uid), {
-      parentName: parentName || '',
-      parentRole: parentRole || 'mama',
+    await setDoc(doc(db, 'users', uid), {
       email: email,
-      childrenOrder: [],
+      name: parentName || '',
+      role: parentRole || 'parent',
       createdAt: serverTimestamp()
     });
     return uid;
@@ -103,81 +107,129 @@ const SK = {
 
   async logout() {
     SK.activeChildId = null;
+    SK.activeHeroId = null;
     localStorage.removeItem('sk_active_child');
     await signOut(auth);
   },
 
-  // Повна модель сім'ї: { parent:{...}, children:{ id:{...} } }
-  async getFamily() {
+  async getParent() {
     const u = auth.currentUser;
     if (!u) return null;
-    const fSnap = await getDoc(doc(db, 'families', u.uid));
-    const parent = fSnap.exists() ? fSnap.data() : null;
-    const children = {};
-    const cSnap = await getDocs(collection(db, 'families', u.uid, 'children'));
-    cSnap.forEach(d => { children[d.id] = d.data(); });
+    const s = await getDoc(doc(db, 'users', u.uid));
+    return s.exists() ? s.data() : null;
+  },
+
+  // Усі діти поточних батьків (за parentEmail)
+  async getChildren() {
+    const u = auth.currentUser;
+    if (!u) return {};
+    const q = query(collection(db, 'children'), where('parentEmail', '==', u.email));
+    const snap = await getDocs(q);
+    const out = {};
+    snap.forEach(d => { out[d.id] = d.data(); });
+    return out;
+  },
+
+  // Сумісність зі старим кодом: { parent, children }
+  async getFamily() {
+    const parent = await SK.getParent();
+    const children = await SK.getChildren();
     return { parent, children };
   },
 
-  // Додати дитину
+  // Додати дитину: герой у heroes + запис у children
   async addChild({ name, avatar, age, grade, pin }) {
     const u = auth.currentUser;
     if (!u) throw new Error('Немає сесії сім\'ї');
-    const id = genId(name);
-    await setDoc(doc(db, 'families', u.uid, 'children', id), {
+    // 1) герой
+    const heroRef = await addDoc(collection(db, 'heroes'), defaultHero(name, u.email));
+    // 2) дитина
+    const childRef = await addDoc(collection(db, 'children'), {
       name: name || 'Дитина',
       avatar: avatar || '🙂',
       age: Number(age) || 7,
       grade: Number(grade) || 1,
       pin: String(pin || ''),
-      progress: {}
+      parentEmail: u.email,
+      heroID: heroRef.id,
+      HP: 10, coins: 0, level: 1, xp: 0,
+      progress: {},
+      createdAt: serverTimestamp()
     });
-    // оновити порядок
-    const fRef = doc(db, 'families', u.uid);
-    const fSnap = await getDoc(fRef);
-    const order = (fSnap.exists() && fSnap.data().childrenOrder) || [];
-    order.push(id);
-    await updateDoc(fRef, { childrenOrder: order });
-    return id;
+    return childRef.id;
   },
 
-  // Перевірити PIN дитини (за іменем) у межах поточної сім'ї
+  // Перевірка PIN дитини за іменем (у межах поточних батьків)
   async verifyChildPin(childName, pin) {
-    const fam = await SK.getFamily();
-    if (!fam) return null;
-    for (const [id, c] of Object.entries(fam.children)) {
-      if (c.name === childName && String(c.pin) === String(pin)) return id;
+    const children = await SK.getChildren();
+    for (const [id, c] of Object.entries(children)) {
+      if (c.name === childName && String(c.pin) === String(pin)) {
+        SK.activeHeroId = c.heroID || null;
+        return id;
+      }
     }
     return null;
   },
 
   setActiveChild(childId) {
+    if (childId !== SK.activeChildId) SK.activeHeroId = null;
     SK.activeChildId = childId;
     if (childId) localStorage.setItem('sk_active_child', childId);
     else localStorage.removeItem('sk_active_child');
   },
 
-  // localStorage → хмара (для активної дитини)
-  async pushLocal(childId) {
-    const u = auth.currentUser;
-    const cid = childId || SK.activeChildId;
-    if (!u || !cid) return false;
-    const progress = {};
-    progressKeys().forEach(k => { progress[k] = localStorage.getItem(k); });
-    await setDoc(doc(db, 'families', u.uid, 'children', cid),
-                 { progress }, { merge: true });
+  // знайти heroID активної дитини (читає children/{id}, якщо ще не кешовано)
+  async _resolveHero() {
+    if (SK.activeHeroId) return SK.activeHeroId;
+    const cid = SK.activeChildId;
+    if (!auth.currentUser || !cid) return null;
+    const s = await getDoc(doc(db, 'children', cid));
+    if (s.exists()) SK.activeHeroId = s.data().heroID || null;
+    return SK.activeHeroId;
+  },
+
+  // Зберегти ВСІ характеристики героя активної дитини в хмару.
+  // Пише в heroes/{heroID} і дзеркалить ключові поля в children/{id}.
+  async saveHeroStats(stats) {
+    const cid = SK.activeChildId;
+    if (!auth.currentUser || !cid || !stats) return false;
+    // дзеркало в children
+    const childPatch = {};
+    if (stats.health != null) childPatch.HP = stats.health;
+    if (stats.coins  != null) childPatch.coins = stats.coins;
+    if (stats.level  != null) childPatch.level = stats.level;
+    if (stats.xp     != null) childPatch.xp = stats.xp;
+    if (Object.keys(childPatch).length)
+      await setDoc(doc(db, 'children', cid), childPatch, { merge: true });
+    // повний запис у heroes
+    const heroId = await SK._resolveHero();
+    if (heroId) {
+      const heroPatch = {};
+      ['health','mana','agility','accuracy','level','xp','coins','stars']
+        .forEach(k => { if (stats[k] != null) heroPatch[k] = stats[k]; });
+      heroPatch.updatedAt = serverTimestamp();
+      await setDoc(doc(db, 'heroes', heroId), heroPatch, { merge: true });
+    }
     return true;
   },
 
-  // хмара → localStorage (для активної дитини)
-  async pullLocal(childId) {
-    const u = auth.currentUser;
+  // localStorage → children/{id}.progress
+  async pushLocal(childId) {
     const cid = childId || SK.activeChildId;
-    if (!u || !cid) return false;
-    const snap = await getDoc(doc(db, 'families', u.uid, 'children', cid));
+    if (!auth.currentUser || !cid) return false;
+    const progress = {};
+    progressKeys().forEach(k => { progress[k] = localStorage.getItem(k); });
+    await setDoc(doc(db, 'children', cid), { progress }, { merge: true });
+    return true;
+  },
+
+  // children/{id}.progress → localStorage
+  async pullLocal(childId) {
+    const cid = childId || SK.activeChildId;
+    if (!auth.currentUser || !cid) return false;
+    const snap = await getDoc(doc(db, 'children', cid));
     if (!snap.exists()) return false;
     const progress = snap.data().progress || {};
-    // прибираємо старий прогрес цього пристрою, лишаючи службові ключі
     progressKeys().forEach(k => localStorage.removeItem(k));
     Object.entries(progress).forEach(([k, v]) => {
       if (v != null) localStorage.setItem(k, v);
@@ -185,11 +237,7 @@ const SK = {
     return true;
   },
 
-  // підписка на зміну стану входу
-  onUser(cb) {
-    if (typeof cb === 'function') SK._userCbs.push(cb);
-  },
-  _userCbs: []
+  onUser(cb) { if (typeof cb === 'function') SK._userCbs.push(cb); }
 };
 
 SK.ready = new Promise(res => { SK._userResolve = res; });
@@ -200,11 +248,8 @@ onAuthStateChanged(auth, (user) => {
   SK._userCbs.forEach(cb => { try { cb(user); } catch (e) {} });
 });
 
-// автозбереження прогресу в хмару, коли дитина закриває/ховає вкладку
 window.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') {
-    SK.pushLocal().catch(() => {});
-  }
+  if (document.visibilityState === 'hidden') SK.pushLocal().catch(() => {});
 });
 
 window.SK = SK;

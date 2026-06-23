@@ -2292,15 +2292,10 @@ async function doRegister() {
   if (pass.length < 6) { showToast('⚠️ Пароль — мінімум 6 символів'); return; }
   try {
     await window.SK.registerFamily({ parentName: name, parentRole: role, email, password: pass });
-    // Засіваємо демо-дітей, щоб дитячий вхід працював одразу (можна змінити пізніше)
-    for (const id of Object.keys(CHILDREN_DATA)) {
-      const c = CHILDREN_DATA[id];
-      await window.SK.addChild({ name: c.name, avatar: c.avatar, age: c.age, grade: c.grade, pin: '0000' });
-    }
     closeAuth();
     switchRole('parent');
     showApp();
-    showToast('🎉 Сім\'ю «' + name + '» створено! PIN дітей за замовч.: 0000');
+    showToast('🎉 Акаунт «' + name + '» створено! Тепер додайте дітей.');
   } catch (e) {
     showToast('❌ ' + authError(e));
   }
@@ -2971,6 +2966,26 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
   function set(id,val){var el=document.getElementById(id);if(el)el.textContent=val;}
   function setw(id,v,m){var el=document.getElementById(id);if(el)el.style.width=pct(v,m)+'%';}
 
+  /* ---- збереження характеристик героя в хмару (з дебаунсом) ---- */
+  var _heroTimer=null,_heroLast='',_heroPending=null;
+  function queueHeroSave(stats){
+    var sig=JSON.stringify(stats);
+    if(sig===_heroLast) return;          // нічого не змінилось
+    _heroPending=stats;
+    clearTimeout(_heroTimer);
+    _heroTimer=setTimeout(flushHeroSave,1200);
+  }
+  function flushHeroSave(){
+    clearTimeout(_heroTimer);
+    if(!_heroPending) return;
+    var s=_heroPending; _heroLast=JSON.stringify(s); _heroPending=null;
+    if(window.SK && window.SK.saveHeroStats) window.SK.saveHeroStats(s).catch(function(){});
+  }
+  window.flushHeroSave=flushHeroSave;
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden') flushHeroSave();
+  });
+
   function renderChildHero(){
     var st=lsAll();
     var ukr=sumXP(st,['palace','spell','rak','piven','druzhba','ukr','abetk']);
@@ -3001,6 +3016,17 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
     set('chAcc',d.acc); setw('chAccBar',d.acc,10);
     set('chMedalStars',d.ach+' зірок');
     set('chWorldStars',d.coins); setw('chWorldBar',d.xpCur,d.xpMax);
+
+    // → зберігаємо всі характеристики героя в хмару (для активної дитини)
+    try{
+      if(window.SK && window.SK.currentUser && window.SK.currentUser() && window.SK.activeChildId){
+        var lvl = Math.floor(total/3000)+1;
+        queueHeroSave({
+          health:d.hp, mana:d.mp, agility:d.agi, accuracy:d.acc,
+          level:lvl, xp:total, coins:d.coins, stars:d.ach
+        });
+      }
+    }catch(e){}
   }
   window.renderChildHero = renderChildHero;
 
