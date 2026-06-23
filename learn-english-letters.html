@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔤 Learn ABC — SchoolKingdom</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#1a1040 0%,#2d1b6b 50%,#0d2647 100%);min-height:100vh;color:#fff;-webkit-tap-highlight-color:transparent}
+
+  .back-bar{padding:12px 16px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.08)}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(108,99,255,0.2);border:1px solid rgba(108,99,255,0.4);border-radius:10px;padding:7px 14px;color:#c3b8ff;font-size:0.85rem;font-weight:700;text-decoration:none;transition:background .15s}
+  .back-btn:hover{background:rgba(108,99,255,0.35)}
+  .back-bar-title{color:#9B8FCC;font-size:0.85rem}
+
+  .wrap{max-width:560px;margin:0 auto;padding:24px 16px 60px;user-select:none;touch-action:manipulation}
+
+  .header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .header .emoji{font-size:42px;line-height:1}
+  .header h1{font-size:clamp(20px,5vw,28px);font-weight:800;letter-spacing:-.5px}
+  .header p{font-size:13px;color:#9B8FCC;margin-top:2px}
+  .xp-badge{background:linear-gradient(135deg,rgba(255,179,0,.2),rgba(255,138,0,.13));border:2px solid #FFB300;border-radius:30px;padding:8px 18px;margin-bottom:22px;display:inline-flex;align-items:center;gap:8px}
+  .xp-badge .ico{font-size:18px}
+  .xp-badge .val{color:#FFD54F;font-weight:800;font-size:17px}
+
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .mode-card{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:18px 16px;min-height:104px;border-radius:16px;border:2px solid #5040A0;background:#26185A;color:#fff;font-family:inherit;cursor:pointer;transition:transform .15s,background .15s}
+  .mode-card:hover{transform:translateY(-3px);background:#2d2068}
+  .mode-card:active{transform:scale(.98)}
+  .mode-card.span{grid-column:1 / -1}
+  .mode-emoji{font-size:28px}
+  .mode-title{font-weight:700;font-size:15px}
+  .mode-sub{font-size:12px;color:#9B8FCC}
+
+  .top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px;color:#9B8FCC}
+  .progress-track{background:rgba(255,255,255,0.1);border-radius:12px;height:12px;overflow:hidden;margin-bottom:18px}
+  .progress-fill{height:100%;border-radius:12px;background:linear-gradient(90deg,#6C63FF,#A06CFF);transition:width .35s cubic-bezier(.4,0,.2,1)}
+  .card{background:#1e1450;border:2px solid #5040A0;border-radius:24px;padding:36px 24px;margin-bottom:16px;min-height:256px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;cursor:pointer}
+  .card .big-letter{font-size:100px;font-weight:800;line-height:1;color:#FFD54F}
+  .card .pair-letter{font-size:60px;font-weight:800;line-height:1;color:#FFD54F}
+  .card .name{font-size:24px;color:#A78BFA;font-weight:700;margin-top:4px}
+  .card .sound{font-size:22px;color:#4ECDC4;font-weight:700;margin-top:4px}
+  .card .pic{font-size:78px;line-height:1}
+  .card .example{font-size:30px;font-weight:800;margin-top:6px}
+  .card .example b{color:#FFD54F}
+  .card .ipa{font-size:19px;color:#8Fb6ff;font-weight:600;margin-top:2px}
+  .card .tap-hint{font-size:13px;color:#9B8FCC;margin-top:10px}
+
+  .grade-row{display:flex;gap:10px;margin-bottom:12px}
+  .grade-row button{flex:1;padding:14px;font-weight:700;font-size:15px;border-radius:14px;font-family:inherit;cursor:pointer;border:2px solid;transition:filter .15s,transform .1s}
+  .grade-row button:active{transform:scale(.97)}
+  .grade-no{background:rgba(244,67,54,0.15);border-color:#F44336;color:#FF9b95}
+  .grade-yes{background:rgba(76,175,80,0.18);border-color:#4CAF50;color:#9ff0a3}
+  .grade-row button:hover{filter:brightness(1.15)}
+  .single-btn{width:100%;padding:14px;font-weight:700;font-size:15px;border-radius:14px;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#6C63FF,#A06CFF);border:none;color:#fff;margin-bottom:12px}
+  .single-btn:active{transform:scale(.98)}
+  .xp-ticker{display:flex;align-items:center;justify-content:center;gap:6px;color:#FFD54F;font-size:14px;font-weight:700;margin-bottom:14px}
+  .toolbar{display:flex;gap:8px}
+  .toolbar button{flex:1;padding:10px;font-size:13px;font-family:inherit;cursor:pointer;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#c3b8ff}
+  .toolbar button:hover{background:rgba(255,255,255,0.12)}
+
+  .result-card{background:#1e1450;border:2px solid #FFD700;border-radius:24px;padding:32px 24px;text-align:center}
+  .result-emoji{font-size:60px}
+  .result-title{font-size:24px;font-weight:800;margin:10px 0 4px}
+  .result-sub{font-size:14px;color:#9B8FCC;margin-bottom:18px}
+  .xp-box{background:linear-gradient(135deg,rgba(255,179,0,.2),rgba(255,138,0,.13));border:2px solid #FFB300;border-radius:14px;padding:12px 14px;margin-bottom:18px}
+  .xp-box .earned{color:#FFD54F;font-weight:800;font-size:22px}
+  .xp-box .total{color:#9B8FCC;font-size:13px;margin-top:2px}
+  .stat-row{display:flex;gap:12px;margin-bottom:20px}
+  .stat-card{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px}
+  .stat-label{font-size:12px;color:#9B8FCC;margin-bottom:4px}
+  .stat-value{font-size:26px;font-weight:800}
+  .btn-main{width:100%;padding:14px;font-weight:700;font-size:16px;border-radius:14px;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#6C63FF,#A06CFF);border:none;color:#fff;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<div class="back-bar">
+  <a class="back-btn" href="index.html?view=child-academy">← До кабінету</a>
+  <span class="back-bar-title">Академія Героїв · English</span>
+</div>
+
+<div class="wrap"><div id="root"></div></div>
+
+<script>
+(function(){
+  const root = document.getElementById('root');
+  const STORE_KEY = 'sk_train_engabc_pts_v1'; // XP тренажера (поки не пов'язано з характеристиками Героя)
+  let totalXp = 0;
+  try { totalXp = parseInt(localStorage.getItem(STORE_KEY)||'0') || 0; } catch(e){}
+  function saveXp(){ try{ localStorage.setItem(STORE_KEY, String(totalXp)); }catch(e){} }
+
+  function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=randInt(0,i); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+
+  const letters = [
+    {up:"A", lo:"a", name:"ей", word:"Apple", ipa:"/ˈæpl/", ua:"яблуко", pic:"🍎"},
+    {up:"B", lo:"b", name:"бі", word:"Ball", ipa:"/bɔːl/", ua:"м'яч", pic:"⚽"},
+    {up:"C", lo:"c", name:"сі", word:"Cat", ipa:"/kæt/", ua:"кіт", pic:"🐱"},
+    {up:"D", lo:"d", name:"ді", word:"Dog", ipa:"/dɒɡ/", ua:"собака", pic:"🐶"},
+    {up:"E", lo:"e", name:"і", word:"Egg", ipa:"/eɡ/", ua:"яйце", pic:"🥚"},
+    {up:"F", lo:"f", name:"еф", word:"Fish", ipa:"/fɪʃ/", ua:"риба", pic:"🐟"},
+    {up:"G", lo:"g", name:"джі", word:"Girl", ipa:"/ɡɜːl/", ua:"дівчинка", pic:"👧"},
+    {up:"H", lo:"h", name:"ейч", word:"Hat", ipa:"/hæt/", ua:"капелюх", pic:"🎩"},
+    {up:"I", lo:"i", name:"ай", word:"Ice", ipa:"/aɪs/", ua:"лід", pic:"🧊"},
+    {up:"J", lo:"j", name:"джей", word:"Jam", ipa:"/dʒæm/", ua:"джем", pic:"🍓"},
+    {up:"K", lo:"k", name:"кей", word:"Key", ipa:"/kiː/", ua:"ключ", pic:"🔑"},
+    {up:"L", lo:"l", name:"ел", word:"Lion", ipa:"/ˈlaɪən/", ua:"лев", pic:"🦁"},
+    {up:"M", lo:"m", name:"ем", word:"Moon", ipa:"/muːn/", ua:"місяць", pic:"🌙"},
+    {up:"N", lo:"n", name:"ен", word:"Nose", ipa:"/nəʊz/", ua:"ніс", pic:"👃"},
+    {up:"O", lo:"o", name:"оу", word:"Orange", ipa:"/ˈɒrɪndʒ/", ua:"апельсин", pic:"🍊"},
+    {up:"P", lo:"p", name:"пі", word:"Pen", ipa:"/pen/", ua:"ручка", pic:"🖊️"},
+    {up:"Q", lo:"q", name:"к'ю", word:"Queen", ipa:"/kwiːn/", ua:"королева", pic:"👑"},
+    {up:"R", lo:"r", name:"ар", word:"Rabbit", ipa:"/ˈræbɪt/", ua:"кролик", pic:"🐰"},
+    {up:"S", lo:"s", name:"ес", word:"Sun", ipa:"/sʌn/", ua:"сонце", pic:"☀️"},
+    {up:"T", lo:"t", name:"ті", word:"Tree", ipa:"/triː/", ua:"дерево", pic:"🌳"},
+    {up:"U", lo:"u", name:"ю", word:"Umbrella", ipa:"/ʌmˈbrelə/", ua:"парасолька", pic:"☂️"},
+    {up:"V", lo:"v", name:"ві", word:"Van", ipa:"/væn/", ua:"фургон", pic:"🚐"},
+    {up:"W", lo:"w", name:"дабл-ю", word:"Water", ipa:"/ˈwɔːtə/", ua:"вода", pic:"💧"},
+    {up:"X", lo:"x", name:"екс", word:"Box", ipa:"/bɒks/", ua:"коробка", pic:"📦"},
+    {up:"Y", lo:"y", name:"вай", word:"Yellow", ipa:"/ˈjeləʊ/", ua:"жовтий", pic:"🟡"},
+    {up:"Z", lo:"z", name:"зед", word:"Zebra", ipa:"/ˈzebrə/", ua:"зебра", pic:"🦓"}
+  ];
+
+  const modes = [
+    {id:'name', emoji:'🔤', title:'Буква і назва', sub:'Велика буква → як читається'},
+    {id:'examples', emoji:'🖼️', title:'Буква і слово', sub:'Буква → слово на цю букву'},
+    {id:'find', emoji:'🔎', title:'Знайди букву', sub:'Картинка → з якої букви слово', span:true}
+  ];
+
+  let state = {screen:'menu'};
+
+  function startMode(modeId){
+    state = { screen:'card', mode:modeId, deck:shuffle(letters), index:0, flipped:false,
+              known:0, unknown:0, earned:0, repeatPile:[] };
+    render();
+  }
+  function flip(){ if(state.screen==='card'){ state.flipped=!state.flipped; render(); } }
+
+  function grade(known){
+    const card = state.deck[state.index];
+    if(known){ state.known++; state.earned++; totalXp++; saveXp(); }
+    else { state.unknown++; state.repeatPile.push(card); }
+    state.index++; state.flipped=false;
+    if(state.index>=state.deck.length){
+      if(state.repeatPile.length>0){
+        state.deck = shuffle(state.repeatPile); state.repeatPile = []; state.index = 0;
+        state.round = (state.round||1)+1; render();
+      } else { state.screen='result'; render(); }
+    } else { render(); }
+  }
+  function backToMenu(){ state={screen:'menu'}; render(); }
+
+  window.__app = {startMode, flip, grade, backToMenu};
+
+  function render(){
+    if(state.screen==='menu') renderMenu();
+    else if(state.screen==='card') renderCard();
+    else renderResult();
+  }
+
+  function renderMenu(){
+    root.innerHTML = `
+      <div class="header">
+        <span class="emoji">🔤</span>
+        <div><h1>Вивчаю англійську абетку</h1><p>English ABC · ${letters.length} букв</p></div>
+      </div>
+      <div class="xp-badge"><span class="ico">⚡</span><span class="val">${totalXp} XP</span></div>
+      <div class="modes">
+        ${modes.map(m=>`
+          <button class="mode-card ${m.span?'span':''}" onclick="window.__app.startMode('${m.id}')">
+            <span class="mode-emoji">${m.emoji}</span>
+            <span class="mode-title">${m.title}</span>
+            <span class="mode-sub">${m.sub}</span>
+          </button>`).join('')}
+      </div>`;
+  }
+
+  function highlightWord(word){ return `<b>${word.charAt(0)}</b>${word.slice(1)}`; }
+
+  function renderCard(){
+    const total = state.deck.length, done = state.index;
+    const pct = Math.round(done/total*100);
+    const c = state.deck[state.index];
+    let frontHtml, backHtml;
+
+    if(state.mode==='name'){
+      frontHtml = `<p class="big-letter">${c.up} ${c.lo}</p><p class="tap-hint">Як читається ця буква? Натисни</p>`;
+      backHtml  = `<p class="pair-letter">${c.up} ${c.lo}</p><p class="name">[${c.name}]</p><p class="pic">${c.pic}</p><p class="example">${highlightWord(c.word)}</p><p class="ipa">${c.ipa}</p>`;
+    } else if(state.mode==='examples'){
+      frontHtml = `<p class="big-letter">${c.up} ${c.lo}</p><p class="tap-hint">Яке слово на цю букву? Натисни</p>`;
+      backHtml  = `<p class="pic">${c.pic}</p><p class="example">${highlightWord(c.word)}</p><p class="ipa">${c.ipa}</p><p class="sound">${c.ua}</p>`;
+    } else {
+      frontHtml = `<p class="pic">${c.pic}</p><p class="example">${c.word}</p><p class="ipa">${c.ipa}</p><p class="tap-hint">З якої букви це слово? Натисни</p>`;
+      backHtml  = `<p class="big-letter">${c.up} ${c.lo}</p><p class="name">[${c.name}]</p><p class="sound">${c.ua}</p>`;
+    }
+
+    root.innerHTML = `
+      <div class="top-row">
+        <span>${modes.find(m=>m.id===state.mode).title}${state.round?(' · коло '+state.round):''}</span>
+        <span>${done+1} / ${total}</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%;"></div></div>
+      <div class="card" onclick="window.__app.flip()">${state.flipped?backHtml:frontHtml}</div>
+      ${state.flipped?`
+        <div class="grade-row">
+          <button class="grade-no" onclick="window.__app.grade(false)">😕 Ще вчу</button>
+          <button class="grade-yes" onclick="window.__app.grade(true)">😃 Знаю +1⚡</button>
+        </div>`:`
+        <button class="single-btn" onclick="window.__app.flip()">Перевернути картку</button>`}
+      <div class="xp-ticker"><span>⚡</span><span>+${state.earned} XP за гру</span></div>
+      <div class="toolbar"><button onclick="window.__app.backToMenu()">← До меню</button></div>`;
+  }
+
+  function renderResult(){
+    root.innerHTML = `
+      <div class="result-card">
+        <div class="result-emoji">🎉</div>
+        <p class="result-title">Усі букви пройдено!</p>
+        <p class="result-sub">Ти повторював букви, поки не вивчив кожну</p>
+        <div class="xp-box">
+          <div class="earned">⚡ +${state.earned} XP</div>
+          <div class="total">Всього: ${totalXp} XP</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-card"><div class="stat-label">Знав одразу</div><div class="stat-value">${state.known}</div></div>
+          <div class="stat-card"><div class="stat-label">Повторив</div><div class="stat-value">${state.unknown}</div></div>
+        </div>
+        <button class="btn-main" onclick="window.__app.backToMenu()">Обрати інший режим</button>
+      </div>`;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
