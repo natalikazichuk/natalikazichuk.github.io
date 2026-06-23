@@ -27,7 +27,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, updateDoc, addDoc,
-  collection, getDocs, query, where, serverTimestamp
+  collection, getDocs, query, where, serverTimestamp, runTransaction
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -137,12 +137,25 @@ const SK = {
     return { parent, children };
   },
 
-  // Додати дитину: герой у heroes + запис у children
+  // наступний код героя: Hero001, Hero002… (глобальний лічильник)
+  async nextHeroCode() {
+    const counterRef = doc(db, 'meta', 'counters');
+    let seq;
+    await runTransaction(db, async (tx) => {
+      const s = await tx.get(counterRef);
+      seq = (s.exists() ? (s.data().heroSeq || 0) : 0) + 1;
+      tx.set(counterRef, { heroSeq: seq }, { merge: true });
+    });
+    return 'Hero' + String(seq).padStart(3, '0');
+  },
+
+  // Додати дитину: герой heroes/HeroNNN + запис у children
   async addChild({ name, avatar, age, grade, pin }) {
     const u = auth.currentUser;
     if (!u) throw new Error('Немає сесії сім\'ї');
-    // 1) герой
-    const heroRef = await addDoc(collection(db, 'heroes'), defaultHero(name, u.email));
+    // 1) герой з кодом-ідентифікатором HeroNNN
+    const heroCode = await SK.nextHeroCode();
+    await setDoc(doc(db, 'heroes', heroCode), defaultHero(name, u.email));
     // 2) дитина
     const childRef = await addDoc(collection(db, 'children'), {
       name: name || 'Дитина',
@@ -151,7 +164,7 @@ const SK = {
       grade: Number(grade) || 1,
       pin: String(pin || ''),
       parentEmail: u.email,
-      heroID: heroRef.id,
+      heroID: heroCode,
       HP: 10, coins: 0, level: 1, xp: 0,
       progress: {},
       createdAt: serverTimestamp()
