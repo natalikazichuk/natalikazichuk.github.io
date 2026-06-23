@@ -1724,13 +1724,48 @@
 
         <style>
         /* === Дитяча Головна: сторінка героя === */
-        .ch-hero{display:flex;gap:16px;align-items:center;background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;margin-bottom:16px;position:relative;overflow:hidden}
-        .ch-hero::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 120% at 90% -10%,rgba(78,205,196,.18),transparent 55%);pointer-events:none}
-        .ch-ava{width:84px;height:84px;border-radius:18px;flex-shrink:0;background:linear-gradient(160deg,#2a4a6e,#16314e);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:2.6rem;overflow:hidden}
-        .ch-ava img{width:100%;height:100%;object-fit:cover}
-        .ch-hbody{flex:1;min-width:0;position:relative;z-index:1}
-        .ch-hname{font-family:'Fredoka One',Inter,sans-serif;font-size:1.5rem;color:#fff;line-height:1}
-        .ch-chips{display:flex;gap:6px;flex-wrap:wrap;margin:7px 0 9px}
+        /* --- Єдиний блок героя: ПОСТЕР з фото на весь розмір + характеристики поверх --- */
+        .hero-card{display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:18px;background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:18px;margin-bottom:18px;position:relative;overflow:hidden}
+        .hero-card::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 120% at 92% -10%,rgba(78,205,196,.16),transparent 55%);pointer-events:none}
+        @media(max-width:760px){.hero-card{grid-template-columns:1fr;gap:14px}}
+
+        /* постер з фото на повний зріст */
+        .hc-avatar{position:relative;align-self:stretch;min-height:440px;border-radius:18px;overflow:hidden;cursor:pointer;border:2px solid var(--gold);background:linear-gradient(180deg,#21426a 0%,#16314e 58%,#112538 100%)}
+        @media(max-width:760px){.hc-avatar{min-height:400px}}
+        .hc-avatar img.full{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none;animation:hc-breathe 6s ease-in-out infinite}
+        .hc-avatar.has-photo img.full{display:block}
+        .hc-avatar .aura{position:absolute;left:50%;top:40%;width:80%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,209,102,.4),rgba(255,209,102,0) 65%);animation:hc-aura 4.5s ease-in-out infinite;z-index:0}
+        .hc-avatar .ground{position:absolute;left:50%;bottom:14%;width:60%;height:16px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,rgba(0,0,0,.42),rgba(0,0,0,0) 70%);z-index:0}
+        .hc-avatar .emoji-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:6.5rem;z-index:1;animation:hc-float 4s ease-in-out infinite}
+        .hc-avatar.has-photo .emoji-fallback,.hc-avatar.has-photo .aura,.hc-avatar.has-photo .ground{display:none}
+        .hc-avatar.jump img.full,.hc-avatar.jump .emoji-fallback{animation:hc-jump .6s ease}
+        @keyframes hc-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+        @keyframes hc-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+        @keyframes hc-aura{0%,100%{opacity:.3;transform:translate(-50%,-50%) scale(1)}50%{opacity:.6;transform:translate(-50%,-50%) scale(1.1)}}
+        @keyframes hc-jump{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-22px) scale(1.03)}55%{transform:translateY(0) scale(.98,1.03)}}
+
+        /* шари інформації поверх фото */
+        .hc-ov{position:absolute;left:0;right:0;z-index:2;padding:14px}
+        .hc-ov *{text-shadow:0 1px 4px rgba(0,0,0,.75)}
+        .hc-ov-top{top:0;background:linear-gradient(180deg,rgba(6,12,26,.78),rgba(6,12,26,0))}
+        .hc-ov-bot{bottom:0;padding-top:34px;background:linear-gradient(0deg,rgba(6,12,26,.92),rgba(6,12,26,.18) 75%,transparent)}
+        .hc-name{font-family:'Fredoka One',Inter,sans-serif;font-size:1.55rem;color:#fff;line-height:1;margin-bottom:8px}
+        .hc-ov .ch-chips{margin:0}
+        .hc-cam{position:absolute;right:10px;top:10px;z-index:3;width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.7);background:rgba(0,0,0,.5);color:#fff;font-size:1.05rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;padding:0}
+        .hc-cam:hover{background:rgba(0,0,0,.8);transform:scale(1.08)}
+
+        /* RPG-характеристики + Академія заповнюють праву колонку */
+        .hc-right{display:flex;flex-direction:column;gap:14px;min-width:0}
+        .hc-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        @media(max-width:420px){.hc-stats{grid-template-columns:1fr}}
+        .hc-acad{flex:1;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(78,205,196,.18),rgba(167,139,250,.18));border:1px solid rgba(78,205,196,.4);border-radius:16px;padding:16px;cursor:pointer;transition:.15s;min-height:118px}
+        .hc-acad:hover{transform:translateY(-2px);background:linear-gradient(135deg,rgba(78,205,196,.26),rgba(167,139,250,.26))}
+        .hc-acad .ic{font-size:2.6rem;flex-shrink:0}
+        .hc-acad .t{font-family:'Fredoka One',Inter,sans-serif;font-size:1.2rem;color:#fff;line-height:1.1}
+        .hc-acad .s{font-size:.82rem;color:var(--mint);font-weight:700;margin-top:4px;line-height:1.35}
+        .hc-acad .arrow{margin-left:auto;color:var(--mint);font-size:1.3rem;flex-shrink:0}
+
+        .ch-chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px}
         .ch-chip{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:999px}
         .ch-chip.title{background:rgba(255,209,102,.15);color:var(--gold);border:1px solid rgba(255,209,102,.3)}
         .ch-chip.grade{background:rgba(78,205,196,.15);color:var(--mint);border:1px solid rgba(78,205,196,.3)}
@@ -1741,9 +1776,7 @@
         .ch-wallet{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
         .ch-w{display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:4px 11px;font-weight:900;font-size:.85rem}
         .ch-w.g{color:var(--gold)}.ch-w.d{color:#8fd9ff}.ch-w.a{color:#ffcf66}
-        .ch-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
-        @media(max-width:760px){.ch-stats{grid-template-columns:1fr 1fr}}
-        .ch-stat{background:var(--navy-mid);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px}
+        .ch-stat{background:var(--navy);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px}
         .ch-stat .h{display:flex;align-items:center;gap:8px;margin-bottom:8px}
         .ch-stat .em{font-size:1.5rem}
         .ch-stat .nm{font-size:.74rem;font-weight:800;color:var(--text-mid);line-height:1.1}
@@ -1755,6 +1788,7 @@
         .ch-stat.mp .val{color:#7fb6ff}.ch-stat.mp .ch-bar>span{background:#2f7fd1}
         .ch-stat.acc .val{color:#ffc266}.ch-stat.acc .ch-bar>span{background:#e08a2e}
         .ch-stat .sub{font-size:.66rem;color:var(--text-light)}
+        @media (prefers-reduced-motion: reduce){.hc-avatar .full,.hc-avatar .emoji-fallback,.hc-avatar .aura{animation:none!important}}
         .ch-book{display:flex;gap:12px;align-items:center}
         .ch-book .cover{width:54px;height:72px;border-radius:8px;background:linear-gradient(135deg,#7a4ecd,#4e2e8b);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,.3)}
         .ch-book .bbody{flex:1;min-width:0}
@@ -1778,41 +1812,60 @@
           </div>
         </div>
 
-        <!-- HERO BANNER -->
-        <div class="ch-hero">
-          <div class="ch-ava" id="chAva">🦁</div>
-          <div class="ch-hbody">
-            <div class="ch-hname" id="chName">Сашко</div>
-            <div class="ch-chips">
-              <span class="ch-chip title" id="chTitle">🎖️ Лицар Знань</span>
-              <span class="ch-chip grade" id="chGrade">Перший клас</span>
+        <!-- ЄДИНИЙ БЛОК ГЕРОЯ: фото на весь розмір + характеристики поверх -->
+        <div class="hero-card">
+          <!-- ПОСТЕР: фото на повний зріст з інформацією поверх -->
+          <div class="hc-avatar" id="chAva" title="Тицьни на героя!">
+            <img class="full" id="chAvaImg" src="hero-full.png" alt=""
+                 onload="this.closest('.hc-avatar').classList.add('has-photo')"
+                 onerror="this.closest('.hc-avatar').classList.remove('has-photo');this.removeAttribute('src')">
+            <div class="aura"></div>
+            <div class="ground"></div>
+            <div class="emoji-fallback" id="chAvaEmoji">🦁</div>
+
+            <!-- верх: ім'я + титул -->
+            <div class="hc-ov hc-ov-top">
+              <div class="hc-name" id="chName">Сашко</div>
+              <div class="ch-chips">
+                <span class="ch-chip title" id="chTitle">🎖️ Лицар Знань</span>
+                <span class="ch-chip grade" id="chGrade">Перший клас</span>
+              </div>
             </div>
-            <div class="ch-xprow"><span>⭐ Досвід</span><b><span id="chXpCur">2450</span> / <span id="chXpMax">3000</span></b></div>
-            <div class="ch-xpbar"><span id="chXpFill" style="width:81%"></span></div>
-            <div class="ch-wallet">
-              <span class="ch-w g">🪙 <span id="chCoins">540</span></span>
-              <span class="ch-w d">💎 <span id="chGems">35</span></span>
-              <span class="ch-w a">🏆 <span id="chAch">24</span></span>
+
+            <!-- низ: досвід + гаманець -->
+            <div class="hc-ov hc-ov-bot">
+              <div class="ch-xprow"><span>⭐ Досвід</span><b><span id="chXpCur">2450</span> / <span id="chXpMax">3000</span></b></div>
+              <div class="ch-xpbar"><span id="chXpFill" style="width:81%"></span></div>
+              <div class="ch-wallet">
+                <span class="ch-w g">🪙 <span id="chCoins">540</span></span>
+                <span class="ch-w d">💎 <span id="chGems">35</span></span>
+                <span class="ch-w a">🏆 <span id="chAch">24</span></span>
+              </div>
+            </div>
+
+            <button class="hc-cam" id="chAvaCam" type="button" title="Завантажити фото героя">📷</button>
+            <input type="file" id="chAvaFile" accept="image/*" style="display:none">
+          </div>
+
+          <!-- 4 RPG-характеристики поряд -->
+          <div class="hc-right">
+            <div class="hc-stats">
+              <div class="ch-stat hp"><div class="h"><span class="em">❤️</span><div><div class="nm">Здоров'я</div><div class="val"><span id="chHp">50</span>/100</div></div></div><div class="ch-bar"><span id="chHpBar" style="width:50%"></span></div><div class="sub">Українська мова</div></div>
+              <div class="ch-stat agi"><div class="h"><span class="em">🪶</span><div><div class="nm">Спритність</div><div class="val"><span id="chAgi">1</span>/10</div></div></div><div class="ch-bar"><span id="chAgiBar" style="width:10%"></span></div><div class="sub">ЯДС · світ</div></div>
+              <div class="ch-stat mp"><div class="h"><span class="em">🔵</span><div><div class="nm">Мана</div><div class="val"><span id="chMp">10</span>/20</div></div></div><div class="ch-bar"><span id="chMpBar" style="width:50%"></span></div><div class="sub">Логіка · English</div></div>
+              <div class="ch-stat acc"><div class="h"><span class="em">🎯</span><div><div class="nm">Точність</div><div class="val"><span id="chAcc">1</span>/10</div></div></div><div class="ch-bar"><span id="chAccBar" style="width:10%"></span></div><div class="sub">Математика</div></div>
+            </div>
+
+            <!-- Академія заповнює решту правої колонки -->
+            <div class="hc-acad" onclick="showPage('child-academy', null)">
+              <span class="ic">🎓</span>
+              <div>
+                <div class="t">Академія Героїв</div>
+                <div class="s">Обери предмет, виконуй квести й прокачуй характеристики ✨</div>
+              </div>
+              <span class="arrow">▶️</span>
             </div>
           </div>
-        </div>
-
-        <!-- ACTIVE CHARACTERISTICS -->
-        <div class="ch-stats">
-          <div class="ch-stat hp"><div class="h"><span class="em">❤️</span><div><div class="nm">Здоров'я</div><div class="val"><span id="chHp">50</span>/100</div></div></div><div class="ch-bar"><span id="chHpBar" style="width:50%"></span></div><div class="sub">Українська мова</div></div>
-          <div class="ch-stat agi"><div class="h"><span class="em">🪶</span><div><div class="nm">Спритність</div><div class="val"><span id="chAgi">1</span>/10</div></div></div><div class="ch-bar"><span id="chAgiBar" style="width:10%"></span></div><div class="sub">ЯДС · світ</div></div>
-          <div class="ch-stat mp"><div class="h"><span class="em">🔵</span><div><div class="nm">Мана</div><div class="val"><span id="chMp">10</span>/20</div></div></div><div class="ch-bar"><span id="chMpBar" style="width:50%"></span></div><div class="sub">Логіка · English</div></div>
-          <div class="ch-stat acc"><div class="h"><span class="em">🎯</span><div><div class="nm">Точність</div><div class="val"><span id="chAcc">1</span>/10</div></div></div><div class="ch-bar"><span id="chAccBar" style="width:10%"></span></div><div class="sub">Математика</div></div>
-        </div>
-
-        <!-- АКАДЕМІЯ ГЕРОЇВ -->
-        <div onclick="showPage('child-academy', null)" style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(78,205,196,.18),rgba(167,139,250,.18));border:1px solid rgba(78,205,196,.4);border-radius:16px;padding:14px 16px;margin-bottom:18px;cursor:pointer;transition:.15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-          <span style="font-size:2rem;flex-shrink:0">🎓</span>
-          <div style="flex:1;min-width:0">
-            <div style="font-family:'Fredoka One',Inter,sans-serif;font-size:1.05rem;color:#fff;line-height:1.1">Академія Героїв</div>
-            <div style="font-size:.78rem;color:var(--mint);font-weight:700;margin-top:2px">Обери предмет, виконуй квести й прокачуй характеристики ✨</div>
-          </div>
-          <span style="font-size:1.2rem;color:var(--mint);flex-shrink:0">▶️</span>
         </div>
 
         <!-- 4 BLOCKS -->
@@ -2802,13 +2855,48 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
   }
   window.renderChildHero = renderChildHero;
 
+  /* ---- аватар: збережене фото, завантаження через 📷, стрибок при тапі ---- */
+  function initAvatar(){
+    var ava=document.getElementById('chAva');
+    if(!ava || ava.dataset.init) return;
+    ava.dataset.init='1';
+    var img=document.getElementById('chAvaImg');
+    var emoji=document.getElementById('chAvaEmoji');
+    var cam=document.getElementById('chAvaCam');
+    var file=document.getElementById('chAvaFile');
+
+    // підтягнути збережене фото (якщо є) — має пріоритет над hero-full.png
+    try{ var saved=localStorage.getItem('sk_hero_avatar'); if(saved && img){ img.src=saved; } }catch(e){}
+
+    // стрибок при тапі на героя (але не на кнопці 📷)
+    ava.addEventListener('click',function(e){
+      if(e.target===cam || e.target===file) return;
+      ava.classList.remove('jump'); void ava.offsetWidth; ava.classList.add('jump');
+    });
+
+    // завантаження фото з пристрою → зберігаємо в localStorage
+    if(cam && file){
+      cam.addEventListener('click',function(e){ e.stopPropagation(); file.click(); });
+      file.addEventListener('change',function(){
+        var f=file.files && file.files[0]; if(!f) return;
+        var r=new FileReader();
+        r.onload=function(){
+          try{ localStorage.setItem('sk_hero_avatar', r.result); }catch(err){ alert('Фото завелике — спробуй менше зображення.'); }
+          if(img) img.src=r.result;
+        };
+        r.readAsDataURL(f);
+      });
+    }
+  }
+  window.initAvatar = initAvatar;
+
   var prev = window.showPage;
   window.showPage = function(pageId, el){
     if(typeof prev==='function') prev(pageId, el);
-    if(pageId==='child-dashboard') renderChildHero();
+    if(pageId==='child-dashboard'){ renderChildHero(); initAvatar(); }
   };
-  if(document.readyState!=='loading') renderChildHero();
-  else document.addEventListener('DOMContentLoaded', renderChildHero);
+  if(document.readyState!=='loading'){ renderChildHero(); initAvatar(); }
+  else document.addEventListener('DOMContentLoaded', function(){ renderChildHero(); initAvatar(); });
 })();
 </script>
 
