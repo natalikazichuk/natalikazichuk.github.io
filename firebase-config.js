@@ -64,13 +64,15 @@ function progressKeys() {
   return keys;
 }
 
-// стандартний герой для нової дитини (за зразком ваших даних)
+// початкові характеристики героя (повний набір, як у базі)
 function defaultHero(name, email) {
   return {
     name: name || 'Герой',
-    title: 'Початківець',
-    health: 10, mana: 10, agility: 10, accuracy: 10,
-    level: 1, xp: 0, coins: 0,
+    title: 'Лицар Знань',
+    health: 50, mana: 10, agility: 1, accuracy: 1,
+    strength: 2, defense: 1, intelligence: 1, wisdom: 1,
+    luck: 1, memory: 1, charisma: 1,
+    level: 1, xp: 0, coins: 600,
     parentEmail: email,
     createdAt: serverTimestamp()
   };
@@ -165,7 +167,7 @@ const SK = {
       pin: String(pin || ''),
       parentEmail: u.email,
       heroID: heroCode,
-      HP: 10, coins: 0, level: 1, xp: 0,
+      HP: 50, coins: 600, level: 1, xp: 0,
       progress: {},
       createdAt: serverTimestamp()
     });
@@ -201,24 +203,23 @@ const SK = {
     return SK.activeHeroId;
   },
 
-  // Зберегти ВСІ характеристики героя активної дитини в хмару.
-  // Пише в heroes/{heroID} і дзеркалить ключові поля в children/{id}.
+  // Зберегти характеристики героя активної дитини (похідні від прогресу).
+  // Монети НЕ чіпаємо — ними керує система нагород, а не XP.
   async saveHeroStats(stats) {
     const cid = SK.activeChildId;
     if (!auth.currentUser || !cid || !stats) return false;
     // дзеркало в children
     const childPatch = {};
     if (stats.health != null) childPatch.HP = stats.health;
-    if (stats.coins  != null) childPatch.coins = stats.coins;
     if (stats.level  != null) childPatch.level = stats.level;
     if (stats.xp     != null) childPatch.xp = stats.xp;
     if (Object.keys(childPatch).length)
       await setDoc(doc(db, 'children', cid), childPatch, { merge: true });
-    // повний запис у heroes
+    // запис у heroes (тільки активні характеристики 1 класу)
     const heroId = await SK._resolveHero();
     if (heroId) {
       const heroPatch = {};
-      ['health','mana','agility','accuracy','level','xp','coins','stars']
+      ['health','mana','agility','accuracy','level','xp']
         .forEach(k => { if (stats[k] != null) heroPatch[k] = stats[k]; });
       heroPatch.updatedAt = serverTimestamp();
       await setDoc(doc(db, 'heroes', heroId), heroPatch, { merge: true });
