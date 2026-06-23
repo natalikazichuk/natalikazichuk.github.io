@@ -1787,6 +1787,18 @@
         .ch-stat.acc .val{color:#ffc266}.ch-stat.acc .ch-bar>span{background:#e08a2e}
         .ch-stat .sub{font-size:.66rem;color:var(--text-light)}
         @media (prefers-reduced-motion: reduce){.hc-avatar .full,.hc-avatar .emoji-fallback,.hc-avatar .aura{animation:none!important}}
+        .ch-chip.lvl{background:rgba(78,205,196,.18);border-color:rgba(78,205,196,.4);color:var(--mint)}
+        .ch-chip.lvl b{font-family:'Fredoka One',Inter,sans-serif}
+        .hc-locked{margin:0 0 18px;background:var(--navy);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:12px 14px}
+        .hc-locked-title{font-size:.82rem;font-weight:800;color:var(--text-mid);margin-bottom:10px}
+        .hc-locked-title span{font-weight:600;color:var(--text-light);font-size:.72rem}
+        .hc-locked-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+        @media(max-width:760px){.hc-locked-grid{grid-template-columns:repeat(4,1fr)}}
+        @media(max-width:420px){.hc-locked-grid{grid-template-columns:repeat(3,1fr)}}
+        .hc-locked .lk{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:8px 4px;text-align:center;opacity:.78}
+        .hc-locked .lk .e{display:block;font-size:1.3rem;filter:grayscale(.35)}
+        .hc-locked .lk .n{display:block;font-size:.62rem;color:var(--text-light);margin:2px 0}
+        .hc-locked .lk b{font-family:'Fredoka One',Inter,sans-serif;color:#cdd6e6;font-size:.95rem}
         .ch-book{display:flex;gap:12px;align-items:center}
         .ch-book .cover{width:54px;height:72px;border-radius:8px;background:linear-gradient(135deg,#7a4ecd,#4e2e8b);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,.3)}
         .ch-book .bbody{flex:1;min-width:0}
@@ -1827,6 +1839,7 @@
               <div class="ch-chips">
                 <span class="ch-chip title" id="chTitle">🎖️ Лицар Знань</span>
                 <span class="ch-chip grade" id="chGrade">Перший клас</span>
+                <span class="ch-chip lvl">🆙 Рівень <b id="chLevel">1</b></span>
               </div>
             </div>
 
@@ -1853,6 +1866,20 @@
               <div class="ch-stat mp"><div class="h"><span class="em">🔵</span><div><div class="nm">Мана</div><div class="val"><span id="chMp">10</span>/20</div></div></div><div class="ch-bar"><span id="chMpBar" style="width:50%"></span></div><div class="sub">Логіка · English</div></div>
               <div class="ch-stat acc"><div class="h"><span class="em">🎯</span><div><div class="nm">Точність</div><div class="val"><span id="chAcc">1</span>/10</div></div></div><div class="ch-bar"><span id="chAccBar" style="width:10%"></span></div><div class="sub">Математика</div></div>
             </div>
+          </div>
+        </div>
+
+        <!-- ПРИХОВАНІ ХАРАКТЕРИСТИКИ (відкриються в наступних класах) -->
+        <div class="hc-locked">
+          <div class="hc-locked-title">🔒 Приховані сили <span>відкриються в наступних класах</span></div>
+          <div class="hc-locked-grid">
+            <div class="lk"><span class="e">⚔️</span><span class="n">Сила</span><b id="chStr">2</b></div>
+            <div class="lk"><span class="e">🛡️</span><span class="n">Захист</span><b id="chDef">1</b></div>
+            <div class="lk"><span class="e">🧠</span><span class="n">Інтелект</span><b id="chInt">1</b></div>
+            <div class="lk"><span class="e">💎</span><span class="n">Мудрість</span><b id="chWis">1</b></div>
+            <div class="lk"><span class="e">🍀</span><span class="n">Удача</span><b id="chLuck">1</b></div>
+            <div class="lk"><span class="e">⭐</span><span class="n">Пам'ять</span><b id="chMem">1</b></div>
+            <div class="lk"><span class="e">👥</span><span class="n">Харизма</span><b id="chCha">1</b></div>
           </div>
         </div>
 
@@ -3017,6 +3044,11 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
     set('chMedalStars',d.ach+' зірок');
     set('chWorldStars',d.coins); setw('chWorldBar',d.xpCur,d.xpMax);
 
+    set('chLevel', Math.floor(total/3000)+1);
+    // заблоковані стати 1 класу — стартові значення (справжні підтягне хмара)
+    var locked={chStr:2,chDef:1,chInt:1,chWis:1,chLuck:1,chMem:1,chCha:1};
+    Object.keys(locked).forEach(function(k){ set(k, locked[k]); });
+
     // → зберігаємо всі характеристики героя в хмару (для активної дитини)
     try{
       if(window.SK && window.SK.currentUser && window.SK.currentUser() && window.SK.activeChildId){
@@ -3065,13 +3097,35 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
   }
   window.initAvatar = initAvatar;
 
+  /* ---- підтягнути реальні характеристики героя з бази ---- */
+  async function pullHeroFromCloud(){
+    try{
+      if(!window.SK || !window.SK.getHero) return;
+      var h = await window.SK.getHero();
+      if(!h) return;
+      if(h.health!=null){ set('chHp',h.health); setw('chHpBar',h.health,100); }
+      if(h.agility!=null){ set('chAgi',h.agility); setw('chAgiBar',h.agility,10); }
+      if(h.mana!=null){ set('chMp',h.mana); setw('chMpBar',h.mana,20); }
+      if(h.accuracy!=null){ set('chAcc',h.accuracy); setw('chAccBar',h.accuracy,10); }
+      if(h.level!=null) set('chLevel',h.level);
+      if(h.xp!=null){ set('chXpCur',h.xp%3000); setw('chXpFill',h.xp%3000,3000); }
+      if(h.coins!=null) set('chCoins',h.coins);
+      if(h.name){ set('chName',h.name); set('chHeroHello',h.name); }
+      if(h.title) set('chTitle','🎖️ '+h.title);
+      var m={chStr:'strength',chDef:'defense',chInt:'intelligence',chWis:'wisdom',chLuck:'luck',chMem:'memory',chCha:'charisma'};
+      Object.keys(m).forEach(function(id){ if(h[m[id]]!=null) set(id,h[m[id]]); });
+    }catch(e){}
+  }
+  window.pullHeroFromCloud = pullHeroFromCloud;
+  function syncHeroCloud(){ if(window.SK && window.SK.ready){ window.SK.ready.then(function(u){ if(u) pullHeroFromCloud(); }); } }
+
   var prev = window.showPage;
   window.showPage = function(pageId, el){
     if(typeof prev==='function') prev(pageId, el);
-    if(pageId==='child-dashboard'){ renderChildHero(); initAvatar(); }
+    if(pageId==='child-dashboard'){ renderChildHero(); initAvatar(); syncHeroCloud(); }
   };
-  if(document.readyState!=='loading'){ renderChildHero(); initAvatar(); }
-  else document.addEventListener('DOMContentLoaded', function(){ renderChildHero(); initAvatar(); });
+  if(document.readyState!=='loading'){ renderChildHero(); initAvatar(); syncHeroCloud(); }
+  else document.addEventListener('DOMContentLoaded', function(){ renderChildHero(); initAvatar(); syncHeroCloud(); });
 })();
 </script>
 
