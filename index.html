@@ -1721,105 +1721,171 @@
 
       <!-- CHILD DASHBOARD -->
       <div id="page-child-dashboard" class="page-content" style="display:none">
+
+        <style>
+        /* === Дитяча Головна: сторінка героя === */
+        .ch-hero{display:flex;gap:16px;align-items:center;background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;margin-bottom:16px;position:relative;overflow:hidden}
+        .ch-hero::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 120% at 90% -10%,rgba(78,205,196,.18),transparent 55%);pointer-events:none}
+        .ch-ava{width:84px;height:84px;border-radius:18px;flex-shrink:0;background:linear-gradient(160deg,#2a4a6e,#16314e);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:2.6rem;overflow:hidden}
+        .ch-ava img{width:100%;height:100%;object-fit:cover}
+        .ch-hbody{flex:1;min-width:0;position:relative;z-index:1}
+        .ch-hname{font-family:'Fredoka One',Inter,sans-serif;font-size:1.5rem;color:#fff;line-height:1}
+        .ch-chips{display:flex;gap:6px;flex-wrap:wrap;margin:7px 0 9px}
+        .ch-chip{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:999px}
+        .ch-chip.title{background:rgba(255,209,102,.15);color:var(--gold);border:1px solid rgba(255,209,102,.3)}
+        .ch-chip.grade{background:rgba(78,205,196,.15);color:var(--mint);border:1px solid rgba(78,205,196,.3)}
+        .ch-xprow{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-light);margin-bottom:4px}
+        .ch-xprow b{color:var(--gold)}
+        .ch-xpbar{height:9px;background:rgba(0,0,0,.3);border-radius:6px;overflow:hidden}
+        .ch-xpbar>span{display:block;height:100%;background:linear-gradient(90deg,#5fd0ff,#2f8fe0);border-radius:6px;transition:width .8s}
+        .ch-wallet{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+        .ch-w{display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:4px 11px;font-weight:900;font-size:.85rem}
+        .ch-w.g{color:var(--gold)}.ch-w.d{color:#8fd9ff}.ch-w.a{color:#ffcf66}
+        .ch-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+        @media(max-width:760px){.ch-stats{grid-template-columns:1fr 1fr}}
+        .ch-stat{background:var(--navy-mid);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px}
+        .ch-stat .h{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+        .ch-stat .em{font-size:1.5rem}
+        .ch-stat .nm{font-size:.74rem;font-weight:800;color:var(--text-mid);line-height:1.1}
+        .ch-stat .val{font-family:'Fredoka One',Inter,sans-serif;font-size:1.1rem;color:#fff}
+        .ch-bar{height:7px;background:rgba(0,0,0,.3);border-radius:5px;overflow:hidden;margin-bottom:6px}
+        .ch-bar>span{display:block;height:100%;border-radius:5px;transition:width .9s}
+        .ch-stat.hp .val{color:#ff7a7a}.ch-stat.hp .ch-bar>span{background:#ff5a5a}
+        .ch-stat.agi .val{color:#8fd9ff}.ch-stat.agi .ch-bar>span{background:#5b9bd5}
+        .ch-stat.mp .val{color:#7fb6ff}.ch-stat.mp .ch-bar>span{background:#2f7fd1}
+        .ch-stat.acc .val{color:#ffc266}.ch-stat.acc .ch-bar>span{background:#e08a2e}
+        .ch-stat .sub{font-size:.66rem;color:var(--text-light)}
+        .ch-book{display:flex;gap:12px;align-items:center}
+        .ch-book .cover{width:54px;height:72px;border-radius:8px;background:linear-gradient(135deg,#7a4ecd,#4e2e8b);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,.3)}
+        .ch-book .bbody{flex:1;min-width:0}
+        .ch-book .bt{font-weight:800;color:#fff;font-size:.92rem}
+        .ch-book .ba{font-size:.74rem;color:var(--text-light);margin-bottom:6px}
+        .ch-medals{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+        .ch-medal{text-align:center;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.18);border-radius:10px;padding:8px 4px}
+        .ch-medal.lock{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);opacity:.55}
+        .ch-medal .mi{font-size:1.4rem}
+        .ch-medal .ml{font-size:.6rem;color:var(--text-light);margin-top:2px;line-height:1.1}
+        .ch-link{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(78,205,196,.15);border:1px solid rgba(78,205,196,.4);border-radius:12px;padding:13px;color:var(--mint);font-weight:800;font-size:.92rem;cursor:pointer;transition:.15s;width:100%;text-decoration:none}
+        .ch-link:hover{background:rgba(78,205,196,.25)}
+        .ch-link.gold{background:rgba(255,209,102,.15);border-color:rgba(255,209,102,.4);color:var(--gold)}
+        .ch-link.gold:hover{background:rgba(255,209,102,.25)}
+        </style>
+
         <div class="page-header">
           <div>
-            <div class="page-title">👋 Привіт, Сашко!</div>
-            <div class="page-sub">Суботній ранок · Продовж свій шлях!</div>
+            <div class="page-title">👋 Привіт, <span id="chHeroHello">Сашко</span>!</div>
+            <div class="page-sub">Твоя сторінка героя · продовж свій шлях!</div>
           </div>
         </div>
 
-        <div class="card" style="margin-bottom:16px;padding:12px 16px">
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <div style="font-size:0.82rem;font-weight:800;color:var(--gold);white-space:nowrap;margin-right:4px">🏆 Досягнення</div>
-            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,209,102,0.12);border:1px solid rgba(255,209,102,0.25);border-radius:999px;padding:5px 11px">
-              <span style="font-size:1rem">📚</span><span style="font-size:0.74rem;color:var(--gold);font-weight:700">Читач</span>
+        <!-- HERO BANNER -->
+        <div class="ch-hero">
+          <div class="ch-ava" id="chAva">🦁</div>
+          <div class="ch-hbody">
+            <div class="ch-hname" id="chName">Сашко</div>
+            <div class="ch-chips">
+              <span class="ch-chip title" id="chTitle">🎖️ Лицар Знань</span>
+              <span class="ch-chip grade" id="chGrade">Перший клас</span>
             </div>
-            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,209,102,0.12);border:1px solid rgba(255,209,102,0.25);border-radius:999px;padding:5px 11px">
-              <span style="font-size:1rem">🎨</span><span style="font-size:0.74rem;color:var(--gold);font-weight:700">Художник</span>
-            </div>
-            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,209,102,0.12);border:1px solid rgba(255,209,102,0.25);border-radius:999px;padding:5px 11px">
-              <span style="font-size:1rem">🔢</span><span style="font-size:0.74rem;color:var(--gold);font-weight:700">Математик</span>
-            </div>
-            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:5px 11px;opacity:0.5">
-              <span style="font-size:1rem">🔒</span><span style="font-size:0.74rem;color:var(--text-light);font-weight:700">Закрито</span>
+            <div class="ch-xprow"><span>⭐ Досвід</span><b><span id="chXpCur">2450</span> / <span id="chXpMax">3000</span></b></div>
+            <div class="ch-xpbar"><span id="chXpFill" style="width:81%"></span></div>
+            <div class="ch-wallet">
+              <span class="ch-w g">🪙 <span id="chCoins">540</span></span>
+              <span class="ch-w d">💎 <span id="chGems">35</span></span>
+              <span class="ch-w a">🏆 <span id="chAch">24</span></span>
             </div>
           </div>
         </div>
 
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="sc-label">Мій рахунок</div>
-            <div class="sc-value"><span id="childScoreStatValue">340</span> <span class="sc-icon">⭐</span></div>
-          </div>
-          <div class="stat-card">
-            <div class="sc-label">Монети</div>
-            <div class="sc-value"><span id="childCoinsStatValue">120</span> <span class="sc-icon">🪙</span></div>
-          </div>
-          <div class="stat-card">
-            <div class="sc-label">Виконано</div>
-            <div class="sc-value">12 <span class="sc-icon">✅</span></div>
-          </div>
-          <div class="stat-card">
-            <div class="sc-label">Місце</div>
-            <div class="sc-value">1 <span class="sc-icon">🏆</span></div>
-          </div>
+        <!-- ACTIVE CHARACTERISTICS -->
+        <div class="ch-stats">
+          <div class="ch-stat hp"><div class="h"><span class="em">❤️</span><div><div class="nm">Здоров'я</div><div class="val"><span id="chHp">50</span>/100</div></div></div><div class="ch-bar"><span id="chHpBar" style="width:50%"></span></div><div class="sub">Українська мова</div></div>
+          <div class="ch-stat agi"><div class="h"><span class="em">🪶</span><div><div class="nm">Спритність</div><div class="val"><span id="chAgi">1</span>/10</div></div></div><div class="ch-bar"><span id="chAgiBar" style="width:10%"></span></div><div class="sub">ЯДС · світ</div></div>
+          <div class="ch-stat mp"><div class="h"><span class="em">🔵</span><div><div class="nm">Мана</div><div class="val"><span id="chMp">10</span>/20</div></div></div><div class="ch-bar"><span id="chMpBar" style="width:50%"></span></div><div class="sub">Логіка · English</div></div>
+          <div class="ch-stat acc"><div class="h"><span class="em">🎯</span><div><div class="nm">Точність</div><div class="val"><span id="chAcc">1</span>/10</div></div></div><div class="ch-bar"><span id="chAccBar" style="width:10%"></span></div><div class="sub">Математика</div></div>
         </div>
 
+        <!-- АКАДЕМІЯ ГЕРОЇВ -->
+        <div onclick="showPage('child-academy', null)" style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(78,205,196,.18),rgba(167,139,250,.18));border:1px solid rgba(78,205,196,.4);border-radius:16px;padding:14px 16px;margin-bottom:18px;cursor:pointer;transition:.15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+          <span style="font-size:2rem;flex-shrink:0">🎓</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-family:'Fredoka One',Inter,sans-serif;font-size:1.05rem;color:#fff;line-height:1.1">Академія Героїв</div>
+            <div style="font-size:.78rem;color:var(--mint);font-weight:700;margin-top:2px">Обери предмет, виконуй квести й прокачуй характеристики ✨</div>
+          </div>
+          <span style="font-size:1.2rem;color:var(--mint);flex-shrink:0">▶️</span>
+        </div>
+
+        <!-- 4 BLOCKS -->
         <div class="content-grid">
           <div>
+            <!-- 1) Завдання до виконання -->
             <div class="card">
-              <div class="card-title">📅 Сьогоднішні завдання</div>
-              <div id="childDashTaskList">
-              <div class="task-item">
-                <div class="task-check done"></div>
-                <div class="task-info">
-                  <div class="task-name done">Математика: сторінка 45-46</div>
-                  <div class="task-meta">Виконано · +15 🪙</div>
-                </div>
-                <span class="task-badge">+15 🪙</span>
-              </div>
+              <div class="card-title">📋 Завдання до виконання</div>
               <div class="task-item">
                 <div class="task-check" onclick="completeTask(this)"></div>
-                <div class="task-info">
-                  <div class="task-name">Малювання: намалюй весну</div>
-                  <div class="task-meta">Потрібне фото · +20 🪙</div>
-                </div>
+                <div class="task-info"><div class="task-name">Малювання: намалюй весну</div><div class="task-meta">Потрібне фото · +20 🪙</div></div>
                 <span class="task-status status-review">На перевірці</span>
               </div>
               <div class="task-item">
                 <div class="task-check" onclick="completeTask(this)"></div>
-                <div class="task-info">
-                  <div class="task-name">Читання: 20 хвилин</div>
-                  <div class="task-meta">до 20:00 · +10 🪙</div>
-                </div>
+                <div class="task-info"><div class="task-name">Читання: 20 хвилин</div><div class="task-meta">до 20:00 · +10 🪙</div></div>
                 <span class="task-badge">+10 🪙</span>
               </div>
+              <div class="task-item">
+                <div class="task-check" onclick="completeTask(this)"></div>
+                <div class="task-info"><div class="task-name">Математика: додавання до 20</div><div class="task-meta">Квест Академії · +15 🪙</div></div>
+                <span class="task-badge">+15 🪙</span>
               </div>
-              <button class="btn-primary" style="width:100%;margin-top:12px" onclick="showPage('child-upload', null)">📤 Завантажити виконану роботу</button>
+              <div class="ch-link" style="margin-top:12px" onclick="showPage('child-tasks', null)">📋 Усі завдання ▶️</div>
             </div>
 
-            <div class="world-card" style="margin-top:14px">
-              <div style="font-size:0.95rem;color:var(--mint);font-weight:800;font-family:Inter,sans-serif;margin-bottom:14px">Розвивай себе щодня! ✨</div>
-              <div onclick="showPage('child-academy', null)" style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.4);border-radius:12px;padding:14px;text-decoration:none;color:var(--mint);font-weight:800;font-size:0.95rem;transition:background 0.15s;cursor:pointer" onmouseover="this.style.background='rgba(78,205,196,0.25)'" onmouseout="this.style.background='rgba(78,205,196,0.15)'">
-                🎓 Академія Героїв ▶️
+            <!-- 2) Моя книга в процесі -->
+            <div class="card" style="margin-top:14px">
+              <div class="card-title">📖 Моя книга в процесі</div>
+              <div class="ch-book">
+                <div class="cover">📕</div>
+                <div class="bbody">
+                  <div class="bt" id="chBookTitle">Пригоди в Країні Знань</div>
+                  <div class="ba" id="chBookAuthor">розділ 3 із 8</div>
+                  <div class="ch-xprow"><span>Прочитано</span><b id="chBookPct">38%</b></div>
+                  <div class="ch-bar"><span id="chBookBar" style="background:#a78bfa;width:38%"></span></div>
+                </div>
               </div>
+              <div class="ch-link" style="margin-top:12px" onclick="showPage('child-academy', null)">📖 Читати далі ▶️</div>
             </div>
           </div>
+
           <div>
-            <div class="world-card">
-              <div class="world-title">🌍 Мій Світ — Рівень 4</div>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                <span style="font-size:0.78rem;color:var(--mint);font-family:Inter,sans-serif">Прогрес до рівня 5</span>
-                <span style="font-size:0.78rem;color:var(--gold);font-weight:800">340/400 ⭐</span>
+            <!-- 3) Мої досягнення (Зал Слави) -->
+            <div class="card">
+              <div class="card-title">🏆 Мої досягнення <span style="font-size:.72rem;color:var(--text-light);font-weight:700">· Зал Слави</span></div>
+              <div class="ch-medals">
+                <div class="ch-medal"><div class="mi">📚</div><div class="ml">Читач</div></div>
+                <div class="ch-medal"><div class="mi">🎨</div><div class="ml">Художник</div></div>
+                <div class="ch-medal"><div class="mi">🔢</div><div class="ml">Математик</div></div>
+                <div class="ch-medal"><div class="mi">⭐</div><div class="ml" id="chMedalStars">24 зірки</div></div>
+                <div class="ch-medal"><div class="mi">🦁</div><div class="ml">Сміливець</div></div>
+                <div class="ch-medal"><div class="mi">🌍</div><div class="ml">Мандрівник</div></div>
+                <div class="ch-medal lock"><div class="mi">🔒</div><div class="ml">Закрито</div></div>
+                <div class="ch-medal lock"><div class="mi">🔒</div><div class="ml">Закрито</div></div>
               </div>
-              <div class="progress-bar" style="height:8px;margin-bottom:14px"><div class="progress-fill" style="width:85%"></div></div>
-              <a href="learn_play_moi_svit.html" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.4);border-radius:12px;padding:14px;text-decoration:none;color:var(--mint);font-weight:800;font-size:0.95rem;transition:background 0.15s" onmouseover="this.style.background='rgba(78,205,196,0.25)'" onmouseout="this.style.background='rgba(78,205,196,0.15)'">
-                🌍 Відкрити Мій Світ ▶️
-              </a>
-              <div style="font-size:0.72rem;color:rgba(78,205,196,0.7);text-align:center;margin-top:10px;font-family:Inter,sans-serif">Ще 60 ⭐ до нових відкриттів!</div>
+              <div class="ch-link gold" onclick="showPage('rating', null)">🏆 Відкрити Зал Слави ▶️</div>
+            </div>
+
+            <!-- 4) Мій світ — перехід на карту -->
+            <div class="world-card" style="margin-top:14px">
+              <div class="world-title">🌍 Мій Світ</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <span style="font-size:0.78rem;color:var(--mint);font-family:Inter,sans-serif">Прогрес героя на карті</span>
+                <span style="font-size:0.78rem;color:var(--gold);font-weight:800"><span id="chWorldStars">340</span> ⭐</span>
+              </div>
+              <div class="progress-bar" style="height:8px;margin-bottom:14px"><div class="progress-fill" id="chWorldBar" style="width:85%"></div></div>
+              <a href="learn_play_moi_svit.html" target="_blank" class="ch-link">🗺️ Перейти на карту ▶️</a>
+              <div style="font-size:0.72rem;color:rgba(78,205,196,0.7);text-align:center;margin-top:10px;font-family:Inter,sans-serif">Відкривай нові землі за зароблені зірки!</div>
             </div>
           </div>
         </div>
+
       </div>
 
       <!-- CHILD TASKS -->
@@ -2624,44 +2690,20 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
 (function(){
   const subjects = [
     {id:'math',icon:'🧮',name:'Математика',accent:'#5C6BC0',
-      trainings:[{label:'Вивчаю цифри',href:'learn-math-numbers.html'}],
-      quests:[
-        {label:'1 клас — 20 рівнів 🧮',href:'math-test.html'},
-        {label:'Додавання',href:'addition-test.html'},
-        {label:'Віднімання',href:'subtraction-test.html'}
-      ]},
+      trainings:[{label:'Вивчаю цифри',href:'learn-math-numbers.html'},{label:'Вивчаю цифри 10–20',href:'learn-numbers-10-20.html'}],
+      quests:[{label:'1 клас — 20 рівнів 🧮',href:'math-test.html'},{label:'Додавання',href:'addition-test.html'},{label:'Віднімання',href:'subtraction-test.html'},{label:'Додавання до 20',href:'addition-test-20.html'},{label:'Віднімання до 20',href:'subtraction-test-20.html'},{label:'Множення',href:'multiplication-test.html'}]},
     {id:'ukr',icon:'🌺',name:'Українська мова',accent:'#D6577A',
-      trainings:[
-        {label:'Вивчаю букви Абетки',href:'learn-ukrainian-letters.html'},
-        {label:'🎵 Скоромовка: Рак',href:'mini-gra-rak.html'},
-        {label:'🎵 Скоромовка: Півень',href:'mini-gra-piven.html'},
-        {label:'🎵 Вірш: Дружба',href:'mini-gra-druzhba.html'}
-      ],
-      quests:[
-        {label:'Палац слів — 20 рівнів',href:'ukrainian-palace-test.html'},
-        {label:'Правопис слів',href:'spelling-test.html'}
-      ]},
+      trainings:[{label:'Вивчаю букви Абетки',href:'learn-ukrainian-letters.html'}],
+      quests:[{label:'Правопис слів',href:'spelling-test.html'}]},
     {id:'eng',icon:'🌍',name:'English',accent:'#3FB6A8',
-      trainings:[
-        {label:'Learn ABC (Part 1)',href:'learn-english-letters.html'},
-        {label:'Learn ABC (Part 2)',href:'learn-english-letters_2.html'}
-      ],
+      trainings:[{label:'Learn ABC',href:'learn-english-letters.html'}],
       quests:[{label:'Тест A1 · 10 рівнів',href:'english-test.html'}]},
     {id:'logic',icon:'🧩',name:'Світ логіки',accent:'#8B6FCE',
       trainings:[],
-      quests:[
-        {label:'Логіка і пам\'ять (logika)',href:'logika-pamyat-test.html'},
-        {label:'Логіка і пам\'ять',href:'logic-memory-test.html'}
-      ]},
+      quests:[{label:'Логіка і пам\'ять',href:'logic-memory-test.html'}]},
     {id:'geo',icon:'🗺️',name:'Географія',accent:'#E0954E',
       trainings:[],
-      quests:[{label:'Столиці світу',href:'capitals-test.html'}]},
-    {id:'world',icon:'🌍',name:'Мій Світ',accent:'#4ECDC4',
-      trainings:[
-        {label:'Відкрити Мій Світ',href:'learn_play_moi_svit.html'},
-        {label:'Реєстрація / Авторизація',href:'reg_auth_proto_moi_svit.html'}
-      ],
-      quests:[]}
+      quests:[{label:'Столиці світу',href:'capitals-test.html'}]}
   ];
 
   function chipHtml(t, accent){
@@ -2717,6 +2759,59 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
   };
 })();
 </script>
+<script>
+/* ===== Дитяча Головна: дані героя з localStorage ===== */
+(function(){
+  function lsAll(){var o={};try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);o[k]=localStorage.getItem(k);}}catch(e){}return o;}
+  function sumXP(st,pats){var s=0;for(var k in st){var kl=k.toLowerCase();if(kl.indexOf('xp')!==-1&&pats.some(function(p){return kl.indexOf(p)!==-1;})){var v=parseInt(st[k],10);if(!isNaN(v))s+=v;}}return s;}
+  function sumStars(st){var s=0;for(var k in st){if(k.toLowerCase().indexOf('star')===-1)continue;var added=false;try{var o=JSON.parse(st[k]);if(o&&typeof o==='object'){for(var x in o){var v=parseInt(o[x],10);if(!isNaN(v))s+=v;}added=true;}}catch(e){}if(!added){var v2=parseInt(st[k],10);if(!isNaN(v2))s+=v2;}}return s;}
+  function pct(v,m){return Math.max(0,Math.min(100,Math.round(v/m*100)));}
+  function set(id,val){var el=document.getElementById(id);if(el)el.textContent=val;}
+  function setw(id,v,m){var el=document.getElementById(id);if(el)el.style.width=pct(v,m)+'%';}
+
+  function renderChildHero(){
+    var st=lsAll();
+    var ukr=sumXP(st,['palace','spell','rak','piven','druzhba','ukr','abetk']);
+    var math=sumXP(st,['add','sub','mult','math','num','cifr']);
+    var logic=sumXP(st,['logic','logika','pamyat','memory']);
+    var eng=sumXP(st,['eng','abc']);
+    var world=sumXP(st,['capital','geo','svit','world','yads','dovkil']);
+    var total=ukr+math+logic+eng+world, has=total>0;
+    var stars=sumStars(st);
+    var prof={name:'Сашко',title:'Лицар Знань',grade:'Перший клас'};
+    try{var p=JSON.parse(localStorage.getItem('sk_hero_profile')||'null');if(p)prof=Object.assign(prof,p);}catch(e){}
+
+    var d = has ? {
+      hp:Math.min(100,50+Math.floor(ukr/10)),
+      agi:Math.min(10,1+Math.floor(world/15)),
+      mp:Math.min(26,Math.min(20,10+Math.floor(logic/12))+Math.min(6,Math.floor(eng/25))),
+      acc:Math.min(10,1+Math.floor(math/15)),
+      coins:total, gems:Math.max(35,stars), ach:stars, xpCur:total%3000, xpMax:3000
+    } : {hp:50,agi:1,mp:10,acc:1,coins:540,gems:35,ach:24,xpCur:2450,xpMax:3000};
+
+    set('chHeroHello',prof.name); set('chName',prof.name);
+    set('chTitle','🎖️ '+prof.title); set('chGrade',prof.grade);
+    set('chXpCur',d.xpCur); set('chXpMax',d.xpMax); setw('chXpFill',d.xpCur,d.xpMax);
+    set('chCoins',d.coins); set('chGems',d.gems); set('chAch',d.ach);
+    set('chHp',d.hp); setw('chHpBar',d.hp,100);
+    set('chAgi',d.agi); setw('chAgiBar',d.agi,10);
+    set('chMp',d.mp); setw('chMpBar',d.mp,20);
+    set('chAcc',d.acc); setw('chAccBar',d.acc,10);
+    set('chMedalStars',d.ach+' зірок');
+    set('chWorldStars',d.coins); setw('chWorldBar',d.xpCur,d.xpMax);
+  }
+  window.renderChildHero = renderChildHero;
+
+  var prev = window.showPage;
+  window.showPage = function(pageId, el){
+    if(typeof prev==='function') prev(pageId, el);
+    if(pageId==='child-dashboard') renderChildHero();
+  };
+  if(document.readyState!=='loading') renderChildHero();
+  else document.addEventListener('DOMContentLoaded', renderChildHero);
+})();
+</script>
+
 <!-- CHILD PROFILE MODAL -->
 <div class="modal-overlay" id="childProfileModal" onclick="if(event.target===this)closeChildProfile()">
   <div class="modal" style="max-width:420px;padding:0;overflow:hidden">
