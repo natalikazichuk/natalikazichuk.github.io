@@ -90,6 +90,16 @@
   try { totalXp = parseInt(localStorage.getItem(STORE_KEY)||'0') || 0; } catch(e){}
   function saveXp(){ try{ localStorage.setItem(STORE_KEY, String(totalXp)); }catch(e){} }
 
+  // Множина вивчених букв → частка виконання тренування для Health (sk-progress.js)
+  const LEARNED_KEY = 'sk_train_ukrabc_learned_v1';
+  function markLearned(letter){
+    try{
+      let a = JSON.parse(localStorage.getItem(LEARNED_KEY)||'[]');
+      if(!Array.isArray(a)) a=[];
+      if(a.indexOf(letter)===-1){ a.push(letter); localStorage.setItem(LEARNED_KEY, JSON.stringify(a)); }
+    }catch(e){ try{ localStorage.setItem(LEARNED_KEY, JSON.stringify([letter])); }catch(e2){} }
+  }
+
   function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
   function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=randInt(0,i); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
 
@@ -146,7 +156,7 @@
 
   function grade(known){
     const card = state.deck[state.index];
-    if(known){ state.known++; state.earned++; totalXp++; saveXp(); }
+    if(known){ state.known++; state.earned++; totalXp++; saveXp(); markLearned(card.up); }
     else { state.unknown++; state.repeatPile.push(card); }
     state.index++; state.flipped=false;
     if(state.index>=state.deck.length){

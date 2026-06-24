@@ -1024,8 +1024,9 @@
     .content-grid { grid-template-columns: 1fr; }
   }
 </style>
-<!-- Firebase: спільний модуль (Auth + Firestore). Працює на GitHub Pages. -->
+<!-- Firebase (шар даних) + модуль розрахунку Health/ХР -->
 <script type="module" src="firebase-config.js"></script>
+<script src="sk-progress.js"></script>
 </head>
 <body>
 
@@ -1391,7 +1392,6 @@
                   <div class="rating-score">⭐ 180 балів · 🪙 35 монет</div>
                 </div>
               </div>
-              <button class="auth-btn" style="margin-top:14px" onclick="openAddChild()">➕ Додати дитину</button>
             </div>
           </div>
 
@@ -1787,18 +1787,6 @@
         .ch-stat.acc .val{color:#ffc266}.ch-stat.acc .ch-bar>span{background:#e08a2e}
         .ch-stat .sub{font-size:.66rem;color:var(--text-light)}
         @media (prefers-reduced-motion: reduce){.hc-avatar .full,.hc-avatar .emoji-fallback,.hc-avatar .aura{animation:none!important}}
-        .ch-chip.lvl{background:rgba(78,205,196,.18);border-color:rgba(78,205,196,.4);color:var(--mint)}
-        .ch-chip.lvl b{font-family:'Fredoka One',Inter,sans-serif}
-        .hc-locked{margin:0 0 18px;background:var(--navy);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:12px 14px}
-        .hc-locked-title{font-size:.82rem;font-weight:800;color:var(--text-mid);margin-bottom:10px}
-        .hc-locked-title span{font-weight:600;color:var(--text-light);font-size:.72rem}
-        .hc-locked-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
-        @media(max-width:760px){.hc-locked-grid{grid-template-columns:repeat(4,1fr)}}
-        @media(max-width:420px){.hc-locked-grid{grid-template-columns:repeat(3,1fr)}}
-        .hc-locked .lk{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:8px 4px;text-align:center;opacity:.78}
-        .hc-locked .lk .e{display:block;font-size:1.3rem;filter:grayscale(.35)}
-        .hc-locked .lk .n{display:block;font-size:.62rem;color:var(--text-light);margin:2px 0}
-        .hc-locked .lk b{font-family:'Fredoka One',Inter,sans-serif;color:#cdd6e6;font-size:.95rem}
         .ch-book{display:flex;gap:12px;align-items:center}
         .ch-book .cover{width:54px;height:72px;border-radius:8px;background:linear-gradient(135deg,#7a4ecd,#4e2e8b);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,.3)}
         .ch-book .bbody{flex:1;min-width:0}
@@ -1839,7 +1827,6 @@
               <div class="ch-chips">
                 <span class="ch-chip title" id="chTitle">🎖️ Лицар Знань</span>
                 <span class="ch-chip grade" id="chGrade">Перший клас</span>
-                <span class="ch-chip lvl">🆙 Рівень <b id="chLevel">1</b></span>
               </div>
             </div>
 
@@ -1866,20 +1853,6 @@
               <div class="ch-stat mp"><div class="h"><span class="em">🔵</span><div><div class="nm">Мана</div><div class="val"><span id="chMp">10</span>/20</div></div></div><div class="ch-bar"><span id="chMpBar" style="width:50%"></span></div><div class="sub">Логіка · English</div></div>
               <div class="ch-stat acc"><div class="h"><span class="em">🎯</span><div><div class="nm">Точність</div><div class="val"><span id="chAcc">1</span>/10</div></div></div><div class="ch-bar"><span id="chAccBar" style="width:10%"></span></div><div class="sub">Математика</div></div>
             </div>
-          </div>
-        </div>
-
-        <!-- ПРИХОВАНІ ХАРАКТЕРИСТИКИ (відкриються в наступних класах) -->
-        <div class="hc-locked">
-          <div class="hc-locked-title">🔒 Приховані сили <span>відкриються в наступних класах</span></div>
-          <div class="hc-locked-grid">
-            <div class="lk"><span class="e">⚔️</span><span class="n">Сила</span><b id="chStr">2</b></div>
-            <div class="lk"><span class="e">🛡️</span><span class="n">Захист</span><b id="chDef">1</b></div>
-            <div class="lk"><span class="e">🧠</span><span class="n">Інтелект</span><b id="chInt">1</b></div>
-            <div class="lk"><span class="e">💎</span><span class="n">Мудрість</span><b id="chWis">1</b></div>
-            <div class="lk"><span class="e">🍀</span><span class="n">Удача</span><b id="chLuck">1</b></div>
-            <div class="lk"><span class="e">⭐</span><span class="n">Пам'ять</span><b id="chMem">1</b></div>
-            <div class="lk"><span class="e">👥</span><span class="n">Харизма</span><b id="chCha">1</b></div>
           </div>
         </div>
 
@@ -2192,45 +2165,6 @@
   </div>
 </div>
 
-<!-- ADD CHILD MODAL -->
-<div class="modal-overlay" id="addChildModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeAddChild()">✕</button>
-    <div class="modal-title">➕ Додати дитину</div>
-    <div class="form-group">
-      <label>Ім'я</label>
-      <input class="form-input" type="text" placeholder="Наприклад: Сашко" id="acName">
-    </div>
-    <div class="form-group">
-      <label>Аватар</label>
-      <select class="form-select" id="acAvatar">
-        <option>🦁</option><option>🦋</option><option>🐬</option>
-        <option>🦊</option><option>🐧</option><option>🐯</option>
-        <option>🦄</option><option>🐨</option><option>🐸</option>
-        <option>🦉</option><option>🐼</option><option>🐹</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Вік</label>
-      <input class="form-input" type="number" min="4" max="14" value="7" id="acAge" oninput="acSuggestGrade()">
-    </div>
-    <div class="form-group">
-      <label>Клас</label>
-      <select class="form-select" id="acGrade">
-        <option value="1">1 клас</option>
-        <option value="2">2 клас</option>
-        <option value="3">3 клас</option>
-        <option value="4">4 клас</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>PIN (4 цифри — для входу дитини)</label>
-      <input class="form-input" type="text" inputmode="numeric" maxlength="4" placeholder="напр. 1234" id="acPin">
-    </div>
-    <button class="auth-btn" onclick="doAddChild()">Додати дитину →</button>
-  </div>
-</div>
-
 <!-- HERO QUESTS / MINI-GAME MODAL -->
 <div class="modal-overlay" id="gameModal">
   <div class="modal" style="max-width:560px">
@@ -2285,59 +2219,21 @@ function switchForm(form) {
   document.getElementById(form === 'register' ? 'registerForm' : form === 'child' ? 'childForm' : 'loginForm').style.display = 'block';
 }
 
-function fbReady() {
-  if (!window.SK) { showToast('⏳ Firebase ще завантажується, спробуйте за мить'); return false; }
-  return true;
-}
-
-async function doLogin() {
-  if (!fbReady()) return;
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass  = document.getElementById('loginPass').value;
+function doLogin() {
+  const email = document.getElementById('loginEmail').value;
   if (!email) { showToast('⚠️ Введіть email'); return; }
-  if (!pass)  { showToast('⚠️ Введіть пароль'); return; }
-  try {
-    await window.SK.login(email, pass);
-    await window.SK.pullLocal().catch(()=>{}); // підтягнути прогрес активної дитини, якщо була
-    closeAuth();
-    switchRole('parent');
-    showApp();
-    showToast('👋 Вітаємо у SchoolKingdom!');
-  } catch (e) {
-    showToast('❌ ' + authError(e));
-  }
+  closeAuth();
+  switchRole('parent');
+  showApp();
 }
 
-async function doRegister() {
-  if (!fbReady()) return;
-  const name  = document.getElementById('regName').value.trim();
-  const role  = document.getElementById('regRole').value;
-  const email = document.getElementById('regEmail').value.trim();
-  const pass  = document.getElementById('regPass').value;
-  if (!name)  { showToast('⚠️ Введіть ім\'я'); return; }
-  if (!email) { showToast('⚠️ Введіть email'); return; }
-  if (pass.length < 6) { showToast('⚠️ Пароль — мінімум 6 символів'); return; }
-  try {
-    await window.SK.registerFamily({ parentName: name, parentRole: role, email, password: pass });
-    closeAuth();
-    switchRole('parent');
-    showApp();
-    showToast('🎉 Акаунт «' + name + '» створено! Тепер додайте дітей.');
-  } catch (e) {
-    showToast('❌ ' + authError(e));
-  }
-}
-
-// Людські повідомлення про помилки Firebase
-function authError(e) {
-  const c = (e && e.code) || '';
-  if (c.includes('email-already-in-use')) return 'Такий email вже зареєстрований';
-  if (c.includes('invalid-email'))        return 'Невірний формат email';
-  if (c.includes('weak-password'))        return 'Надто простий пароль';
-  if (c.includes('invalid-credential') || c.includes('wrong-password') || c.includes('user-not-found'))
-                                          return 'Невірний email або пароль';
-  if (c.includes('network'))              return 'Немає зв\'язку з мережею';
-  return (e && e.message) || 'Сталася помилка';
+function doRegister() {
+  const name = document.getElementById('regName').value;
+  if (!name) { showToast('⚠️ Введіть ім\'я'); return; }
+  closeAuth();
+  switchRole('parent');
+  showApp();
+  showToast('🎉 Родину Казичук створено! Ласкаво просимо!');
 }
 
 function selectAvatar(el, name) {
@@ -2352,29 +2248,12 @@ function pinNext(el) {
   }
 }
 
-async function doChildLogin() {
-  if (!fbReady()) return;
+function doChildLogin() {
   if (!selectedChild) { showToast('⚠️ Оберіть аватар'); return; }
-  if (!window.SK.currentUser()) {
-    showToast('🔒 Спершу має зайти хтось із батьків (один раз на пристрої)');
-    switchForm('login');
-    return;
-  }
-  const pin = Array.from(document.querySelectorAll('#childForm .pin-digit'))
-    .map(i => i.value).join('');
-  if (pin.length < 4) { showToast('⚠️ Введіть 4-значний PIN'); return; }
-  try {
-    const childId = await window.SK.verifyChildPin(selectedChild, pin);
-    if (!childId) { showToast('❌ Невірний PIN'); return; }
-    window.SK.setActiveChild(childId);
-    await window.SK.pullLocal(childId).catch(()=>{}); // хмара → пристрій
-    closeAuth();
-    switchRole('child');
-    showApp();
-    showToast('⚡ Привіт, ' + selectedChild + '!');
-  } catch (e) {
-    showToast('❌ ' + authError(e));
-  }
+  closeAuth();
+  switchRole('child');
+  showApp();
+  showToast('⚡ Привіт, ' + selectedChild + '!');
 }
 
 function showApp() {
@@ -2390,67 +2269,15 @@ function showApp() {
   }
 }
 
-// Auto-enter app if returning with a view param, або якщо вже є сесія Firebase
+// Auto-enter app if returning with a view param
 window.addEventListener('DOMContentLoaded', function(){
   const params = new URLSearchParams(window.location.search);
-  if (params.get('view')) { showApp(); return; }
-  if (window.SK && window.SK.ready) {
-    window.SK.ready.then(user => {
-      if (!user) return; // не залогінені — лишаємось на лендингу
-      // активна дитина → дитячий кабінет, інакше батьківський
-      if (window.SK.activeChildId) {
-        window.SK.pullLocal().catch(()=>{});
-        switchRole('child');
-      } else {
-        switchRole('parent');
-      }
-      showApp();
-    });
+  if (params.get('view')) {
+    showApp();
   }
 });
 
-// ===== Додати дитину (Firebase) =====
-function openAddChild() {
-  if (!fbReady()) return;
-  if (!window.SK.currentUser()) { showToast('🔒 Спершу увійдіть як батьки'); return; }
-  document.getElementById('acName').value = '';
-  document.getElementById('acAge').value = 7;
-  document.getElementById('acPin').value = '';
-  acSuggestGrade();
-  document.getElementById('addChildModal').classList.add('open');
-}
-function closeAddChild() {
-  document.getElementById('addChildModal').classList.remove('open');
-}
-function acSuggestGrade() {
-  const age = parseInt(document.getElementById('acAge').value) || 7;
-  document.getElementById('acGrade').value = suggestedGrade(age);
-}
-async function doAddChild() {
-  if (!fbReady()) return;
-  const name = document.getElementById('acName').value.trim();
-  const avatar = document.getElementById('acAvatar').value;
-  const age = parseInt(document.getElementById('acAge').value) || 7;
-  const grade = parseInt(document.getElementById('acGrade').value) || 1;
-  const pin = document.getElementById('acPin').value.trim();
-  if (!name) { showToast('⚠️ Введіть ім\'я'); return; }
-  if (!/^\d{4}$/.test(pin)) { showToast('⚠️ PIN — рівно 4 цифри'); return; }
-  try {
-    await window.SK.addChild({ name, avatar, age, grade, pin });
-    closeAddChild();
-    showToast('🎉 ' + name + ' додано! PIN: ' + pin);
-  } catch (e) {
-    showToast('❌ ' + authError(e));
-  }
-}
-
-async function doLogout() {
-  try {
-    if (window.SK) {
-      await window.SK.pushLocal().catch(()=>{}); // зберегти прогрес перед виходом
-      await window.SK.logout();
-    }
-  } catch (e) {}
+function doLogout() {
   document.getElementById('landing').style.display = 'block';
   document.getElementById('appInterface').style.display = 'none';
 }
@@ -2993,26 +2820,6 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
   function set(id,val){var el=document.getElementById(id);if(el)el.textContent=val;}
   function setw(id,v,m){var el=document.getElementById(id);if(el)el.style.width=pct(v,m)+'%';}
 
-  /* ---- збереження характеристик героя в хмару (з дебаунсом) ---- */
-  var _heroTimer=null,_heroLast='',_heroPending=null;
-  function queueHeroSave(stats){
-    var sig=JSON.stringify(stats);
-    if(sig===_heroLast) return;          // нічого не змінилось
-    _heroPending=stats;
-    clearTimeout(_heroTimer);
-    _heroTimer=setTimeout(flushHeroSave,1200);
-  }
-  function flushHeroSave(){
-    clearTimeout(_heroTimer);
-    if(!_heroPending) return;
-    var s=_heroPending; _heroLast=JSON.stringify(s); _heroPending=null;
-    if(window.SK && window.SK.saveHeroStats) window.SK.saveHeroStats(s).catch(function(){});
-  }
-  window.flushHeroSave=flushHeroSave;
-  document.addEventListener('visibilitychange',function(){
-    if(document.visibilityState==='hidden') flushHeroSave();
-  });
-
   function renderChildHero(){
     var st=lsAll();
     var ukr=sumXP(st,['palace','spell','rak','piven','druzhba','ukr','abetk']);
@@ -3033,6 +2840,18 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
       coins:total, gems:Math.max(35,stars), ach:stars, xpCur:total%3000, xpMax:3000
     } : {hp:50,agi:1,mp:10,acc:1,coins:540,gems:35,ach:24,xpCur:2450,xpMax:3000};
 
+    // ── Health і ХР за новою логікою 1 класу (модуль sk-progress.js) ──
+    // Health = 50 + рівні частки з +50 за завдання рідної мови (по мірі виконання).
+    // ХР = виконані вправи квестів. Обидва зберігаються у Firebase.
+    try{
+      if(window.SKProgress){
+        var sp = SKProgress.snapshot();
+        d.hp = sp.health;       // 50..100, розподілено між завданнями української
+        d.xpCur = sp.xp;        // реальний ХР: виконані вправи квестів
+        SKProgress.saveDebounced();  // → SK.saveHeroStats({health, xp})
+      }
+    }catch(e){}
+
     set('chHeroHello',prof.name); set('chName',prof.name);
     set('chTitle','🎖️ '+prof.title); set('chGrade',prof.grade);
     set('chXpCur',d.xpCur); set('chXpMax',d.xpMax); setw('chXpFill',d.xpCur,d.xpMax);
@@ -3043,22 +2862,6 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
     set('chAcc',d.acc); setw('chAccBar',d.acc,10);
     set('chMedalStars',d.ach+' зірок');
     set('chWorldStars',d.coins); setw('chWorldBar',d.xpCur,d.xpMax);
-
-    set('chLevel', Math.floor(total/3000)+1);
-    // заблоковані стати 1 класу — стартові значення (справжні підтягне хмара)
-    var locked={chStr:2,chDef:1,chInt:1,chWis:1,chLuck:1,chMem:1,chCha:1};
-    Object.keys(locked).forEach(function(k){ set(k, locked[k]); });
-
-    // → зберігаємо всі характеристики героя в хмару (для активної дитини)
-    try{
-      if(window.SK && window.SK.currentUser && window.SK.currentUser() && window.SK.activeChildId){
-        var lvl = Math.floor(total/3000)+1;
-        queueHeroSave({
-          health:d.hp, mana:d.mp, agility:d.agi, accuracy:d.acc,
-          level:lvl, xp:total, coins:d.coins, stars:d.ach
-        });
-      }
-    }catch(e){}
   }
   window.renderChildHero = renderChildHero;
 
@@ -3097,35 +2900,13 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
   }
   window.initAvatar = initAvatar;
 
-  /* ---- підтягнути реальні характеристики героя з бази ---- */
-  async function pullHeroFromCloud(){
-    try{
-      if(!window.SK || !window.SK.getHero) return;
-      var h = await window.SK.getHero();
-      if(!h) return;
-      if(h.health!=null){ set('chHp',h.health); setw('chHpBar',h.health,100); }
-      if(h.agility!=null){ set('chAgi',h.agility); setw('chAgiBar',h.agility,10); }
-      if(h.mana!=null){ set('chMp',h.mana); setw('chMpBar',h.mana,20); }
-      if(h.accuracy!=null){ set('chAcc',h.accuracy); setw('chAccBar',h.accuracy,10); }
-      if(h.level!=null) set('chLevel',h.level);
-      if(h.xp!=null){ set('chXpCur',h.xp%3000); setw('chXpFill',h.xp%3000,3000); }
-      if(h.coins!=null) set('chCoins',h.coins);
-      if(h.name){ set('chName',h.name); set('chHeroHello',h.name); }
-      if(h.title) set('chTitle','🎖️ '+h.title);
-      var m={chStr:'strength',chDef:'defense',chInt:'intelligence',chWis:'wisdom',chLuck:'luck',chMem:'memory',chCha:'charisma'};
-      Object.keys(m).forEach(function(id){ if(h[m[id]]!=null) set(id,h[m[id]]); });
-    }catch(e){}
-  }
-  window.pullHeroFromCloud = pullHeroFromCloud;
-  function syncHeroCloud(){ if(window.SK && window.SK.ready){ window.SK.ready.then(function(u){ if(u) pullHeroFromCloud(); }); } }
-
   var prev = window.showPage;
   window.showPage = function(pageId, el){
     if(typeof prev==='function') prev(pageId, el);
-    if(pageId==='child-dashboard'){ renderChildHero(); initAvatar(); syncHeroCloud(); }
+    if(pageId==='child-dashboard'){ renderChildHero(); initAvatar(); }
   };
-  if(document.readyState!=='loading'){ renderChildHero(); initAvatar(); syncHeroCloud(); }
-  else document.addEventListener('DOMContentLoaded', function(){ renderChildHero(); initAvatar(); syncHeroCloud(); });
+  if(document.readyState!=='loading'){ renderChildHero(); initAvatar(); }
+  else document.addEventListener('DOMContentLoaded', function(){ renderChildHero(); initAvatar(); });
 })();
 </script>
 
