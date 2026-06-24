@@ -1189,21 +1189,8 @@
     <!-- CHILD LOGIN -->
     <div id="childForm" style="display:none" class="child-auth">
       <div class="auth-title">👋 Привіт!</div>
-      <div class="auth-sub" style="text-align:center">Вибери свій аватар і введи PIN</div>
-      <div class="avatar-grid">
-        <div class="avatar-option" onclick="selectAvatar(this, 'Сашко')" >
-          <span class="emoji">🦁</span>
-          <span class="name">Сашко</span>
-        </div>
-        <div class="avatar-option" onclick="selectAvatar(this, 'Олечка')">
-          <span class="emoji">🦋</span>
-          <span class="name">Олечка</span>
-        </div>
-        <div class="avatar-option" onclick="selectAvatar(this, 'Володя')">
-          <span class="emoji">🐬</span>
-          <span class="name">Володя</span>
-        </div>
-      </div>
+      <div class="auth-sub" style="text-align:center">Вибери свій профіль і введи PIN</div>
+      <div class="avatar-grid" id="childAvatarGrid"></div>
       <div class="pin-input">
         <input class="pin-digit" maxlength="1" type="password" oninput="pinNext(this, null)">
         <input class="pin-digit" maxlength="1" type="password" oninput="pinNext(this, null)">
@@ -1214,6 +1201,47 @@
       <div class="auth-switch"><a onclick="switchForm('login')">← Вхід для батьків</a></div>
     </div>
 
+  </div>
+</div>
+
+<!-- ====== ADD CHILD MODAL (перший вхід / додавання дитини) ====== -->
+<div class="modal-overlay" id="addChildModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAddChild()">✕</button>
+
+    <!-- Крок 1: форма -->
+    <div id="addChildStep1">
+      <div class="modal-title">👶 Додайте дитину</div>
+      <div class="auth-sub" style="margin-bottom:18px">Створимо героя для вашої дитини</div>
+      <div class="form-group">
+        <label>Ім'я дитини</label>
+        <input class="form-input" type="text" placeholder="Наприклад: Сашко" id="acName">
+      </div>
+      <div class="form-group">
+        <label>Рік народження</label>
+        <input class="form-input" type="number" inputmode="numeric" placeholder="Наприклад: 2019" id="acYear" min="2005" max="2025">
+      </div>
+      <div class="form-group">
+        <label>Клас</label>
+        <select class="form-select" id="acGrade">
+          <option value="1">1 клас</option>
+          <option value="2">2 клас</option>
+          <option value="3">3 клас</option>
+          <option value="4">4 клас</option>
+        </select>
+      </div>
+      <button class="auth-btn" id="acSubmitBtn" onclick="submitAddChild()">Створити героя →</button>
+    </div>
+
+    <!-- Крок 2: показ згенерованого PIN -->
+    <div id="addChildStep2" style="display:none;text-align:center">
+      <div class="modal-title">🎉 Героя створено!</div>
+      <div class="auth-sub" id="acPinName" style="margin-bottom:8px"></div>
+      <div class="auth-sub" style="margin-bottom:8px">PIN-код для входу дитини:</div>
+      <div style="font-size:2.4rem;font-weight:900;letter-spacing:10px;color:var(--coral);margin:8px 0 6px" id="acPinValue">----</div>
+      <div class="auth-sub" style="margin-bottom:20px">Запам'ятайте або запишіть цей PIN — він знадобиться для входу в дитячий кабінет.</div>
+      <button class="auth-btn" onclick="finishAddChild()">Готово</button>
+    </div>
   </div>
 </div>
 
@@ -1658,57 +1686,16 @@
         <div class="page-header">
           <div>
             <div class="page-title">👨‍👩‍👧 Моя сім'я</div>
-            <div class="page-sub">SPARK-8472 · Родина Казичук</div>
+            <div class="page-sub" id="familyPageSub">Моя сім'я</div>
           </div>
         </div>
         <div class="content-grid">
           <div class="card">
             <div class="card-title">Члени сім'ї</div>
-            <div style="display:flex;flex-direction:column;gap:12px">
-              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(78,205,196,0.08);border:1px solid rgba(78,205,196,0.15);border-radius:14px">
-                <span style="font-size:2rem">👩</span>
-                <div style="flex:1">
-                  <div style="font-weight:800">Оксана</div>
-                  <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">Мама · Повний доступ</div>
-                </div>
-                <span class="task-status status-done">Активна</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px">
-                <span style="font-size:2rem">👨</span>
-                <div style="flex:1">
-                  <div style="font-weight:800">Михайло</div>
-                  <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">Тато · Повний доступ</div>
-                </div>
-                <span class="task-status status-done">Активний</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px">
-                <span style="font-size:2rem">🦁</span>
-                <div style="flex:1">
-                  <div style="font-weight:800">Сашко</div>
-                  <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">8 років · Код: SASH-4521 · PIN: ••••</div>
-                </div>
-                <span class="task-badge">120 🪙</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px">
-                <span style="font-size:2rem">🦋</span>
-                <div style="flex:1">
-                  <div style="font-weight:800">Олечка</div>
-                  <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">6 років · Код: OLECH-7128 · PIN: ••••</div>
-                </div>
-                <span class="task-badge">85 🪙</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px">
-                <span style="font-size:2rem">🐬</span>
-                <div style="flex:1">
-                  <div style="font-weight:800">Володя</div>
-                  <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">5 років · Код: VOLOD-8391 · PIN: ••••</div>
-                </div>
-                <span class="task-badge">35 🪙</span>
-              </div>
-            </div>
+            <div id="familyMembers" style="display:flex;flex-direction:column;gap:12px"></div>
             <div style="display:flex;gap:10px;margin-top:16px">
               <button class="btn-primary" style="flex:1" onclick="showToast('📧 Запрошення надіслано!')">Запросити другого батька</button>
-              <button class="btn-secondary" style="flex:1" onclick="showToast('👶 Форма додавання дитини')">+ Дитина</button>
+              <button class="btn-secondary" style="flex:1" onclick="openAddChild()">+ Дитина</button>
             </div>
           </div>
           <div class="card">
@@ -1830,10 +1817,8 @@
               </div>
             </div>
 
-            <!-- низ: досвід + гаманець -->
+            <!-- низ: гаманець -->
             <div class="hc-ov hc-ov-bot">
-              <div class="ch-xprow"><span>⭐ Досвід</span><b><span id="chXpCur">2450</span> / <span id="chXpMax">3000</span></b></div>
-              <div class="ch-xpbar"><span id="chXpFill" style="width:81%"></span></div>
               <div class="ch-wallet">
                 <span class="ch-w g">🪙 <span id="chCoins">540</span></span>
                 <span class="ch-w d">💎 <span id="chGems">35</span></span>
@@ -2217,29 +2202,168 @@ function switchForm(form) {
     document.getElementById(f).style.display = 'none';
   });
   document.getElementById(form === 'register' ? 'registerForm' : form === 'child' ? 'childForm' : 'loginForm').style.display = 'block';
+  if (form === 'child') renderChildAvatars();
 }
 
-function doLogin() {
-  const email = document.getElementById('loginEmail').value;
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  if (!email || !pass) { showToast('⚠️ Введіть email і пароль'); return; }
+  if (!window.SK) { showToast('⚠️ Firebase ще завантажується, спробуйте за мить'); return; }
+  try {
+    await SK.login(email, pass);
+    closeAuth();
+    switchRole('parent');
+    showApp();
+    refreshFamilyUI();                 // показати реальну сім'ю замість шаблону
+    // перший вхід: якщо дітей ще немає — показуємо поп-ап «Додайте дитину»
+    await maybePromptAddChild();
+  } catch (e) {
+    showToast('⚠️ Не вдалося увійти: ' + friendlyAuthError(e));
+  }
+}
+
+async function doRegister() {
+  const name  = document.getElementById('regName').value.trim();
+  const role  = document.getElementById('regRole').value;
+  const email = document.getElementById('regEmail').value.trim();
+  const pass  = document.getElementById('regPass').value;
+  if (!name)  { showToast('⚠️ Введіть ім\'я'); return; }
   if (!email) { showToast('⚠️ Введіть email'); return; }
-  closeAuth();
-  switchRole('parent');
-  showApp();
+  if (!pass || pass.length < 6) { showToast('⚠️ Пароль — мінімум 6 символів'); return; }
+  if (!window.SK) { showToast('⚠️ Firebase ще завантажується, спробуйте за мить'); return; }
+  try {
+    await SK.registerFamily({ parentName: name, parentRole: role, email, password: pass });
+    closeAuth();
+    switchRole('parent');
+    showApp();
+    refreshFamilyUI();                 // показати реальну сім'ю замість шаблону
+    showToast('🎉 Сім\'ю створено! Тепер додайте дитину.');
+    openAddChild();                 // одразу після реєстрації — поп-ап додавання дитини
+  } catch (e) {
+    showToast('⚠️ Реєстрація не вдалася: ' + friendlyAuthError(e));
+  }
 }
 
-function doRegister() {
-  const name = document.getElementById('regName').value;
-  if (!name) { showToast('⚠️ Введіть ім\'я'); return; }
-  closeAuth();
-  switchRole('parent');
-  showApp();
-  showToast('🎉 Родину Казичук створено! Ласкаво просимо!');
+function friendlyAuthError(e) {
+  const c = (e && e.code) || '';
+  if (c.indexOf('email-already-in-use') !== -1) return 'email уже зареєстровано';
+  if (c.indexOf('invalid-email') !== -1) return 'некоректний email';
+  if (c.indexOf('weak-password') !== -1) return 'надто простий пароль';
+  if (c.indexOf('wrong-password') !== -1 || c.indexOf('invalid-credential') !== -1) return 'невірний email або пароль';
+  if (c.indexOf('user-not-found') !== -1) return 'акаунт не знайдено';
+  if (c.indexOf('too-many-requests') !== -1) return 'забагато спроб, спробуйте пізніше';
+  return (e && e.message) || 'помилка';
 }
 
-function selectAvatar(el, name) {
-  document.querySelectorAll('.avatar-option').forEach(a => a.classList.remove('selected'));
+/* ── Поп-ап «Додай дитину» ── */
+function openAddChild() {
+  document.getElementById('addChildStep1').style.display = 'block';
+  document.getElementById('addChildStep2').style.display = 'none';
+  document.getElementById('acName').value = '';
+  document.getElementById('acYear').value = '';
+  document.getElementById('acGrade').value = '1';
+  document.getElementById('addChildModal').classList.add('open');
+}
+function closeAddChild() {
+  document.getElementById('addChildModal').classList.remove('open');
+}
+
+// показуємо поп-ап лише якщо в сім'ї ще немає дітей (перший вхід)
+async function maybePromptAddChild() {
+  try {
+    if (!window.SK) return;
+    await SK.ready;
+    const children = await SK.getChildren();
+    if (!children || Object.keys(children).length === 0) openAddChild();
+  } catch (e) { console.warn('[addChild] перевірка дітей:', e); }
+}
+
+async function submitAddChild() {
+  const name  = document.getElementById('acName').value.trim();
+  const year  = document.getElementById('acYear').value.trim();
+  const grade = document.getElementById('acGrade').value;
+  if (!name) { showToast('⚠️ Введіть ім\'я дитини'); return; }
+  if (!/^\d{4}$/.test(year)) { showToast('⚠️ Введіть рік народження (4 цифри)'); return; }
+  if (!window.SK) { showToast('⚠️ Firebase ще завантажується'); return; }
+
+  const btn = document.getElementById('acSubmitBtn');
+  btn.disabled = true; btn.textContent = 'Створюємо…';
+  try {
+    const res = await SK.addChild({ name, birthYear: Number(year), grade: Number(grade) });
+    // активуємо щойно створену дитину
+    SK.setActiveChild(res.childId);
+    // показуємо згенерований PIN
+    document.getElementById('acPinName').textContent = 'Герой для: ' + name;
+    document.getElementById('acPinValue').textContent = res.pin;
+    document.getElementById('addChildStep1').style.display = 'none';
+    document.getElementById('addChildStep2').style.display = 'block';
+    refreshFamilyUI();              // одразу оновити склад сім'ї та перемикач ролей
+  } catch (e) {
+    showToast('⚠️ Не вдалося додати дитину: ' + ((e && e.message) || e));
+  } finally {
+    btn.disabled = false; btn.textContent = 'Створити героя →';
+  }
+}
+
+function finishAddChild() {
+  closeAddChild();
+  showToast('✅ Дитину додано! PIN збережено в базі.');
+  if (typeof renderChildHero === 'function') renderChildHero();
+  if (typeof refreshFamilyUI === 'function') refreshFamilyUI();
+}
+
+/* ── Дитячий вхід: реальні діти сім'ї + перевірка PIN з бази ── */
+let familyChildren = {};
+let selectedChildId = null;
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+async function renderChildAvatars() {
+  const grid = document.getElementById('childAvatarGrid');
+  if (!grid) return;
+  selectedChildId = null; selectedChild = null;
+  grid.innerHTML = '<div class="auth-sub" style="grid-column:1/-1;text-align:center">Завантаження…</div>';
+  if (!window.SK) { grid.innerHTML = '<div class="auth-sub" style="grid-column:1/-1;text-align:center">Firebase ще завантажується…</div>'; return; }
+  try {
+    await SK.ready;
+    if (!(SK.currentUser && SK.currentUser())) {
+      grid.innerHTML = '<div class="auth-sub" style="grid-column:1/-1;text-align:center">Спочатку має увійти хтось із батьків.</div>';
+      return;
+    }
+    familyChildren = await SK.getChildren();
+    const ids = Object.keys(familyChildren || {});
+    if (ids.length === 0) {
+      grid.innerHTML = '<div class="auth-sub" style="grid-column:1/-1;text-align:center">У сім\'ї ще немає дітей. Додайте дитину в кабінеті батьків.</div>';
+      return;
+    }
+    grid.innerHTML = ids.map(id => {
+      const c = familyChildren[id] || {};
+      return `<div class="avatar-option" onclick="selectChild(this,'${id}')">
+        <span class="emoji">${escapeHtml(c.avatar || '🙂')}</span>
+        <span class="name">${escapeHtml(c.name || 'Дитина')}</span>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    grid.innerHTML = '<div class="auth-sub" style="grid-column:1/-1;text-align:center">Не вдалося завантажити дітей.</div>';
+    console.warn('[childLogin] getChildren:', e);
+  }
+}
+
+function selectChild(el, id) {
+  document.querySelectorAll('#childForm .avatar-option').forEach(a => a.classList.remove('selected'));
   el.classList.add('selected');
-  selectedChild = name;
+  selectedChildId = id;
+  selectedChild = (familyChildren[id] && familyChildren[id].name) || null;
+}
+
+function clearChildPin() {
+  document.querySelectorAll('#childForm .pin-digit').forEach(i => i.value = '');
+  const first = document.querySelector('#childForm .pin-digit');
+  if (first) first.focus();
 }
 
 function pinNext(el) {
@@ -2248,12 +2372,19 @@ function pinNext(el) {
   }
 }
 
-function doChildLogin() {
-  if (!selectedChild) { showToast('⚠️ Оберіть аватар'); return; }
+async function doChildLogin() {
+  if (!selectedChildId) { showToast('⚠️ Оберіть профіль'); return; }
+  const pin = Array.from(document.querySelectorAll('#childForm .pin-digit')).map(i => i.value).join('');
+  if (!/^\d{4}$/.test(pin)) { showToast('⚠️ Введіть 4-значний PIN'); return; }
+  const c = familyChildren[selectedChildId];
+  if (!c || String(c.pin) !== pin) { showToast('❌ Невірний PIN'); clearChildPin(); return; }
+  SK.setActiveChild(selectedChildId);     // фіксуємо активну дитину (для збереження прогресу)
+  SK.activeHeroId = c.heroID || null;
   closeAuth();
   switchRole('child');
   showApp();
-  showToast('⚡ Привіт, ' + selectedChild + '!');
+  if (typeof renderChildHero === 'function') renderChildHero();
+  showToast('⚡ Привіт, ' + (c.name || '') + '!');
 }
 
 function showApp() {
@@ -2269,17 +2400,96 @@ function showApp() {
   }
 }
 
-// Auto-enter app if returning with a view param
+// Авто-вхід у застосунок: відновлення сесії сім'ї або повернення з квесту
 window.addEventListener('DOMContentLoaded', function(){
   const params = new URLSearchParams(window.location.search);
-  if (params.get('view')) {
-    showApp();
+  const hasView = !!params.get('view');
+  if (hasView) showApp();
+  if (window.SK && SK.ready) {
+    SK.ready.then(function(){
+      const user = SK.currentUser && SK.currentUser();
+      if (user) {
+        if (!hasView) { switchRole('parent'); showApp(); }
+        refreshFamilyUI();
+      }
+    });
   }
 });
 
 function doLogout() {
-  document.getElementById('landing').style.display = 'block';
+  if (window.SK && SK.logout) { SK.logout().catch(function(){}); }
   document.getElementById('appInterface').style.display = 'none';
+  document.getElementById('landing').style.display = 'block';
+}
+
+/* ── Реальні дані сім'ї: назва + члени ── */
+async function refreshFamilyUI() {
+  try {
+    if (!window.SK) return;
+    await SK.ready;
+    const u = SK.currentUser && SK.currentUser();
+    if (!u) return;
+    const fam = await SK.getFamily();           // { parent, children }
+    const parent = fam.parent || {};
+    const children = fam.children || {};
+    const famName = parent.name ? ('Родина · ' + parent.name) : (u.email || 'Моя сім\'я');
+    const badge = document.querySelector('.family-badge .family-name');
+    if (badge) badge.textContent = '🏠 ' + famName;
+    const sub = document.getElementById('familyPageSub');
+    if (sub) sub.textContent = (u.email || '') + ' · ' + (parent.name ? parent.name : 'Моя сім\'я');
+    renderFamilyMembers(parent, children, u);
+    // кнопка ролі дитини — ім'я першої дитини
+    const ids = Object.keys(children);
+    const childBtn = document.getElementById('roleChildBtn');
+    if (childBtn && ids.length) {
+      const c = children[ids[0]];
+      childBtn.textContent = (c.avatar || '🙂') + ' ' + (c.name || 'Дитина');
+    }
+  } catch (e) { console.warn('[family] refresh:', e); }
+}
+
+function familyMemberRow(icon, name, sub, right) {
+  return `<div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px">
+    <span style="font-size:2rem">${escapeHtml(icon)}</span>
+    <div style="flex:1">
+      <div style="font-weight:800">${escapeHtml(name)}</div>
+      <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">${escapeHtml(sub)}</div>
+    </div>
+    ${right || ''}
+  </div>`;
+}
+
+function renderFamilyMembers(parent, children, user) {
+  const box = document.getElementById('familyMembers');
+  if (!box) return;
+  let html = '';
+  const pIcon = parent.role === 'tato' ? '👨' : '👩';
+  const pRole = parent.role === 'tato' ? 'Тато' : 'Мама';
+  const pName = parent.name || (user && user.email) || 'Батьки';
+  html += familyMemberRow(pIcon, pName, pRole + ' · Повний доступ', '<span class="task-status status-done">Активна</span>');
+  Object.keys(children).forEach(id => {
+    const c = children[id] || {};
+    const sub = (c.age ? c.age + ' років · ' : '') + 'PIN: ' + (c.pin || '----');
+    const coins = (c.coins != null ? c.coins : 0);
+    html += familyMemberRow(c.avatar || '🙂', c.name || 'Дитина', sub, '<span class="task-badge">' + coins + ' 🪙</span>');
+  });
+  if (!Object.keys(children).length) {
+    html += '<div class="auth-sub" style="text-align:center;padding:8px">Ще немає дітей. Натисніть «+ Дитина».</div>';
+  }
+  box.innerHTML = html;
+}
+
+// якщо активної дитини ще немає — обираємо першу (для збереження прогресу)
+async function ensureActiveChild() {
+  try {
+    if (!window.SK) return;
+    await SK.ready;
+    if (!(SK.currentUser && SK.currentUser())) return;
+    if (SK.activeChildId) return;
+    const children = await SK.getChildren();
+    const ids = Object.keys(children || {});
+    if (ids.length) SK.setActiveChild(ids[0]);
+  } catch (e) { console.warn('[role] ensureActiveChild:', e); }
 }
 
 // ========= ROLE SWITCH =========
@@ -2290,7 +2500,7 @@ function switchRole(role) {
   document.getElementById('roleParentBtn').classList.toggle('active', role === 'parent');
   document.getElementById('roleChildBtn').classList.toggle('active', role === 'child');
   if (role === 'parent') showPage('dashboard', null);
-  else showPage('child-dashboard', null);
+  else { ensureActiveChild().then(function(){ if (typeof renderChildHero === 'function') renderChildHero(); }); showPage('child-dashboard', null); }
 }
 
 // ========= NAVIGATION =========
@@ -2303,6 +2513,8 @@ function showPage(pageId, navEl) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     navEl.classList.add('active');
   }
+
+  if (pageId === 'family') refreshFamilyUI();
 }
 
 // ========= TASKS =========
