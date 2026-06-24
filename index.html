@@ -1848,7 +1848,7 @@
           <!-- 4 RPG-характеристики поряд -->
           <div class="hc-right">
             <div class="hc-stats">
-              <div class="ch-stat hp"><div class="h"><span class="em">❤️</span><div><div class="nm">Здоров'я</div><div class="val"><span id="chHp">50</span>/100</div></div></div><div class="ch-bar"><span id="chHpBar" style="width:50%"></span></div><div class="sub">Українська мова</div></div>
+              <div class="ch-stat hp"><div class="h"><span class="em">❤️</span><div><div class="nm">Здоров'я</div><div class="val"><span id="chHp">50</span>/100</div></div></div><div class="ch-bar"><span id="chHpBar" style="width:50%"></span></div><div class="sub">Українська мова · <span id="chHpXp">0</span> ХР</div></div>
               <div class="ch-stat agi"><div class="h"><span class="em">🪶</span><div><div class="nm">Спритність</div><div class="val"><span id="chAgi">1</span>/10</div></div></div><div class="ch-bar"><span id="chAgiBar" style="width:10%"></span></div><div class="sub">ЯДС · світ</div></div>
               <div class="ch-stat mp"><div class="h"><span class="em">🔵</span><div><div class="nm">Мана</div><div class="val"><span id="chMp">10</span>/20</div></div></div><div class="ch-bar"><span id="chMpBar" style="width:50%"></span></div><div class="sub">Логіка · English</div></div>
               <div class="ch-stat acc"><div class="h"><span class="em">🎯</span><div><div class="nm">Точність</div><div class="val"><span id="chAcc">1</span>/10</div></div></div><div class="ch-bar"><span id="chAccBar" style="width:10%"></span></div><div class="sub">Математика</div></div>
@@ -2848,6 +2848,7 @@ a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
         var sp = SKProgress.snapshot();
         d.hp = sp.health;       // 50..100, розподілено між завданнями української
         d.xpCur = sp.xp;        // реальний ХР: виконані вправи квестів
+        set('chHpXp', sp.ukrXP);     // ХР рідної мови — поряд зі здоров'ям
         SKProgress.saveDebounced();  // → SK.saveHeroStats({health, xp})
       }
     }catch(e){}
