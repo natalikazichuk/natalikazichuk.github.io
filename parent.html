@@ -1,0 +1,2447 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SchoolKingdom — Розвиток дітей у грі</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0F1B2D;
+    --navy-mid: #1A2E47;
+    --navy-light: #243B55;
+    --coral: #FF6B47;
+    --coral-light: #FF8A6B;
+    --gold: #FFD166;
+    --mint: #4ECDC4;
+    --mint-light: #E8F9F8;
+    --white: #FFFFFF;
+    --text-light: #94A3B8;
+    --text-mid: #CBD5E1;
+    --success: #6BCB77;
+    --purple: #A78BFA;
+    --danger: #FF6B6B;
+    --brand-red: #E5383B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ====== LANDING PAGE ====== */
+  .landing { display: block; }
+  .app { display: none; }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(15,27,45,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--coral), var(--gold));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  .logo span, .brand-name { color: var(--brand-red); }
+
+  .header-nav { display: flex; gap: 30px; align-items: center; }
+  .header-nav a {
+    color: var(--text-mid);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+  }
+  .header-nav a:hover { color: var(--white); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--coral), #FF8C5A);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 11px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(255,107,71,0.4);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 11px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.14); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 20px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255,107,71,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(78,205,196,0.1) 0%, transparent 60%);
+  }
+
+  .stars-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.3); }
+  }
+
+  .hero-badge {
+    background: rgba(255,209,102,0.15);
+    border: 1px solid rgba(255,209,102,0.3);
+    color: var(--gold);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.08;
+    max-width: 820px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--coral), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-mid);
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 36px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+
+  .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--white);
+    display: block;
+  }
+  .stat-label { font-size: 0.85rem; color: var(--text-light); font-family: 'Inter', sans-serif; }
+
+  /* FEATURES */
+  .section {
+    padding: 80px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    color: var(--coral);
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    color: var(--text-mid);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 520px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .feature-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    padding: 28px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .feature-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255,107,71,0.3);
+  }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 18px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .feature-card p {
+    color: var(--text-mid);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* HOW IT WORKS */
+  .how-section {
+    background: var(--navy-mid);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 80px 60px;
+  }
+
+  .steps-row {
+    display: flex;
+    gap: 0;
+    margin-top: 56px;
+    position: relative;
+  }
+
+  .steps-row::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 80px;
+    right: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,107,71,0.4), transparent);
+  }
+
+  .step {
+    flex: 1;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .step-circle {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--coral), var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin: 0 auto 20px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 8px var(--navy-mid);
+  }
+
+  .step h3 { font-size: 1rem; font-weight: 800; margin-bottom: 8px; }
+  .step p { color: var(--text-mid); font-size: 0.85rem; font-family: 'Inter', sans-serif; line-height: 1.5; }
+
+  /* ROLES */
+  .roles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 48px;
+  }
+
+  .role-card {
+    border-radius: 24px;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .role-card.parent-card {
+    background: linear-gradient(135deg, #1A2E47, #243B55);
+    border: 1px solid rgba(78,205,196,0.2);
+  }
+
+  .role-card.child-card {
+    background: linear-gradient(135deg, #2D1A3A, #3D2550);
+    border: 1px solid rgba(167,139,250,0.2);
+  }
+
+  .role-emoji { font-size: 3rem; margin-bottom: 16px; display: block; }
+  .role-card h3 { font-size: 1.3rem; font-weight: 900; margin-bottom: 12px; }
+  .role-card p { color: var(--text-mid); font-size: 0.9rem; margin-bottom: 20px; font-family: 'Inter', sans-serif; }
+
+  .role-features { list-style: none; }
+  .role-features li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: var(--text-mid);
+    padding: 5px 0;
+    font-family: 'Inter', sans-serif;
+  }
+  .role-features li::before {
+    content: '✓';
+    color: var(--success);
+    font-weight: 800;
+    font-size: 0.8rem;
+    min-width: 16px;
+  }
+
+  /* CTA SECTION */
+  .cta-section {
+    text-align: center;
+    padding: 80px 20px;
+    background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(255,107,71,0.12) 0%, transparent 70%);
+  }
+
+  .cta-section h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; margin-bottom: 16px; }
+  .cta-section p { color: var(--text-mid); font-size: 1rem; margin-bottom: 32px; font-family: 'Inter', sans-serif; }
+
+  /* ====== APP INTERFACE ====== */
+  .app {
+    min-height: 100vh;
+    background: var(--navy);
+  }
+
+  /* AUTH SCREEN */
+  .auth-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .auth-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .auth-title { font-size: 1.6rem; font-weight: 900; margin-bottom: 6px; }
+  .auth-sub { color: var(--text-light); font-size: 0.9rem; margin-bottom: 28px; font-family: 'Inter', sans-serif; }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--coral); }
+  .form-input::placeholder { color: var(--text-light); }
+
+  .form-select {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    cursor: pointer;
+  }
+  .form-select option { background: var(--navy-mid); }
+
+  .auth-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--coral), #FF8C5A);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .auth-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,107,71,0.4); }
+
+  .auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.88rem;
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+  }
+  .auth-switch a { color: var(--coral); cursor: pointer; font-weight: 700; text-decoration: none; }
+
+  /* CHILD LOGIN */
+  .child-auth {
+    text-align: center;
+  }
+
+  .avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .avatar-option {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 16px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .avatar-option:hover, .avatar-option.selected {
+    border-color: var(--coral);
+    background: rgba(255,107,71,0.1);
+  }
+  .avatar-option .emoji { font-size: 2rem; display: block; margin-bottom: 6px; }
+  .avatar-option .name { font-size: 0.8rem; font-weight: 700; color: var(--text-mid); }
+
+  .pin-input {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .pin-digit {
+    width: 52px; height: 56px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 900;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .pin-digit:focus { border-color: var(--coral); }
+
+  /* APP LAYOUT */
+  .app-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    background: var(--navy-mid);
+    border-right: 1px solid rgba(255,255,255,0.07);
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 20px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+    font-weight: 900;
+  }
+
+  .sidebar-logo .logo-icon { width: 32px; height: 32px; font-size: 0.9rem; }
+
+  .nav-section-title {
+    padding: 12px 20px 6px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    font-weight: 700;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 0;
+    color: var(--text-mid);
+    font-weight: 600;
+    font-size: 0.92rem;
+    margin: 1px 8px;
+    border-radius: 10px;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+  .nav-item.active { background: rgba(255,107,71,0.15); color: var(--coral); }
+  .nav-item .nav-icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+  .sidebar-bottom {
+    margin-top: auto;
+    padding: 16px 8px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .family-badge {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 0 8px 8px;
+  }
+  .family-badge .family-name { font-size: 0.85rem; font-weight: 800; }
+  .family-badge .family-id { font-size: 0.72rem; color: var(--text-light); font-family: 'Inter', sans-serif; }
+
+  /* MAIN CONTENT */
+  .main-content {
+    padding: 20px 36px;
+    overflow-y: auto;
+    max-height: 100vh;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .page-title { font-size: 1.5rem; font-weight: 900; }
+  .page-sub { color: var(--text-light); font-size: 0.85rem; font-family: 'Inter', sans-serif; margin-top: 2px; }
+
+  /* CARDS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 10px 10px;
+  }
+
+  .stat-card .sc-label {
+    font-size: 0.62rem;
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 3px;
+  }
+  .stat-card .sc-value {
+    font-size: 1.1rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .stat-card .sc-icon { font-size: 0.95rem; float: none; margin-top: 0; }
+
+  /* CONTENT GRID */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-title-action {
+    font-size: 0.8rem;
+    color: var(--coral);
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  /* TASK ITEMS */
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .task-item:last-child { border-bottom: none; }
+
+  .task-check {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .task-check.done { background: var(--success); border-color: var(--success); }
+  .task-check.done::after { content: '✓'; color: white; font-size: 0.75rem; font-weight: 800; }
+
+  .task-info { flex: 1; }
+  .task-name { font-size: 0.9rem; font-weight: 700; }
+  .task-name.done { text-decoration: line-through; color: var(--text-light); }
+  .task-meta { font-size: 0.78rem; color: var(--text-light); font-family: 'Inter', sans-serif; margin-top: 2px; }
+
+  .task-badge {
+    background: rgba(255,209,102,0.15);
+    color: var(--gold);
+    border-radius: 8px;
+    padding: 3px 10px;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .task-status {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .status-pending { background: rgba(255,209,102,0.15); color: var(--gold); }
+  .status-review { background: rgba(255,107,71,0.15); color: var(--coral); }
+  .status-done { background: rgba(107,203,119,0.15); color: var(--success); }
+
+  /* CHILDREN CARDS */
+  .children-row { display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; }
+
+  .child-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .child-pill:hover, .child-pill.active { border-color: var(--coral); background: rgba(255,107,71,0.1); }
+  .child-pill .cp-avatar { font-size: 1.3rem; }
+  .child-pill .cp-name { font-size: 0.88rem; font-weight: 700; }
+  .child-pill .cp-coins { font-size: 0.75rem; color: var(--gold); font-family: 'Inter', sans-serif; }
+
+  /* WORLD VIEW */
+  .world-card {
+    background: linear-gradient(135deg, #0D2137, #1A3A2A);
+    border: 1px solid rgba(78,205,196,0.2);
+    border-radius: 18px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .world-title { font-size: 0.8rem; color: var(--mint); font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+
+  .world-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .world-cell {
+    aspect-ratio: 1;
+    max-height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .world-cell.unlocked { background: rgba(78,205,196,0.1); border-color: rgba(78,205,196,0.2); }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--coral), var(--gold));
+    transition: width 0.5s ease;
+  }
+
+  /* REWARD STORE */
+  .rewards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .reward-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .reward-item:hover { border-color: var(--gold); background: rgba(255,209,102,0.06); }
+  .reward-item .r-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+  .reward-item .r-name { font-size: 0.82rem; font-weight: 700; margin-bottom: 4px; }
+  .reward-item .r-cost { color: var(--gold); font-size: 0.78rem; font-weight: 800; }
+
+  /* UPLOAD AREA */
+  .upload-area {
+    border: 2px dashed rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .upload-area:hover { border-color: var(--coral); background: rgba(255,107,71,0.05); }
+  .upload-area .u-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+  .upload-area p { color: var(--text-light); font-size: 0.88rem; font-family: 'Inter', sans-serif; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    display: none;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 36px;
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+  }
+
+  .modal-title { font-size: 1.3rem; font-weight: 900; margin-bottom: 20px; }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: rgba(255,255,255,0.08);
+    border: none;
+    color: white;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--navy-light);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 2000;
+    max-width: 320px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast .t-icon { font-size: 1.3rem; }
+
+  /* RATING */
+  .rating-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .rating-item:last-child { border-bottom: none; }
+  .rating-rank {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; }
+  .rank-2 { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); color: #000; }
+  .rank-3 { background: linear-gradient(135deg, #CD7F32, #A0522D); color: #fff; }
+  .rank-other { background: rgba(255,255,255,0.08); color: var(--text-mid); }
+
+  .rating-info { flex: 1; }
+  .rating-name { font-size: 0.92rem; font-weight: 700; }
+  .rating-score { font-size: 0.78rem; color: var(--gold); }
+
+  /* ROLE SWITCHER */
+  .role-switcher {
+    display: flex;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+  }
+  .role-btn {
+    padding: 8px 16px;
+    border-radius: 9px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-mid);
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.15s;
+  }
+  .role-btn.active { background: var(--coral); color: white; }
+
+  /* NOTIFICATION DOT */
+  .notif-dot {
+    width: 8px; height: 8px;
+    background: var(--coral);
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 6px;
+  }
+
+  /* ====== MINI-GAME (вбудовується як тип завдання) ====== */
+  .mg-wrap { max-width: 480px; margin: 0 auto; }
+  .mg-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .mg-header .mg-emoji { font-size: 28px; }
+  .mg-header h2 { font-size: 1.1rem; font-weight: 800; margin: 0; }
+  .mg-header p { font-size: 0.82rem; color: var(--text-light); margin: 2px 0 0; font-family: 'Inter', sans-serif; }
+  .mg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .mg-level-card {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+    padding: 14px; min-height: 90px; text-align: left;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; cursor: pointer; color: white; font-family: 'Nunito', sans-serif;
+    transition: all 0.15s;
+  }
+  .mg-level-card:hover { border-color: var(--coral); background: rgba(255,107,71,0.08); }
+  .mg-level-num {
+    width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.82rem;
+  }
+  .mg-level-title { font-weight: 800; font-size: 0.85rem; }
+  .mg-level-sub { font-size: 0.72rem; color: var(--text-light); }
+  .mg-badge-timed { font-size: 0.7rem; color: var(--gold); font-weight: 700; }
+  .mg-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 0.8rem; color: var(--text-light); font-family: 'Inter', sans-serif; }
+  .mg-timer-row { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; font-size: 0.85rem; color: var(--gold); font-weight: 800; }
+  .mg-problem-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 28px 20px; margin-bottom: 18px; text-align: center; }
+  .mg-problem-card.mg-big p { font-size: 1.9rem; font-weight: 800; margin: 0; }
+  .mg-problem-card.mg-word p { font-size: 1rem; font-weight: 600; margin: 0; line-height: 1.6; color: var(--text-mid); font-family: 'Inter', sans-serif; }
+  .mg-answer-row { display: flex; gap: 8px; }
+  .mg-answer-row input[type="number"] {
+    flex: 1; height: 46px; font-size: 1rem; font-family: 'Nunito', sans-serif;
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; background: rgba(255,255,255,0.05);
+    color: white; padding: 0 14px; outline: none;
+  }
+  .mg-answer-row input[type="number"]:focus { border-color: var(--coral); }
+  .mg-answer-row button { padding: 0 20px; font-weight: 800; white-space: nowrap; }
+  .mg-feedback-card { border-radius: 18px; padding: 22px 20px; margin-bottom: 18px; text-align: center; }
+  .mg-feedback-card p.mg-expr { font-size: 1.3rem; font-weight: 800; margin: 0 0 8px; }
+  .mg-feedback-card .mg-status { font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Inter', sans-serif; }
+  .mg-full-btn { width: 100%; padding: 13px; font-weight: 800; }
+  .mg-result-box { text-align: center; }
+  .mg-trophy { font-size: 42px; }
+  .mg-result-title { font-size: 1.15rem; font-weight: 800; margin: 10px 0 4px; }
+  .mg-result-sub { font-size: 0.82rem; color: var(--text-light); margin: 0 0 22px; font-family: 'Inter', sans-serif; }
+  .mg-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
+  .mg-stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; }
+  .mg-stat-label { font-size: 0.78rem; color: var(--text-light); margin: 0 0 4px; font-family: 'Inter', sans-serif; }
+  .mg-stat-value { font-size: 1.5rem; font-weight: 800; margin: 0; }
+  .mg-result-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .mg-result-actions button { flex: 1; padding: 12px; font-weight: 800; min-width: 140px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .header { padding: 16px 20px; }
+    .header-nav { display: none; }
+    .section { padding: 60px 20px; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .roles-grid { grid-template-columns: 1fr; }
+    .how-section { padding: 60px 20px; }
+    .steps-row { flex-direction: column; gap: 24px; }
+    .steps-row::before { display: none; }
+    .app-layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main-content { padding: 20px; }
+    .stats-row { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .stat-card { padding: 8px 6px; border-radius: 10px; }
+    .stat-card .sc-label { font-size: 0.55rem; letter-spacing: 0.02em; }
+    .stat-card .sc-value { font-size: 0.95rem; }
+    .stat-card .sc-icon { font-size: 0.85rem; }
+    .content-grid { grid-template-columns: 1fr; }
+  }
+</style>
+<!-- Firebase (шар даних) + модуль розрахунку Health/ХР -->
+<script type="module" src="firebase-config.js"></script>
+<script src="sk-progress.js"></script>
+</head>
+<body>
+<div class="app" id="appInterface">
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <span class="brand-name">SchoolKingdom</span>
+      </div>
+
+      <div id="parentNav" style="display:block">
+        <div class="nav-section-title">Кабінет</div>
+        <div class="nav-item active" onclick="showPage('dashboard', this)">
+          <span class="nav-icon">📊</span> Головна
+        </div>
+        <div class="nav-item" onclick="showPage('tasks', this)">
+          <span class="nav-icon">📋</span> Завдання
+          <span class="notif-dot"></span>
+        </div>
+        <div class="nav-item" onclick="showPage('review', this)">
+          <span class="nav-icon">📸</span> Перевірка робіт
+        </div>
+        <div class="nav-item" onclick="showPage('rewards', this)">
+          <span class="nav-icon">🎁</span> Нагороди
+        </div>
+        <div class="nav-item" onclick="showPage('rating', this)">
+          <span class="nav-icon">🏆</span> Рейтинг
+        </div>
+        <div class="nav-item" onclick="showPage('family', this)">
+          <span class="nav-icon">👨‍👩‍👧</span> Моя сім'я
+        </div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="family-badge">
+          <div class="family-name">🏠 Родина Казичук</div>
+          <div class="family-id">SPARK-8472</div>
+        </div>
+        <div class="role-switcher" style="margin: 0 8px 8px">
+          <button class="role-btn active" id="roleParentBtn" onclick="showPage('dashboard',null)">👩 Мама</button>
+          <button class="role-btn" id="roleChildBtn" onclick="location.href='child.html'">🦁 Сашко</button>
+        </div>
+        <div class="nav-item" onclick="doLogout()" style="color:var(--text-light);font-size:0.85rem">
+          <span class="nav-icon">🚪</span> Вийти
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="mainContent">
+
+      <!-- PARENT DASHBOARD -->
+      <div id="page-dashboard" class="page-content">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🏠 Кабінет батьків</div>
+            <div class="page-sub">Субота, 14 червня 2025 · Родина Казичук</div>
+          </div>
+          <button class="btn-primary" onclick="openTaskModal()">+ Нове завдання</button>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="sc-label">Активних завдань</div>
+            <div class="sc-value">7 <span class="sc-icon">📋</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">На перевірці</div>
+            <div class="sc-value">3 <span class="sc-icon">📸</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Монет видано</div>
+            <div class="sc-value">240 <span class="sc-icon">🪙</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Завдань виконано</div>
+            <div class="sc-value">18 <span class="sc-icon">✅</span></div>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <div>
+            <div class="card">
+              <div class="card-title">
+                Останні завдання
+                <span class="card-title-action" onclick="showPage('tasks', null)">Всі завдання →</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check done"></div>
+                <div class="task-info">
+                  <div class="task-name done">Математика: сторінка 45-46</div>
+                  <div class="task-meta">Сашко · виконано сьогодні</div>
+                </div>
+                <span class="task-badge">+15 🪙</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check"></div>
+                <div class="task-info">
+                  <div class="task-name">Читання: 20 хвилин</div>
+                  <div class="task-meta">Олечка · до 20:00</div>
+                </div>
+                <span class="task-status status-pending">Очікує</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check"></div>
+                <div class="task-info">
+                  <div class="task-name">Малювання: намалюй весну</div>
+                  <div class="task-meta">Сашко · завантажено фото</div>
+                </div>
+                <span class="task-status status-review">На перевірці</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check done"></div>
+                <div class="task-info">
+                  <div class="task-name done">Допомогти з прибиранням</div>
+                  <div class="task-meta">Всі діти · виконано вчора</div>
+                </div>
+                <span class="task-badge">+10 🪙</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Рейтинг тижня <span class="card-title-action" onclick="showPage('rating', null)">Повний рейтинг →</span></div>
+              <div class="rating-item" onclick="openChildProfile('sasho')" style="cursor:pointer">
+                <div class="rating-rank rank-1">1</div>
+                <span style="font-size:1.5rem;margin:0 4px">🦁</span>
+                <div class="rating-info">
+                  <div class="rating-name">Сашко</div>
+                  <div class="rating-score">⭐ 340 балів · 🪙 120 монет</div>
+                </div>
+                <div style="color:var(--gold);font-weight:800;font-size:0.9rem">👑</div>
+              </div>
+              <div class="rating-item" onclick="openChildProfile('olechka')" style="cursor:pointer">
+                <div class="rating-rank rank-2">2</div>
+                <span style="font-size:1.5rem;margin:0 4px">🦋</span>
+                <div class="rating-info">
+                  <div class="rating-name">Олечка</div>
+                  <div class="rating-score">⭐ 290 балів · 🪙 85 монет</div>
+                </div>
+              </div>
+              <div class="rating-item" onclick="openChildProfile('volodya')" style="cursor:pointer">
+                <div class="rating-rank rank-3">3</div>
+                <span style="font-size:1.5rem;margin:0 4px">🐬</span>
+                <div class="rating-info">
+                  <div class="rating-name">Володя</div>
+                  <div class="rating-score">⭐ 180 балів · 🪙 35 монет</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">На перевірці</div>
+              <div style="text-align:center;padding:16px 0">
+                <div style="font-size:2.5rem;margin-bottom:8px">📸</div>
+                <div style="font-size:0.9rem;font-weight:700">3 роботи чекають</div>
+                <div style="font-size:0.8rem;color:var(--text-light);margin:6px 0 16px;font-family:Inter,sans-serif">Сашко надіслав малюнок весни</div>
+                <button class="btn-primary" style="width:100%" onclick="showPage('review', null)">Переглянути роботи</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TASKS PAGE -->
+      <div id="page-tasks" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">📋 Завдання</div>
+            <div class="page-sub">Керуйте завданнями для кожної дитини</div>
+          </div>
+          <button class="btn-primary" onclick="openTaskModal()">+ Нове завдання</button>
+        </div>
+
+        <div class="children-row">
+          <div class="child-pill active">
+            <span class="cp-avatar">👥</span>
+            <div><div class="cp-name">Всі діти</div></div>
+          </div>
+          <div class="child-pill">
+            <span class="cp-avatar">🦁</span>
+            <div><div class="cp-name">Сашко</div></div>
+          </div>
+          <div class="child-pill">
+            <span class="cp-avatar">🦋</span>
+            <div><div class="cp-name">Олечка</div></div>
+          </div>
+          <div class="child-pill">
+            <span class="cp-avatar">🐬</span>
+            <div><div class="cp-name">Володя</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Активні завдання (7)</div>
+          <div id="parentTasksList">
+          <div class="task-item">
+            <div class="task-check done"></div>
+            <div class="task-info">
+              <div class="task-name done">Математика: сторінка 45-46</div>
+              <div class="task-meta">🦁 Сашко · виконано · Математика</div>
+            </div>
+            <span class="task-badge">+15 🪙</span>
+            <span class="task-status status-done">Виконано</span>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-info">
+              <div class="task-name">Читання: 20 хвилин книги</div>
+              <div class="task-meta">🦋 Олечка · до 20:00 · Читання</div>
+            </div>
+            <span class="task-badge">+10 🪙</span>
+            <span class="task-status status-pending">Очікує</span>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-info">
+              <div class="task-name">Малювання: намалюй весну</div>
+              <div class="task-meta">🦁 Сашко · завантажено · Творчість</div>
+            </div>
+            <span class="task-badge">+20 🪙</span>
+            <span class="task-status status-review">На перевірці</span>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-info">
+              <div class="task-name">Прибрати кімнату</div>
+              <div class="task-meta">🐬 Володя · до кінця дня · Добрі справи</div>
+            </div>
+            <span class="task-badge">+10 🪙</span>
+            <span class="task-status status-pending">Очікує</span>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-info">
+              <div class="task-name">Англійська: урок 5</div>
+              <div class="task-meta">🦋 Олечка · до 18:00 · Мови</div>
+            </div>
+            <span class="task-badge">+25 🪙</span>
+            <span class="task-status status-pending">Очікує</span>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVIEW PAGE -->
+      <div id="page-review" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">📸 Перевірка робіт</div>
+            <div class="page-sub">Перегляньте завантажені роботи та нарахуйте бали</div>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <div>
+            <div class="card">
+              <div class="card-title">Чекають на перевірку (3)</div>
+              <div style="border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;margin-bottom:16px">
+                <div style="background:linear-gradient(135deg,#1A3A2A,#2A4A3A);padding:24px;text-align:center">
+                  <div style="font-size:5rem">🖼️</div>
+                  <div style="font-size:0.8rem;color:var(--text-light);margin-top:8px;font-family:Inter,sans-serif">малювання_весна_сашко.jpg</div>
+                </div>
+                <div style="padding:16px">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+                    <span style="font-size:1.3rem">🦁</span>
+                    <div>
+                      <div style="font-size:0.9rem;font-weight:700">Сашко</div>
+                      <div style="font-size:0.78rem;color:var(--text-light);font-family:Inter,sans-serif">Малювання: намалюй весну · надіслано 14:32</div>
+                    </div>
+                  </div>
+                  <div style="font-size:0.85rem;color:var(--text-mid);margin-bottom:16px;font-family:Inter,sans-serif">"Мамо, я намалював сонечко і квіти!"</div>
+                  <div style="display:flex;gap:10px">
+                    <button class="btn-primary" style="flex:1" onclick="approveWork()">✓ Схвалити +20 🪙</button>
+                    <button class="btn-secondary" style="flex:1">✎ Коментар</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-title">Нарахувати бали</div>
+              <div style="font-size:0.88rem;color:var(--text-light);margin-bottom:16px;font-family:Inter,sans-serif">Оберіть розмір нагороди за роботу</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+                <button class="btn-secondary" style="padding:12px" onclick="showToast('🌟 Нараховано 10 монет!')">+10 🪙 Добре</button>
+                <button class="btn-secondary" style="padding:12px" onclick="showToast('⭐ Нараховано 20 монет!')">+20 🪙 Чудово</button>
+                <button class="btn-secondary" style="padding:12px" onclick="showToast('🌟 Нараховано 30 монет!')">+30 🪙 Відмінно</button>
+                <button class="btn-secondary" style="padding:12px" onclick="showToast('🏆 Нараховано 50 монет!')">+50 🪙 Шедевр!</button>
+              </div>
+              <div class="form-group">
+                <label>Коментар дитині</label>
+                <textarea class="form-input" rows="3" placeholder="Молодець, Сашко! Гарний малюнок..." style="resize:none"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REWARDS PAGE -->
+      <div id="page-rewards" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🎁 Магазин нагород</div>
+            <div class="page-sub">Нагороди, які батьки створили для дітей</div>
+          </div>
+          <button class="btn-primary" onclick="showToast('✨ Форма додавання нагороди')">+ Нова нагорода</button>
+        </div>
+        <div class="card">
+          <div class="rewards-grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="reward-item">
+              <span class="r-icon">🍕</span>
+              <div class="r-name">Піца на вечерю</div>
+              <div class="r-cost">🪙 50 монет</div>
+            </div>
+            <div class="reward-item">
+              <span class="r-icon">🎮</span>
+              <div class="r-name">Година гри на планшеті</div>
+              <div class="r-cost">🪙 30 монет</div>
+            </div>
+            <div class="reward-item">
+              <span class="r-icon">🎬</span>
+              <div class="r-name">Кіно в кінотеатрі</div>
+              <div class="r-cost">🪙 100 монет</div>
+            </div>
+            <div class="reward-item">
+              <span class="r-icon">🧸</span>
+              <div class="r-name">Нова іграшка</div>
+              <div class="r-cost">🪙 200 монет</div>
+            </div>
+            <div class="reward-item">
+              <span class="r-icon">🍦</span>
+              <div class="r-name">Морозиво</div>
+              <div class="r-cost">🪙 15 монет</div>
+            </div>
+            <div class="reward-item">
+              <span class="r-icon">🏊</span>
+              <div class="r-name">Аквапарк</div>
+              <div class="r-cost">🪙 300 монет</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RATING PAGE -->
+      <div id="page-rating" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🏆 Рейтинг</div>
+            <div class="page-sub">Родина Казичук · Червень 2025</div>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div class="card">
+            <div class="card-title">🏆 Таблиця лідерів</div>
+            <div class="rating-item">
+              <div class="rating-rank rank-1">1</div>
+              <span style="font-size:2rem;margin:0 8px">🦁</span>
+              <div class="rating-info">
+                <div class="rating-name">Сашко</div>
+                <div class="rating-score">⭐ 340 балів · 🪙 120 монет · 12 завдань</div>
+              </div>
+              <div style="text-align:right">
+                <div style="color:var(--gold);font-weight:900;font-size:1.1rem">👑</div>
+                <div style="font-size:0.75rem;color:var(--text-light);font-family:Inter,sans-serif">Лідер тижня</div>
+              </div>
+            </div>
+            <div class="rating-item">
+              <div class="rating-rank rank-2">2</div>
+              <span style="font-size:2rem;margin:0 8px">🦋</span>
+              <div class="rating-info">
+                <div class="rating-name">Олечка</div>
+                <div class="rating-score">⭐ 290 балів · 🪙 85 монет · 9 завдань</div>
+              </div>
+            </div>
+            <div class="rating-item">
+              <div class="rating-rank rank-3">3</div>
+              <span style="font-size:2rem;margin:0 8px">🐬</span>
+              <div class="rating-info">
+                <div class="rating-name">Володя</div>
+                <div class="rating-score">⭐ 180 балів · 🪙 35 монет · 6 завдань</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📈 Прогрес тижня</div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px">
+                <span>🦁 Сашко</span><span style="color:var(--gold)">340 / 400</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div>
+            </div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px">
+                <span>🦋 Олечка</span><span style="color:var(--gold)">290 / 400</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
+            </div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px">
+                <span>🐬 Володя</span><span style="color:var(--gold)">180 / 400</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAMILY PAGE -->
+      <div id="page-family" class="page-content" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title">👨‍👩‍👧 Моя сім'я</div>
+            <div class="page-sub" id="familyPageSub">Моя сім'я</div>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div class="card">
+            <div class="card-title">Члени сім'ї</div>
+            <div id="familyMembers" style="display:flex;flex-direction:column;gap:12px"></div>
+            <div style="display:flex;gap:10px;margin-top:16px">
+              <button class="btn-primary" style="flex:1" onclick="showToast('📧 Запрошення надіслано!')">Запросити другого батька</button>
+              <button class="btn-secondary" style="flex:1" onclick="openAddChild()">+ Дитина</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Family ID</div>
+            <div style="text-align:center;padding:20px 0">
+              <div style="font-size:2.5rem;font-weight:900;letter-spacing:0.15em;color:var(--coral)">SPARK-8472</div>
+              <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif;margin-top:8px">Поділіться цим кодом для приєднання до сім'ї</div>
+              <button class="btn-secondary" style="margin-top:16px" onclick="showToast('📋 ID скопійовано!')">Скопіювати ID</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHILD DASHBOARD -->
+      </main>
+  </div>
+</div>
+
+<!-- CREATE TASK MODAL -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeTaskModal()">✕</button>
+    <div class="modal-title">➕ Нове завдання</div>
+    <div class="form-group">
+      <label>Дитина</label>
+      <select class="form-select">
+        <option>🦁 Сашко</option>
+        <option>🦋 Олечка</option>
+        <option>🐬 Володя</option>
+        <option>👥 Всі діти</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Тип завдання</label>
+      <select class="form-select" id="taskType">
+        <option>🔢 Математика</option>
+        <option>📐 Творчість</option>
+        <option>📚 Читання</option>
+        <option>🌍 Природознавство</option>
+        <option>🤝 Добрі справи</option>
+        <option>💬 Мови</option>
+        <option>✏️ Власне завдання</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Назва завдання</label>
+      <select class="form-select" id="taskName" style="display:none"></select>
+      <input class="form-input" type="text" placeholder="Наприклад: Намалюй весну" id="taskNameText">
+    </div>
+    <div class="form-group">
+      <label>Нагорода (монети)</label>
+      <input class="form-input" type="number" value="15" placeholder="Кількість монет" id="taskCoins">
+    </div>
+    <div class="form-group">
+      <label>Дедлайн (необов'язково)</label>
+      <input class="form-input" type="time" value="20:00">
+    </div>
+    <button class="auth-btn" onclick="createTask()">Створити завдання</button>
+  </div>
+</div>
+
+<!-- HERO QUESTS / MINI-GAME MODAL -->
+<div class="modal-overlay" id="addChildModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAddChild()">✕</button>
+
+    <!-- Крок 1: форма -->
+    <div id="addChildStep1">
+      <div class="modal-title">👶 Додайте дитину</div>
+      <div class="auth-sub" style="margin-bottom:18px">Створимо героя для вашої дитини</div>
+      <div class="form-group">
+        <label>Ім'я дитини</label>
+        <input class="form-input" type="text" placeholder="Наприклад: Сашко" id="acName">
+      </div>
+      <div class="form-group">
+        <label>Рік народження</label>
+        <input class="form-input" type="number" inputmode="numeric" placeholder="Наприклад: 2019" id="acYear" min="2005" max="2025">
+      </div>
+      <div class="form-group">
+        <label>Клас</label>
+        <select class="form-select" id="acGrade">
+          <option value="1">1 клас</option>
+          <option value="2">2 клас</option>
+          <option value="3">3 клас</option>
+          <option value="4">4 клас</option>
+        </select>
+      </div>
+      <button class="auth-btn" id="acSubmitBtn" onclick="submitAddChild()">Створити героя →</button>
+    </div>
+
+    <!-- Крок 2: показ згенерованого PIN -->
+    <div id="addChildStep2" style="display:none;text-align:center">
+      <div class="modal-title">🎉 Героя створено!</div>
+      <div class="auth-sub" id="acPinName" style="margin-bottom:8px"></div>
+      <div class="auth-sub" style="margin-bottom:8px">PIN-код для входу дитини:</div>
+      <div style="font-size:2.4rem;font-weight:900;letter-spacing:10px;color:var(--coral);margin:8px 0 6px" id="acPinValue">----</div>
+      <div class="auth-sub" style="margin-bottom:20px">Запам'ятайте або запишіть цей PIN — він знадобиться для входу в дитячий кабінет.</div>
+      <button class="auth-btn" onclick="finishAddChild()">Готово</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== APP INTERFACE ====== -->
+<div class="modal-overlay" id="childProfileModal" onclick="if(event.target===this)closeChildProfile()">
+  <div class="modal" style="max-width:420px;padding:0;overflow:hidden">
+    <div id="childProfileContent"></div>
+  </div>
+</div>
+
+<style>
+.cp-modal-header{padding:24px 20px 16px;display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(108,99,255,0.2),rgba(160,108,255,0.1));border-bottom:1px solid rgba(255,255,255,0.08)}
+.cp-modal-avatar{font-size:52px;line-height:1;flex-shrink:0}
+.cp-modal-name{font-size:1.3rem;font-weight:800;color:#fff;margin:0 0 2px}
+.cp-modal-meta{font-size:0.82rem;color:#9B8FCC;margin:0}
+.cp-grade-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(108,99,255,0.25);border:1px solid rgba(108,99,255,0.5);border-radius:20px;padding:3px 10px;font-size:0.78rem;font-weight:700;color:#c3b8ff;margin-top:6px;cursor:pointer;transition:background .15s}
+.cp-grade-badge:hover{background:rgba(108,99,255,0.4)}
+.cp-grade-select{background:#1e1450;color:#fff;border:1px solid rgba(108,99,255,0.5);border-radius:8px;padding:4px 8px;font-size:0.82rem;font-weight:700;cursor:pointer;margin-top:6px}
+.cp-section{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.cp-section-title{font-size:0.72rem;font-weight:800;letter-spacing:.1em;color:#6C63FF;text-transform:uppercase;margin-bottom:10px}
+.cp-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cp-stat-box{background:rgba(255,255,255,0.05);border-radius:12px;padding:10px 8px;text-align:center}
+.cp-stat-val{font-size:1.15rem;font-weight:800;color:#fff}
+.cp-stat-lbl{font-size:0.68rem;color:#9B8FCC;margin-top:2px}
+.cp-achievements{display:flex;flex-wrap:wrap;gap:8px}
+.cp-ach{background:rgba(255,179,0,0.12);border:1px solid rgba(255,179,0,0.3);border-radius:20px;padding:5px 11px;font-size:0.78rem;font-weight:700;color:#FFD54F}
+.cp-task-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.cp-task-item:last-child{border-bottom:none}
+.cp-task-name{flex:1;font-size:0.85rem;font-weight:600;color:#E0D8FF}
+.cp-task-coins{font-size:0.75rem;color:var(--gold);white-space:nowrap}
+.cp-modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:#9B8FCC;font-size:20px;cursor:pointer;line-height:1;padding:4px}
+</style><div class="toast" id="toast">
+  <span class="t-icon">✅</span>
+  <span id="toastMsg">Дія виконана!</span>
+</div>
+
+<script>
+// ========= STARS =========
+function createStars() {
+  const bg = document.getElementById('starsBg');
+  if (!bg) return;
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 3 + 1;
+    s.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;top:${Math.random()*100}%;
+      animation-delay:${Math.random()*3}s;
+      animation-duration:${2+Math.random()*4}s;
+    `;
+    bg.appendChild(s);
+  }
+}
+createStars();
+
+// ========= AUTH =========
+let currentRole = 'parent';
+let selectedChild = '';
+
+function showAuth(mode) {
+  document.getElementById('authModal').classList.add('open');
+  switchForm(mode === 'register' ? 'register' : 'login');
+}
+
+function closeAuth() {
+  document.getElementById('authModal').classList.remove('open');
+}
+
+function switchForm(form) {
+  ['loginForm','registerForm','childForm'].forEach(f => {
+    document.getElementById(f).style.display = 'none';
+  });
+  document.getElementById(form === 'register' ? 'registerForm' : form === 'child' ? 'childForm' : 'loginForm').style.display = 'block';
+  if (form === 'child') renderChildAvatars();
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  if (!email || !pass) { showToast('⚠️ Введіть email і пароль'); return; }
+  if (!window.SK) { showToast('⚠️ Firebase ще завантажується, спробуйте за мить'); return; }
+  try {
+    await SK.login(email, pass);
+    const _kids = await SK.getChildren().catch(function(){ return {}; });
+    if (!_kids || Object.keys(_kids).length === 0) { openAddChild(); }   // перший вхід → додати дитину
+    else { window.location.href = 'parent.html'; }
+  } catch (e) {
+    showToast('⚠️ Не вдалося увійти: ' + friendlyAuthError(e));
+  }
+}
+
+async function doRegister() {
+  const name  = document.getElementById('regName').value.trim();
+  const role  = document.getElementById('regRole').value;
+  const email = document.getElementById('regEmail').value.trim();
+  const pass  = document.getElementById('regPass').value;
+  if (!name)  { showToast('⚠️ Введіть ім\'я'); return; }
+  if (!email) { showToast('⚠️ Введіть email'); return; }
+  if (!pass || pass.length < 6) { showToast('⚠️ Пароль — мінімум 6 символів'); return; }
+  if (!window.SK) { showToast('⚠️ Firebase ще завантажується, спробуйте за мить'); return; }
+  try {
+    await SK.registerFamily({ parentName: name, parentRole: role, email, password: pass });
+    showToast('🎉 Сім\'ю створено! Тепер додайте дитину.');
+    openAddChild();
+  } catch (e) {
+    showToast('⚠️ Реєстрація не вдалася: ' + friendlyAuthError(e));
+  }
+}
+
+function friendlyAuthError(e) {
+  const c = (e && e.code) || '';
+  if (c.indexOf('email-already-in-use') !== -1) return 'email уже зареєстровано';
+  if (c.indexOf('invalid-email') !== -1) return 'некоректний email';
+  if (c.indexOf('weak-password') !== -1) return 'надто простий пароль';
+  if (c.indexOf('wrong-password') !== -1 || c.indexOf('invalid-credential') !== -1) return 'невірний email або пароль';
+  if (c.indexOf('user-not-found') !== -1) return 'акаунт не знайдено';
+  if (c.indexOf('too-many-requests') !== -1) return 'забагато спроб, спробуйте пізніше';
+  return (e && e.message) || 'помилка';
+}
+
+/* ── Поп-ап «Додай дитину» ── */
+function openAddChild() {
+  document.getElementById('addChildStep1').style.display = 'block';
+  document.getElementById('addChildStep2').style.display = 'none';
+  document.getElementById('acName').value = '';
+  document.getElementById('acYear').value = '';
+  document.getElementById('acGrade').value = '1';
+  document.getElementById('addChildModal').classList.add('open');
+}
+function closeAddChild() {
+  document.getElementById('addChildModal').classList.remove('open');
+}
+
+// показуємо поп-ап лише якщо в сім'ї ще немає дітей (перший вхід)
+async function maybePromptAddChild() {
+  try {
+    if (!window.SK) return;
+    await SK.ready;
+    const children = await SK.getChildren();
+    if (!children || Object.keys(children).length === 0) openAddChild();
+  } catch (e) { console.warn('[addChild] перевірка дітей:', e); }
+}
+
+// 4-значний PIN, унікальний серед дітей цієї сім'ї (рахується на клієнті)
+async function genUniquePinClient() {
+  const used = new Set();
+  try {
+    const c = await SK.getChildren();
+    Object.values(c || {}).forEach(x => used.add(String(x.pin)));
+  } catch (e) {}
+  let p, t = 0;
+  do { p = String(Math.floor(1000 + Math.random() * 9000)); t++; } while (used.has(p) && t < 50);
+  return p;
+}
+
+async function submitAddChild() {
+  const name  = document.getElementById('acName').value.trim();
+  const year  = document.getElementById('acYear').value.trim();
+  const grade = document.getElementById('acGrade').value;
+  if (!name) { showToast('⚠️ Введіть ім\'я дитини'); return; }
+  if (!/^\d{4}$/.test(year)) { showToast('⚠️ Введіть рік народження (4 цифри)'); return; }
+  if (!window.SK) { showToast('⚠️ Firebase ще завантажується'); return; }
+
+  const btn = document.getElementById('acSubmitBtn');
+  btn.disabled = true; btn.textContent = 'Створюємо…';
+  try {
+    const pin = await genUniquePinClient();                 // генеруємо PIN тут — гарантовано є що показати
+    const res = await SK.addChild({ name, birthYear: Number(year), grade: Number(grade), pin });
+    const childId = (res && res.childId) ? res.childId : res; // підтримка обох форматів повернення
+    const shownPin = (res && res.pin) ? res.pin : pin;
+    if (childId) SK.setActiveChild(childId);                 // активуємо щойно створену дитину
+    document.getElementById('acPinName').textContent = 'Герой для: ' + name;
+    document.getElementById('acPinValue').textContent = shownPin;
+    document.getElementById('addChildStep1').style.display = 'none';
+    document.getElementById('addChildStep2').style.display = 'block';
+    refreshFamilyUI();              // одразу оновити склад сім'ї та перемикач ролей
+  } catch (e) {
+    showToast('⚠️ Не вдалося додати дитину: ' + ((e && e.message) || e));
+  } finally {
+    btn.disabled = false; btn.textContent = 'Створити героя →';
+  }
+}
+
+function finishAddChild() {
+  closeAddChild();
+  showToast('✅ Дитину додано! PIN збережено в базі.');
+  if (typeof renderChildHero === 'function') renderChildHero();
+  if (typeof refreshFamilyUI === 'function') refreshFamilyUI();
+}
+
+/* ── Дитячий вхід: реальні діти сім'ї + перевірка PIN з бази ── */
+let familyChildren = {};
+let selectedChildId = null;
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+async function renderChildAvatars() {
+  const grid = document.getElementById('childAvatarGrid');
+  if (!grid) return;
+  selectedChildId = null; selectedChild = null;
+  grid.innerHTML = '<div class="auth-sub" style="grid-column:1/-1;text-align:center">Завантаження…</div>';
+  if (!window.SK) { grid.innerHTML = '<div class="auth-sub" style="grid-column:1/-1;text-align:center">Firebase ще завантажується…</div>'; return; }
+  try {
+    await SK.ready;
+    if (!(SK.currentUser && SK.currentUser())) {
+      grid.innerHTML = '<div class="auth-sub" style="grid-column:1/-1;text-align:center">Спочатку має увійти хтось із батьків.</div>';
+      return;
+    }
+    familyChildren = await SK.getChildren();
+    const ids = Object.keys(familyChildren || {});
+    if (ids.length === 0) {
+      grid.innerHTML = '<div class="auth-sub" style="grid-column:1/-1;text-align:center">У сім\'ї ще немає дітей. Додайте дитину в кабінеті батьків.</div>';
+      return;
+    }
+    grid.innerHTML = ids.map(id => {
+      const c = familyChildren[id] || {};
+      return `<div class="avatar-option" onclick="selectChild(this,'${id}')">
+        <span class="emoji">${escapeHtml(c.avatar || '🙂')}</span>
+        <span class="name">${escapeHtml(c.name || 'Дитина')}</span>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    grid.innerHTML = '<div class="auth-sub" style="grid-column:1/-1;text-align:center">Не вдалося завантажити дітей.</div>';
+    console.warn('[childLogin] getChildren:', e);
+  }
+}
+
+function selectChild(el, id) {
+  document.querySelectorAll('#childForm .avatar-option').forEach(a => a.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedChildId = id;
+  selectedChild = (familyChildren[id] && familyChildren[id].name) || null;
+}
+
+function clearChildPin() {
+  document.querySelectorAll('#childForm .pin-digit').forEach(i => i.value = '');
+  const first = document.querySelector('#childForm .pin-digit');
+  if (first) first.focus();
+}
+
+function pinNext(el) {
+  if (el.value && el.nextElementSibling && el.nextElementSibling.classList.contains('pin-digit')) {
+    el.nextElementSibling.focus();
+  }
+}
+
+async function doChildLogin() {
+  if (!selectedChildId) { showToast('⚠️ Оберіть профіль'); return; }
+  const pin = Array.from(document.querySelectorAll('#childForm .pin-digit')).map(i => i.value).join('');
+  if (!/^\d{4}$/.test(pin)) { showToast('⚠️ Введіть 4-значний PIN'); return; }
+  const c = familyChildren[selectedChildId];
+  if (!c || String(c.pin) !== pin) { showToast('❌ Невірний PIN'); clearChildPin(); return; }
+  SK.setActiveChild(selectedChildId);
+  SK.activeHeroId = c.heroID || null;
+  window.location.href = 'child.html';
+}
+
+function showApp() {
+  var _l=document.getElementById('landing'); if(_l)_l.style.display='none';
+  var _a=document.getElementById('appInterface'); if(_a)_a.style.display='block';
+
+  // If returning from an external page (e.g. math test), restore child view
+  const params = new URLSearchParams(window.location.search);
+  const view = params.get('view');
+  if (view === 'child-academy') {
+    switchRole('child');
+    showPage('child-academy', null);
+  }
+}
+
+
+function doLogout() {
+  if (window.SK && SK.logout) { SK.logout().catch(function(){}); }
+  window.location.href = 'index.html';
+}
+
+/* ── Реальні дані сім'ї: назва + члени ── */
+async function refreshFamilyUI() {
+  try {
+    if (!window.SK) return;
+    await SK.ready;
+    const u = SK.currentUser && SK.currentUser();
+    if (!u) return;
+    const fam = await SK.getFamily();           // { parent, children }
+    const parent = fam.parent || {};
+    const children = fam.children || {};
+    const famName = parent.name ? ('Родина · ' + parent.name) : (u.email || 'Моя сім\'я');
+    const badge = document.querySelector('.family-badge .family-name');
+    if (badge) badge.textContent = '🏠 ' + famName;
+    const sub = document.getElementById('familyPageSub');
+    if (sub) sub.textContent = (u.email || '') + ' · ' + (parent.name ? parent.name : 'Моя сім\'я');
+    renderFamilyMembers(parent, children, u);
+    // кнопка ролі дитини — ім'я першої дитини
+    const ids = Object.keys(children);
+    const childBtn = document.getElementById('roleChildBtn');
+    if (childBtn && ids.length) {
+      const c = children[ids[0]];
+      childBtn.textContent = (c.avatar || '🙂') + ' ' + (c.name || 'Дитина');
+    }
+  } catch (e) { console.warn('[family] refresh:', e); }
+}
+
+function familyMemberRow(icon, name, sub, right) {
+  return `<div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px">
+    <span style="font-size:2rem">${escapeHtml(icon)}</span>
+    <div style="flex:1">
+      <div style="font-weight:800">${escapeHtml(name)}</div>
+      <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif">${escapeHtml(sub)}</div>
+    </div>
+    ${right || ''}
+  </div>`;
+}
+
+function renderFamilyMembers(parent, children, user) {
+  const box = document.getElementById('familyMembers');
+  if (!box) return;
+  let html = '';
+  const pIcon = parent.role === 'tato' ? '👨' : '👩';
+  const pRole = parent.role === 'tato' ? 'Тато' : 'Мама';
+  const pName = parent.name || (user && user.email) || 'Батьки';
+  html += familyMemberRow(pIcon, pName, pRole + ' · Повний доступ', '<span class="task-status status-done">Активна</span>');
+  Object.keys(children).forEach(id => {
+    const c = children[id] || {};
+    const sub = (c.age ? c.age + ' років · ' : '') + 'PIN: ' + (c.pin || '----');
+    const coins = (c.coins != null ? c.coins : 0);
+    html += familyMemberRow(c.avatar || '🙂', c.name || 'Дитина', sub, '<span class="task-badge">' + coins + ' 🪙</span>');
+  });
+  if (!Object.keys(children).length) {
+    html += '<div class="auth-sub" style="text-align:center;padding:8px">Ще немає дітей. Натисніть «+ Дитина».</div>';
+  }
+  box.innerHTML = html;
+}
+
+// якщо активної дитини ще немає — обираємо першу (для збереження прогресу)
+async function ensureActiveChild() {
+  try {
+    if (!window.SK) return;
+    await SK.ready;
+    if (!(SK.currentUser && SK.currentUser())) return;
+    if (SK.activeChildId) return;
+    const children = await SK.getChildren();
+    const ids = Object.keys(children || {});
+    if (ids.length) SK.setActiveChild(ids[0]);
+  } catch (e) { console.warn('[role] ensureActiveChild:', e); }
+}
+
+// ========= ROLE SWITCH =========
+function switchRole(role) {
+  currentRole = role;
+  document.getElementById('parentNav').style.display = role === 'parent' ? 'block' : 'none';
+  document.getElementById('childNav').style.display = role === 'child' ? 'block' : 'none';
+  document.getElementById('roleParentBtn').classList.toggle('active', role === 'parent');
+  document.getElementById('roleChildBtn').classList.toggle('active', role === 'child');
+  if (role === 'parent') showPage('dashboard', null);
+  else { ensureActiveChild().then(function(){ if (typeof renderChildHero === 'function') renderChildHero(); }); showPage('child-dashboard', null); }
+}
+
+// ========= NAVIGATION =========
+function showPage(pageId, navEl) {
+  document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+  const page = document.getElementById('page-' + pageId);
+  if (page) page.style.display = 'block';
+
+  if (navEl) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    navEl.classList.add('active');
+  }
+
+  if (pageId === 'family') refreshFamilyUI();
+}
+
+// ========= TASKS =========
+function openTaskModal() {
+  document.getElementById('taskModal').classList.add('open');
+  const sel = document.getElementById('taskType');
+
+  const TASK_PRESETS = {
+    'Математика': [
+      '🧮 Тест з математики 1 клас',
+      '🧮 Тест з математики 2 клас',
+      '🧮 Тест з математики 3 клас',
+      '🧮 Тест з математики 4 клас',
+    ],
+    'Читання': ['📖 Читання 20 хвилин','📖 Читання розділу','📖 Переказ прочитаного','✏️ Власна назва...'],
+    'Мови': ['🔤 Вивчення букв','📝 Диктант','💬 Розмовна практика','✏️ Власна назва...'],
+    'Природознавство': ['🌿 Урок природознавства','🌍 Географія','✏️ Власна назва...'],
+    'Творчість': ['🎨 Малювання','✂️ Аплікація','🎵 Музика','✏️ Власна назва...'],
+    'Добрі справи': ['🏠 Прибирання','🍽️ Допомога на кухні','🐾 Догляд за тваринкою','✏️ Власна назва...'],
+  };
+
+  function updateNameField() {
+    const type = sel.value.replace(/^[^\s]+\s/, ''); // strip emoji
+    const nameSelect = document.getElementById('taskName');
+    const nameText = document.getElementById('taskNameText');
+    const presets = TASK_PRESETS[type];
+    if (presets) {
+      nameSelect.style.display = 'block';
+      nameSelect.innerHTML = presets.map(p => `<option>${p}</option>`).join('');
+      nameText.style.display = 'block';
+      nameText.placeholder = 'Або введіть власну назву...';
+      nameSelect.onchange = null;
+    } else {
+      nameSelect.style.display = 'none';
+      nameText.style.display = 'block';
+      nameText.placeholder = 'Наприклад: Намалюй весну';
+    }
+  }
+
+  sel.onchange = updateNameField;
+  updateNameField();
+}
+function closeTaskModal() {
+  document.getElementById('taskModal').classList.remove('open');
+}
+function createTask() {
+  const nameSelect = document.getElementById('taskName');
+  const nameText = document.getElementById('taskNameText');
+  const name = (nameText.value.trim() || (nameSelect.style.display !== 'none' ? nameSelect.value : '')).trim();
+  const coins = document.getElementById('taskCoins').value;
+  if (!name) { showToast('⚠️ Введіть назву завдання'); return; }
+
+  // If math test — use special handler
+  if (name.includes('Тест з математики')) { addMathTest1Class(); return; }
+
+  closeTaskModal();
+  showToast('✅ Завдання "' + name + '" створено! +' + coins + ' 🪙 за виконання');
+}
+
+function quickAddMathTestTask() {
+  addMathTest1Class();
+}
+
+function addMathTest1Class() {
+  const coins = 25;
+  const childItemHTML = `
+    <div class="task-item">
+      <div class="task-check"></div>
+      <div class="task-info">
+        <div class="task-name">🧮 Тест: Математика 1 клас</div>
+        <div class="task-meta">Автоматична перевірка · +${coins} 🪙</div>
+      </div>
+      <a class="btn-primary" href="math-test.html" target="_blank" style="font-size:0.8rem;padding:6px 14px;text-decoration:none">▶️ Почати</a>
+    </div>`;
+  const parentItemHTML = `
+    <div class="task-item">
+      <div class="task-check"></div>
+      <div class="task-info">
+        <div class="task-name">🧮 Тест: Математика 1 клас</div>
+        <div class="task-meta">🦁 Сашко · Авто-перевірка · Математика</div>
+      </div>
+      <span class="task-badge">+${coins} 🪙</span>
+      <span class="task-status" style="background:rgba(78,205,196,0.15);color:var(--mint)">Авто-перевірка</span>
+    </div>`;
+  const dashList = document.getElementById('childDashTaskList');
+  const tasksList = document.getElementById('childTasksListCard');
+  const parentList = document.getElementById('parentTasksList');
+  if (dashList) dashList.insertAdjacentHTML('beforeend', childItemHTML);
+  if (tasksList) tasksList.insertAdjacentHTML('beforeend', childItemHTML);
+  if (parentList) parentList.insertAdjacentHTML('beforeend', parentItemHTML);
+  closeTaskModal();
+  showToast('✅ Завдання «Тест: Математика 1 клас» створено!');
+}
+
+// ========= INTERACTIONS =========
+function completeTask(el) {
+  el.classList.toggle('done');
+  const nameEl = el.nextElementSibling.querySelector('.task-name');
+  if (el.classList.contains('done')) {
+    nameEl.classList.add('done');
+    showToast('⭐ Молодець! Завдання відправлено на перевірку!');
+  } else {
+    nameEl.classList.remove('done');
+  }
+}
+
+function approveWork() {
+  showToast('🎉 Схвалено! Сашку нараховано 20 монет!');
+}
+
+// ========= TOAST =========
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ========= КВЕСТИ ГЕРОЯ: міні-гра на додавання =========
+const MathGame = (function(){
+  const root = document.getElementById('mg-root');
+  function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+  const levelsMeta = [
+    {id:1, title:'Рівень 1', subtitle:'Числа до 10', timed:false},
+    {id:2, title:'Рівень 2', subtitle:'Числа до 20', timed:false},
+    {id:3, title:'Рівень 3', subtitle:'Числа до 50', timed:false},
+    {id:4, title:'Рівень 4', subtitle:'Числа до 100', timed:false},
+    {id:5, title:'Рівень 5', subtitle:'Двоцифрові числа', timed:false},
+    {id:6, title:'Рівень 6', subtitle:'Перехід через десяток', timed:false},
+    {id:7, title:'Рівень 7', subtitle:'Трицифрові числа', timed:false},
+    {id:8, title:'Рівень 8', subtitle:'Задачі на додавання', timed:false},
+    {id:9, title:'Рівень 9', subtitle:'Приклади на час', timed:true, perTime:12},
+    {id:10, title:'Рівень 10', subtitle:'Майстер додавання', timed:true, perTime:20}
+  ];
+
+  const counts = {1:10,2:10,3:10,4:10,5:10,6:10,7:10,8:8,9:10,10:10};
+
+  const templates = [
+    (a,b)=>`У Марійки було ${a} яблук. Тато подарував їй ще ${b} яблук. Скільки яблук стало у Марійки?`,
+    (a,b)=>`На дереві сиділо ${a} пташок. Прилетіло ще ${b} пташок. Скільки пташок стало на дереві?`,
+    (a,b)=>`У класі ${a} хлопчиків і ${b} дівчаток. Скільки всього учнів у класі?`,
+    (a,b)=>`Мама купила ${a} цукерок, а бабуся подарувала ще ${b} цукерок. Скільки всього цукерок?`,
+    (a,b)=>`У саду росло ${a} троянд. Садівник посадив ще ${b} троянд. Скільки троянд тепер у саду?`,
+    (a,b)=>`Петрик прочитав ${a} сторінок книги вчора, а сьогодні ще ${b} сторінок. Скільки сторінок він прочитав за два дні?`,
+    (a,b)=>`У гаражі стояло ${a} машин. Приїхало ще ${b} машин. Скільки машин стало в гаражі?`,
+    (a,b)=>`На клумбі росло ${a} тюльпанів. Посадили ще ${b} тюльпанів. Скільки тюльпанів тепер на клумбі?`
+  ];
+
+  function genSimple(max){
+    const minSum = Math.max(2, Math.round(max*0.3));
+    const sum = randInt(minSum, max);
+    const a = randInt(1, sum-1);
+    return {text:`${a} + ${sum-a}`, answer:sum};
+  }
+  function genTwoDigit(){
+    const a = randInt(10,89), b = randInt(10,89);
+    return {text:`${a} + ${b}`, answer:a+b};
+  }
+  function genCarry(){
+    const a1 = randInt(1,9);
+    const b1 = randInt(Math.max(1,10-a1), 9);
+    const a2 = randInt(1,8), b2 = randInt(1,8);
+    const a = a2*10+a1, b = b2*10+b1;
+    return {text:`${a} + ${b}`, answer:a+b};
+  }
+  function genThreeDigit(){
+    const a = randInt(100,799), b = randInt(100,799);
+    return {text:`${a} + ${b}`, answer:a+b};
+  }
+  function genHard(){
+    const a = randInt(120,876), b = randInt(115,864);
+    return {text:`${a} + ${b}`, answer:a+b};
+  }
+  function genWordProblem(){
+    const a = randInt(2,25), b = randInt(2,25);
+    const t = templates[randInt(0,templates.length-1)];
+    return {text:t(a,b), answer:a+b, isWord:true};
+  }
+
+  function generateProblems(id){
+    const n = counts[id];
+    const arr = [];
+    for(let i=0;i<n;i++){
+      let p;
+      if(id===1) p=genSimple(10);
+      else if(id===2) p=genSimple(20);
+      else if(id===3) p=genSimple(50);
+      else if(id===4) p=genSimple(100);
+      else if(id===5) p=genTwoDigit();
+      else if(id===6) p=genCarry();
+      else if(id===7) p=genThreeDigit();
+      else if(id===8) p=genWordProblem();
+      else if(id===9) p=genSimple(100);
+      else p=genHard();
+      arr.push(p);
+    }
+    return arr;
+  }
+
+  let state = {screen:'menu'};
+
+  function clearTimer(){ if(state.timerId){ clearInterval(state.timerId); state.timerId=null; } }
+
+  function startLevel(id){
+    clearTimer();
+    const meta = levelsMeta.find(l=>l.id===id);
+    state = {screen:'quiz', levelId:id, problems:generateProblems(id), index:0, score:0, timeLeft:meta.timed?meta.perTime:0, timerId:null, answers:[]};
+    render();
+    if(meta.timed) startTimer();
+  }
+
+  function startTimer(){
+    clearTimer();
+    state.timerId = setInterval(()=>{
+      state.timeLeft--;
+      if(state.timeLeft<=0){ submitAnswer(true); }
+      else {
+        const el = document.getElementById('mg-timer-val');
+        if(el) el.textContent = state.timeLeft;
+      }
+    },1000);
+  }
+
+  function submitAnswer(timeout){
+    const input = document.getElementById('mg-answer-input');
+    const val = timeout ? null : (input ? parseInt(input.value,10) : null);
+    const correct = state.problems[state.index].answer;
+    const isCorrect = !timeout && val===correct;
+    state.answers.push({given:val, isCorrect, timeout});
+    if(isCorrect) state.score++;
+    clearTimer();
+    state.screen='feedback';
+    render();
+  }
+
+  function nextProblem(){
+    state.index++;
+    if(state.index>=state.problems.length){ state.screen='result'; render(); return; }
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    state.screen='quiz';
+    if(meta.timed) state.timeLeft = meta.perTime;
+    render();
+    if(meta.timed) startTimer();
+    const input = document.getElementById('mg-answer-input');
+    if(input) input.focus();
+  }
+
+  function retryLevel(){ startLevel(state.levelId); }
+  function showMenu(){ clearTimer(); state={screen:'menu'}; render(); }
+  function handleKey(e){ if(e.key==='Enter') submitAnswer(false); }
+
+  function finishAndClaim(){
+    const total = state.problems.length;
+    const score = state.score;
+    clearTimer();
+    awardForQuest(score, total);
+    closeGameModal();
+  }
+
+  function render(){
+    if(!root) return;
+    if(state.screen==='menu') renderMenu();
+    else if(state.screen==='quiz') renderQuiz();
+    else if(state.screen==='feedback') renderFeedback();
+    else renderResult();
+  }
+
+  function renderMenu(){
+    root.innerHTML = `
+      <div class="mg-header">
+        <span class="mg-emoji">🗡️</span>
+        <div>
+          <h2>Квести Героя</h2>
+          <p>Обери рівень тесту на додавання</p>
+        </div>
+      </div>
+      <div class="mg-grid">
+        ${levelsMeta.map(l=>`
+          <div class="mg-level-card" onclick="window.__mg.startLevel(${l.id})">
+            <span class="mg-level-num">${l.id}</span>
+            <span class="mg-level-title">${l.title}</span>
+            <span class="mg-level-sub">${l.subtitle}</span>
+            ${l.timed?'<span class="mg-badge-timed">⏱ на час</span>':''}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderQuiz(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const p = state.problems[state.index];
+    root.innerHTML = `
+      <div class="mg-top-row">
+        <span>${meta.title} · ${meta.subtitle}</span>
+        <span>${state.index+1} / ${state.problems.length}</span>
+      </div>
+      ${meta.timed?`<div class="mg-timer-row">⏱ <span id="mg-timer-val">${state.timeLeft}</span> с</div>`:''}
+      <div class="mg-problem-card ${p.isWord?'mg-word':'mg-big'}">
+        <p>${p.text}</p>
+      </div>
+      <div class="mg-answer-row">
+        <input id="mg-answer-input" type="number" placeholder="Твоя відповідь" onkeydown="window.__mg.handleKey(event)" />
+        <button class="btn-primary" onclick="window.__mg.submitAnswer(false)">Перевірити</button>
+      </div>
+    `;
+    setTimeout(()=>{ const i=document.getElementById('mg-answer-input'); if(i) i.focus(); },0);
+  }
+
+  function renderFeedback(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const last = state.answers[state.answers.length-1];
+    const p = state.problems[state.index];
+    root.innerHTML = `
+      <div class="mg-top-row">
+        <span>${meta.title} · ${meta.subtitle}</span>
+        <span>${state.index+1} / ${state.problems.length}</span>
+      </div>
+      <div class="mg-feedback-card" style="background:${last.isCorrect?'rgba(107,203,119,0.15)':'rgba(255,107,107,0.15)'};">
+        <p class="mg-expr">${p.text} = ${p.answer}</p>
+        <div class="mg-status" style="color:${last.isCorrect?'var(--success)':'var(--danger)'};">
+          ${last.isCorrect?'✅':'❌'} ${last.timeout?'Час вийшов':last.isCorrect?'Правильно':'Неправильно, ти написав '+last.given}
+        </div>
+      </div>
+      <button class="btn-primary mg-full-btn" onclick="window.__mg.nextProblem()">Далі</button>
+    `;
+  }
+
+  function renderResult(){
+    const meta = levelsMeta.find(l=>l.id===state.levelId);
+    const total = state.problems.length;
+    const pct = Math.round(state.score/total*100);
+    const passed = state.levelId===10 && state.score>=8;
+    root.innerHTML = `
+      <div class="mg-result-box">
+        ${passed?`
+          <div class="mg-trophy">🏆</div>
+          <p class="mg-result-title">Титул: майстер додавання</p>
+          <p class="mg-result-sub">Ти впорався з найскладнішим рівнем</p>
+        `:`
+          <p class="mg-result-title">${meta.title} завершено</p>
+          <p class="mg-result-sub">${meta.subtitle}</p>
+        `}
+        <div class="mg-stats-grid">
+          <div class="mg-stat-card">
+            <p class="mg-stat-label">Правильно</p>
+            <p class="mg-stat-value">${state.score} / ${total}</p>
+          </div>
+          <div class="mg-stat-card">
+            <p class="mg-stat-label">Точність</p>
+            <p class="mg-stat-value">${pct}%</p>
+          </div>
+        </div>
+        <div class="mg-result-actions">
+          <button class="btn-secondary" onclick="window.__mg.retryLevel()">🔁 Ще раз</button>
+          <button class="btn-secondary" onclick="window.__mg.showMenu()">📋 Інший рівень</button>
+          <button class="btn-primary" onclick="window.__mg.finishAndClaim()">✅ Забрати нагороду</button>
+        </div>
+      </div>
+    `;
+  }
+
+  return { showMenu, startLevel, submitAnswer, nextProblem, retryLevel, handleKey, finishAndClaim };
+})();
+
+window.__mg = MathGame;
+
+function awardForQuest(score, total) {
+  const pct = total ? score/total : 0;
+  const coins = Math.max(5, Math.round(score * 2.5));
+  const starsEarned = score * 2;
+
+  const walletEl = document.getElementById('childWalletValue');
+  const coinsStatEl = document.getElementById('childCoinsStatValue');
+  const scoreStatEl = document.getElementById('childScoreStatValue');
+
+  if (coinsStatEl) coinsStatEl.textContent = (parseInt(coinsStatEl.textContent,10) || 0) + coins;
+  if (scoreStatEl) scoreStatEl.textContent = (parseInt(scoreStatEl.textContent,10) || 0) + starsEarned;
+  if (walletEl) {
+    const current = parseInt(walletEl.textContent.replace(/\D/g,''),10) || 0;
+    walletEl.textContent = '🪙 ' + (current + coins);
+  }
+
+  if (pct >= 0.8) showToast(`🏆 Чудовий результат: ${score}/${total}! +${starsEarned} ⭐ +${coins} 🪙`);
+  else if (pct >= 0.5) showToast(`⭐ Непогано: ${score}/${total}! +${starsEarned} ⭐ +${coins} 🪙`);
+  else showToast(`💪 Завершено: ${score}/${total}. +${starsEarned} ⭐ +${coins} 🪙. Спробуй ще раз для кращого результату!`);
+}
+
+function openHeroQuests() {
+  document.getElementById('gameModal').classList.add('open');
+  MathGame.showMenu();
+}
+
+function closeGameModal() {
+  document.getElementById('gameModal').classList.remove('open');
+  MathGame.showMenu();
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) {
+      if (this.id === 'gameModal') { closeGameModal(); }
+      else { this.classList.remove('open'); }
+    }
+  });
+});
+</script><script>
+const CHILDREN_DATA = {
+  sasho: {
+    name: 'Сашко', avatar: '🦁', age: 7, grade: 1,
+    xp: 340, coins: 120, tasksCompleted: 12,
+    achievements: ['👑 Чемпіон тижня','🧮 Математик','🔥 5 днів поспіль','⭐ Перший тест'],
+    tasks: [
+      {name:'🧮 Тест: Математика 1 клас', coins:25, status:'▶️ Виконати'},
+      {name:'📚 Читання 20 хв', coins:10, status:'⏳ В процесі'},
+      {name:'✏️ Прописи', coins:15, status:'✅ Здано'},
+    ]
+  },
+  olechka: {
+    name: 'Олечка', avatar: '🦋', age: 9, grade: 3,
+    xp: 290, coins: 85, tasksCompleted: 9,
+    achievements: ['🌺 Відмінниця','📚 Книголюб','🎨 Творча'],
+    tasks: [
+      {name:'📖 Читання розділу', coins:15, status:'⏳ В процесі'},
+      {name:'🌍 Природознавство', coins:20, status:'▶️ Виконати'},
+    ]
+  },
+  volodya: {
+    name: 'Володя', avatar: '🐬', age: 6, grade: 1,
+    xp: 180, coins: 35, tasksCompleted: 5,
+    achievements: ['🚀 Новачок','💪 Старається'],
+    tasks: [
+      {name:'🧮 Тест: Математика 1 клас', coins:25, status:'▶️ Виконати'},
+    ]
+  }
+};
+
+// Grade suggestion based on age
+function suggestedGrade(age) {
+  if (age <= 7) return 1;
+  if (age === 8) return 2;
+  if (age === 9) return 3;
+  if (age === 10) return 4;
+  return Math.min(4, Math.max(1, age - 6));
+}
+
+function openChildProfile(childId) {
+  const c = CHILDREN_DATA[childId];
+  if (!c) return;
+  const suggested = suggestedGrade(c.age);
+  const gradeHint = suggested !== c.grade ? ` (підказка: ${suggested} кл. за віком)` : '';
+
+  const tasksHtml = c.tasks.map(t => `
+    <div class="cp-task-item">
+      <div class="cp-task-name">${t.name}</div>
+      <div class="cp-task-coins">+${t.coins} 🪙</div>
+    </div>`).join('');
+
+  const achHtml = c.achievements.map(a => `<span class="cp-ach">${a}</span>`).join('');
+
+  document.getElementById('childProfileContent').innerHTML = `
+    <button class="cp-modal-close" onclick="closeChildProfile()">✕</button>
+    <div class="cp-modal-header">
+      <div class="cp-modal-avatar">${c.avatar}</div>
+      <div>
+        <div class="cp-modal-name">${c.name}</div>
+        <div class="cp-modal-meta">${c.age} років</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+          <select class="cp-grade-select" onchange="changeChildGrade('${childId}',this.value)" title="Клас дитини${gradeHint}">
+            ${[1,2,3,4].map(g=>`<option value="${g}" ${c.grade===g?'selected':''}>${g} клас</option>`).join('')}
+          </select>
+          ${suggested !== c.grade ? `<span style="font-size:0.72rem;color:#FFB300">💡 ${suggested} кл. за віком</span>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="cp-section">
+      <div class="cp-section-title">Характеристики</div>
+      <div class="cp-stats-row">
+        <div class="cp-stat-box"><div class="cp-stat-val">⭐ ${c.xp}</div><div class="cp-stat-lbl">балів XP</div></div>
+        <div class="cp-stat-box"><div class="cp-stat-val">🪙 ${c.coins}</div><div class="cp-stat-lbl">монет</div></div>
+        <div class="cp-stat-box"><div class="cp-stat-val">📚 ${c.tasksCompleted}</div><div class="cp-stat-lbl">завдань</div></div>
+      </div>
+    </div>
+    <div class="cp-section">
+      <div class="cp-section-title">Досягнення</div>
+      <div class="cp-achievements">${achHtml}</div>
+    </div>
+    <div class="cp-section" style="border-bottom:none">
+      <div class="cp-section-title">Активні завдання</div>
+      ${tasksHtml || '<div style="color:#9B8FCC;font-size:0.85rem">Завдань немає</div>'}
+    </div>`;
+
+  document.getElementById('childProfileModal').classList.add('open');
+}
+
+function closeChildProfile() {
+  document.getElementById('childProfileModal').classList.remove('open');
+}
+
+function changeChildGrade(childId, grade) {
+  CHILDREN_DATA[childId].grade = parseInt(grade);
+  showToast(`✅ Клас ${CHILDREN_DATA[childId].name} змінено на ${grade} клас`);
+}
+</script>
+<script>
+(function(){
+  var app=document.getElementById('appInterface'); if(app) app.style.display='block';
+  var pn=document.getElementById('parentNav'); if(pn) pn.style.display='block';
+  if(typeof showPage==='function') showPage('dashboard', null);
+  if(window.SK && SK.ready){ SK.ready.then(function(){
+    if(!(SK.currentUser && SK.currentUser())){ location.href='auth.html?mode=login'; return; }
+    if(typeof refreshFamilyUI==='function') refreshFamilyUI();
+  }); }
+})();
+</script>
+
+</body>
+</html>
