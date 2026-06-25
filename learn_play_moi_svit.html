@@ -153,19 +153,31 @@
   }
   .monster-card-title{font-weight:800;font-size:.8rem;margin-bottom:6px;color:var(--wood-dark)}
   .monster-list{display:flex;gap:6px;justify-content:center;font-size:1.3rem}
+  .treasure-line{margin-top:10px;font-weight:800;color:var(--wood-dark);font-size:.9rem}
 
   /* ── HEX STYLES ── */
-  .hex{stroke:rgba(0,0,0,.12);stroke-width:1.2}
+  .hex{stroke:rgba(0,0,0,.10);stroke-width:1}
+  .hex.water{animation:shimmer 3.4s ease-in-out infinite}
   .hex.building{cursor:pointer;stroke:rgba(0,0,0,.28);stroke-width:1.8;transition:filter .15s}
   .hex.building:hover{filter:brightness(1.12)}
   .hex.building.selected{stroke:var(--gold);stroke-width:3;filter:drop-shadow(0 0 8px rgba(255,201,74,.9))}
-  .building-icon{font-size:20px;pointer-events:none;text-anchor:middle;dominant-baseline:central}
-  .monster-icon{font-size:18px;text-anchor:middle;dominant-baseline:central;animation:bob 2.4s ease-in-out infinite}
+  .building-icon{pointer-events:none;text-anchor:middle;dominant-baseline:central;
+                 filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
+  .deco{pointer-events:none;text-anchor:middle;dominant-baseline:central}
+  .monster-icon{text-anchor:middle;dominant-baseline:central;animation:bob 2.4s ease-in-out infinite}
   .monster-group{pointer-events:none;transition:transform 1.05s cubic-bezier(.45,0,.2,1)}
+  .hero-group{transition:transform 1s cubic-bezier(.45,0,.2,1)}
+  .hero-icon{text-anchor:middle;dominant-baseline:central;animation:bob 2.2s ease-in-out infinite;cursor:pointer;
+             filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+  .resource-group{cursor:pointer;transition:opacity .35s ease}
+  .resource-group.collected{opacity:0;pointer-events:none}
+  .resource-icon{text-anchor:middle;dominant-baseline:central;animation:bob 2s ease-in-out infinite;
+                 filter:drop-shadow(0 0 4px rgba(255,201,74,.7))}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  @keyframes shimmer{0%,100%{filter:brightness(1)}50%{filter:brightness(1.13) saturate(1.1)}}
   @media(prefers-reduced-motion:reduce){
-    .monster-icon{animation:none}
-    .monster-group{transition:none}
+    .monster-icon,.hero-icon,.resource-icon{animation:none}
+    .monster-group,.hero-group,.hex.water{animation:none;transition:none}
   }
 
   /* ── MOBILE ── */
@@ -173,7 +185,7 @@
     .main{flex-direction:column}
     .side-panel{width:100%;padding:0 12px 12px;flex-direction:row}
     .info-card{flex:1}
-    .monster-card{width:100px;flex-shrink:0}
+    .monster-card{width:120px;flex-shrink:0}
     .topbar-legend{display:none}
     .map-panel{min-height:55vw;max-height:60vh}
   }
@@ -185,7 +197,7 @@
   <div class="topbar">
     <div>
       <div class="topbar-title">🗺️ Мій Світ</div>
-      <div class="topbar-sub">12×12 гексів · натисни на будівлю</div>
+      <div class="topbar-sub">12×12 гексів · ліс, гори, озеро · збирай скарби</div>
     </div>
     <div class="topbar-legend">
       <span>🏛️ Знання</span>
@@ -206,7 +218,7 @@
       <div class="map-frame">
         <div class="map-inner">
           <svg id="board" xmlns="http://www.w3.org/2000/svg"
-            aria-label="Гексова карта Мій Світ із будівлями та монстрами"></svg>
+            aria-label="Гексова карта Мій Світ із біомами, будівлями, скарбами та монстрами"></svg>
         </div>
       </div>
     </div>
@@ -216,11 +228,12 @@
       <div class="info-card">
         <div class="info-icon" id="infoIcon">🗺️</div>
         <div class="info-title" id="infoTitle">Обери будівлю</div>
-        <div class="info-desc hint" id="infoDesc">Клікни по будь-якій кольоровій будівлі на карті, щоб прочитати про неї.</div>
+        <div class="info-desc hint" id="infoDesc">Клікни по будівлі, щоб прочитати про неї. Збирай блискучі скарби та знаходь героя на полі!</div>
       </div>
       <div class="monster-card">
         <div class="monster-card-title">👾 Монстри на полі</div>
         <div class="monster-list" id="monsterList"></div>
+        <div class="treasure-line">💎 Скарби: <span id="treasureCount">0</span>/<span id="treasureTotal">0</span></div>
       </div>
     </div>
 
@@ -229,7 +242,16 @@
 <script>
 (function(){
   const COLS = 12, ROWS = 12;
-  const GRASS_A = '#8FCB6B', GRASS_B = '#7BBA57';
+
+  /* ── ПАЛІТРА БІОМІВ ── */
+  const T = {
+    meadow1:'#8FCB6B', meadow2:'#7BBA57',
+    forest:'#5C9E48',
+    sand:'#E8D7A2',
+    water:'#74C4EA', waterDeep:'#4FA8D8',
+    mountain:'#B2A48C',
+    building:'#8FCB6B'
+  };
 
   const buildings = [
     {col:5,row:5,icon:'🏛️',name:'Будівля Знань',
@@ -249,17 +271,8 @@
   const buildingMap = {};
   buildings.forEach(b => buildingMap[b.col+','+b.row] = b);
 
-  // Responsive SIZE — fill available space
-  function calcSize(){
-    const vw = window.innerWidth;
-    const sideW = vw > 640 ? 280 + 24 : 0;
-    const topH = 56;
-    const availW = vw - sideW - 40;
-    const availH = window.innerHeight - topH - 40;
-    const sizeByW = availW / (1.5 * (COLS - 1) + 2 + 0.1);
-    const sizeByH = availH / (Math.sqrt(3) * (ROWS - 1 + 0.5) + 2 + 0.1);
-    return Math.max(18, Math.min(sizeByW, sizeByH));
-  }
+  /* ── ДЕТЕРМІНОВАНИЙ ГЕНЕРАТОР (стабільний світ) ── */
+  function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 
   const ns = 'http://www.w3.org/2000/svg';
   function el(tag, attrs){
@@ -286,20 +299,134 @@
     const dirs=even?[[0,-1],[0,1],[-1,-1],[-1,0],[1,-1],[1,0]]:[[0,-1],[0,1],[-1,0],[-1,1],[1,0],[1,1]];
     return dirs.map(([dc,dr])=>[col+dc,row+dr]).filter(([c,r])=>c>=0&&c<COLS&&r>=0&&r<ROWS);
   }
+  // приблизна відстань у "одиничних" пікселях гекса (для зон біомів)
+  function cdist(c1,r1,c2,r2){const a=hexCenter(c1,r1,1),b=hexCenter(c2,r2,1);return Math.hypot(a.x-b.x,a.y-b.y);}
+  function isWater(t){return t==='water'||t==='waterDeep';}
+
+  // жадібний шлях по гексах (обходить чужі будівлі)
+  function pathBetween(a,b){
+    let c=a[0],r=a[1]; const path=[]; let guard=0;
+    while((c!==b[0]||r!==b[1]) && guard++<80){
+      const opts=neighbors(c,r);
+      opts.sort((p,q)=>{
+        const pb=(buildingMap[p[0]+','+p[1]] && !(p[0]===b[0]&&p[1]===b[1]))?1:0;
+        const qb=(buildingMap[q[0]+','+q[1]] && !(q[0]===b[0]&&q[1]===b[1]))?1:0;
+        if(pb!==qb)return pb-qb;
+        return cdist(p[0],p[1],b[0],b[1])-cdist(q[0],q[1],b[0],b[1]);
+      });
+      [c,r]=opts[0]; path.push([c,r]);
+    }
+    return path;
+  }
+
+  /* ── СВІТ (генерується один раз) ── */
+  const terrain = {}, deco = {}, roadTiles = new Set(), roadLines = [], resources = [];
+  let hero = null, monsters = [];
+
+  function buildWorld(){
+    const rand = mulberry32(778899);
+    const field={}, sm={};
+    for(let col=0;col<COLS;col++)for(let row=0;row<ROWS;row++) field[col+','+row]=rand();
+    for(let col=0;col<COLS;col++)for(let row=0;row<ROWS;row++){
+      const nb=neighbors(col,row); let s=field[col+','+row],n=1;
+      nb.forEach(([c,r])=>{s+=field[c+','+r];n++;}); sm[col+','+row]=s/n;
+    }
+    const lake=[10,10], mtn=[11,1];
+    for(let col=0;col<COLS;col++)for(let row=0;row<ROWS;row++){
+      const key=col+','+row;
+      if(buildingMap[key]){terrain[key]='building';continue;}
+      const dl=cdist(col,row,lake[0],lake[1]);
+      const dm=cdist(col,row,mtn[0],mtn[1]);
+      let t;
+      if(dl<=1.9) t='waterDeep';
+      else if(dl<=3.6) t='water';
+      else if(dl<=4.7) t='sand';
+      else if(dm<=3.3 && sm[key]>0.42) t='mountain';
+      else if(col<=3 && sm[key]>0.50) t='forest';
+      else t=((col+row)%2===0?'meadow1':'meadow2');
+      terrain[key]=t;
+    }
+
+    // ── ДОРОГИ: кожна будівля → центральна Будівля Знань ──
+    const center=[5,5];
+    buildings.forEach(b=>{
+      if(b.col===center[0]&&b.row===center[1]) return;
+      const pts=[[b.col,b.row]].concat(pathBetween([b.col,b.row],center));
+      roadLines.push(pts);
+      pts.forEach(([c,r])=>{
+        const k=c+','+r;
+        if(buildingMap[k]) return;
+        if(isWater(terrain[k])) deco[k]='🌉';      // міст через воду
+        else roadTiles.add(k);
+      });
+    });
+
+    // ── ДЕКОРАЦІЇ ──
+    for(let col=0;col<COLS;col++)for(let row=0;row<ROWS;row++){
+      const key=col+','+row;
+      if(buildingMap[key]||roadTiles.has(key)||deco[key]) continue;
+      const t=terrain[key], rr=rand();
+      if(t==='forest'){ deco[key]= rr<0.80 ? (rr<0.42?'🌲':'🌳') : (rr<0.90?'🍄':'🌿'); }
+      else if(t==='mountain'){ if(rr<0.85) deco[key]= rr<0.45?'⛰️':(rr<0.7?'🏔️':'🪨'); }
+      else if(t==='sand'){ if(rr<0.16) deco[key]= rr<0.08?'🐚':'🌴'; }
+      else if(isWater(t)){ if(rr<0.10) deco[key]= rr<0.05?'🦆':'🪷'; }
+      else { if(rr<0.22) deco[key]= ['🌸','🌼','🌿','🪨','🦋','🍀'][Math.floor(rand()*6)]; }
+    }
+
+    // ── СКАРБИ-РЕСУРСИ ──
+    const RES=[['💎','Чарівний кристал','Блискучий кристал знань. Додає сили герою!'],
+               ['🪙','Золото героя','Монети для скарбниці.'],
+               ['🎁','Скриня скарбів','Хтозна, що всередині — відкрий і дізнайся!'],
+               ['🍄','Гриб сили','Рідкісний гриб, що дає бонус витривалості.'],
+               ['⭐','Зірка досвіду','Сяюча зірка — багато досвіду одразу.']];
+    const slots=[];
+    for(let col=0;col<COLS;col++)for(let row=0;row<ROWS;row++){
+      const key=col+','+row, t=terrain[key];
+      if(buildingMap[key]||roadTiles.has(key)) continue;
+      if(['meadow1','meadow2','forest','sand'].includes(t)) slots.push([col,row]);
+    }
+    for(let i=slots.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[slots[i],slots[j]]=[slots[j],slots[i]];}
+    let ri=0;
+    for(const s of slots){
+      if(ri>=RES.length) break;
+      if(resources.every(c=>cdist(c.col,c.row,s[0],s[1])>3)){
+        resources.push({id:'r'+ri,col:s[0],row:s[1],emoji:RES[ri][0],name:RES[ri][1],desc:RES[ri][2],collected:false});
+        delete deco[s[0]+','+s[1]];
+        ri++;
+      }
+    }
+
+    // ── ГЕРОЙ біля центральної будівлі (на дорозі) ──
+    const adj=neighbors(center[0],center[1]);
+    const hp = adj.find(([c,r])=>roadTiles.has(c+','+r)) || adj.find(([c,r])=>!buildingMap[c+','+r] && !isWater(terrain[c+','+r]));
+    hero={col:hp[0],row:hp[1]};
+    delete deco[hero.col+','+hero.row];
+
+    // ── МОНСТРИ (уникають води та будівель) ──
+    monsters = monsterEmojis.map((emoji,i)=>{
+      let c,r,g=0;
+      do{c=Math.floor(rand()*COLS);r=Math.floor(rand()*ROWS);g++;}
+      while(g<200 && (buildingMap[c+','+r] || isWater(terrain[c+','+r])));
+      return {id:'m'+i,emoji,col:c,row:r};
+    });
+  }
+
+  /* ── РОЗМІР ── */
+  function calcSize(){
+    const vw = window.innerWidth;
+    const sideW = vw > 640 ? 280 + 24 : 0;
+    const topH = 56;
+    const availW = vw - sideW - 40;
+    const availH = window.innerHeight - topH - 40;
+    const sizeByW = availW / (1.5 * (COLS - 1) + 2 + 0.1);
+    const sizeByH = availH / (Math.sqrt(3) * (ROWS - 1 + 0.5) + 2 + 0.1);
+    return Math.max(18, Math.min(sizeByW, sizeByH));
+  }
 
   const svg = document.getElementById('board');
   let selectedHex = null;
   const monsterNodes = {};
-  const monsters = monsterEmojis.map((emoji,i)=>{
-    let c,r;
-    do{c=Math.floor(Math.random()*COLS);r=Math.floor(Math.random()*ROWS);}
-    while(buildingMap[c+','+r]);
-    return {id:'m'+i,emoji,col:c,row:r};
-  });
-
-  // Monster list in side panel
-  const ml = document.getElementById('monsterList');
-  monsters.forEach(m=>{ const s=document.createElement('span'); s.textContent=m.emoji; ml.appendChild(s); });
+  let collected = 0;
 
   function buildBoard(){
     svg.innerHTML='';
@@ -307,43 +434,85 @@
     const W = S*1.5*(COLS-1)+S*2+12;
     const H = Math.sqrt(3)*S*(ROWS-1+0.5)+S*2+12;
     svg.setAttribute('viewBox',`0 0 ${W.toFixed(1)} ${H.toFixed(1)}`);
+    selectedHex=null;
 
-    // Tiles
+    // 1) ГЕКСИ-ТАЙЛИ
     for(let col=0;col<COLS;col++){
       for(let row=0;row<ROWS;row++){
-        const {x,y}=hexCenter(col,row,S);
         const key=col+','+row;
+        const {x,y}=hexCenter(col,row,S);
         const b=buildingMap[key];
-        const fill=b?b.color:((col+row)%2===0?GRASS_A:GRASS_B);
-        const hex=el('polygon',{
-          class:'hex'+(b?' building':''),
-          points:hexPoints(x,y,S-1.2),
-          fill,
-          'data-key':key
-        });
+        const t=terrain[key];
+        let fill;
+        if(b) fill=b.color;
+        else if(roadTiles.has(key)) fill='#D9B779';
+        else fill=T[t]||T.meadow1;
+        const cls='hex'+(b?' building':'')+(!b&&isWater(t)?' water':'');
+        const hex=el('polygon',{class:cls,points:hexPoints(x,y,S-1),fill,'data-key':key});
         if(b){
           hex.setAttribute('tabindex','0');
           hex.setAttribute('role','button');
           hex.setAttribute('aria-label',b.name);
           hex.addEventListener('click',()=>selectBuilding(key,hex));
-          hex.addEventListener('keydown',ev=>{
-            if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();selectBuilding(key,hex);}
-          });
+          hex.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();selectBuilding(key,hex);}});
         }
         svg.appendChild(hex);
       }
     }
 
-    // Building icons
+    // 2) ДОРОГИ (поверх тайлів)
+    roadLines.forEach(pts=>{
+      const d=pts.map(([c,r])=>{const p=hexCenter(c,r,S);return p.x.toFixed(1)+','+p.y.toFixed(1);}).join(' ');
+      svg.appendChild(el('polyline',{points:d,fill:'none',stroke:'#B98A4B',
+        'stroke-width':(S*0.30).toFixed(1),'stroke-linecap':'round','stroke-linejoin':'round',opacity:'0.55'}));
+      svg.appendChild(el('polyline',{points:d,fill:'none',stroke:'#F4E2B8',
+        'stroke-width':(S*0.10).toFixed(1),'stroke-linecap':'round','stroke-linejoin':'round',
+        'stroke-dasharray':`${(S*0.04).toFixed(1)} ${(S*0.55).toFixed(1)}`,opacity:'0.85'}));
+    });
+
+    // 3) ДЕКОРАЦІЇ
+    for(const key in deco){
+      if(!deco[key]) continue;
+      const [c,r]=key.split(',').map(Number);
+      const {x,y}=hexCenter(c,r,S);
+      const t=el('text',{class:'deco',x:x.toFixed(1),y:y.toFixed(1),style:`font-size:${Math.round(S*0.52)}px`});
+      t.textContent=deco[key];
+      svg.appendChild(t);
+    }
+
+    // 4) ІКОНКИ БУДІВЕЛЬ
     buildings.forEach(b=>{
       const {x,y}=hexCenter(b.col,b.row,S);
-      const t=el('text',{class:'building-icon',x:x.toFixed(1),y:y.toFixed(1),
-        style:`font-size:${Math.round(S*0.65)}px`});
+      const t=el('text',{class:'building-icon',x:x.toFixed(1),y:y.toFixed(1),style:`font-size:${Math.round(S*0.68)}px`});
       t.textContent=b.icon;
       svg.appendChild(t);
     });
 
-    // Monsters
+    // 5) СКАРБИ
+    resources.forEach(res=>{
+      if(res.collected) return;
+      const {x,y}=hexCenter(res.col,res.row,S);
+      const g=el('g',{class:'resource-group',transform:`translate(${x.toFixed(1)},${y.toFixed(1)})`});
+      g.setAttribute('role','button'); g.setAttribute('aria-label','Скарб: '+res.name);
+      const t=el('text',{class:'resource-icon',style:`font-size:${Math.round(S*0.55)}px`});
+      t.textContent=res.emoji;
+      g.appendChild(t);
+      g.addEventListener('click',()=>collect(res,g));
+      svg.appendChild(g);
+    });
+
+    // 6) ГЕРОЙ
+    if(hero){
+      const {x,y}=hexCenter(hero.col,hero.row,S);
+      const g=el('g',{class:'hero-group',transform:`translate(${x.toFixed(1)},${y.toFixed(1)})`});
+      const t=el('text',{class:'hero-icon',style:`font-size:${Math.round(S*0.6)}px`});
+      t.textContent='🦸';
+      g.appendChild(t);
+      g.addEventListener('click',showHero);
+      svg.appendChild(g);
+    }
+
+    // 7) МОНСТРИ
     monsters.forEach(m=>{
       const {x,y}=hexCenter(m.col,m.row,S);
       const g=el('g',{class:'monster-group',transform:`translate(${x.toFixed(1)},${y.toFixed(1)})`});
@@ -365,29 +534,56 @@
     document.getElementById('infoIcon').textContent=b.icon;
     document.getElementById('infoTitle').textContent=b.name;
     const d=document.getElementById('infoDesc');
-    d.textContent=b.desc;
+    d.textContent=b.desc; d.classList.remove('hint');
+  }
+
+  function showHero(){
+    document.getElementById('infoIcon').textContent='🦸';
+    document.getElementById('infoTitle').textContent='Твій Герой';
+    const d=document.getElementById('infoDesc');
+    d.textContent='Це твій герой! Він мандрує світом, відвідує будівлі знань і збирає скарби. Що більше навчаєшся — то сильнішим він стає.';
     d.classList.remove('hint');
+  }
+
+  function collect(res, node){
+    if(res.collected) return;
+    res.collected=true;
+    node.classList.add('collected');
+    setTimeout(()=>{ if(node.parentNode) node.parentNode.removeChild(node); }, 360);
+    collected++;
+    document.getElementById('treasureCount').textContent=collected;
+    document.getElementById('infoIcon').textContent=res.emoji;
+    document.getElementById('infoTitle').textContent=res.name+' зібрано!';
+    const d=document.getElementById('infoDesc');
+    d.classList.remove('hint');
+    d.textContent = collected>=resources.length
+      ? '🏆 Усі скарби світу зібрано! Ти справжній дослідник.'
+      : res.desc+' (+1 до колекції)';
   }
 
   function moveMonsters(){
     const S=calcSize();
     monsters.forEach(m=>{
-      const opts=neighbors(m.col,m.row).filter(([c,r])=>!buildingMap[c+','+r]);
+      const opts=neighbors(m.col,m.row).filter(([c,r])=>!buildingMap[c+','+r] && !isWater(terrain[c+','+r]));
       if(!opts.length) return;
       const [nc,nr]=opts[Math.floor(Math.random()*opts.length)];
       m.col=nc; m.row=nr;
       const {x,y}=hexCenter(nc,nr,S);
-      monsterNodes[m.id].setAttribute('transform',`translate(${x.toFixed(1)},${y.toFixed(1)})`);
+      if(monsterNodes[m.id]) monsterNodes[m.id].setAttribute('transform',`translate(${x.toFixed(1)},${y.toFixed(1)})`);
     });
   }
 
+  // ── INIT ──
+  buildWorld();
+  // монстри у бічну панель + лічильник скарбів
+  const ml=document.getElementById('monsterList');
+  monsters.forEach(m=>{const s=document.createElement('span');s.textContent=m.emoji;ml.appendChild(s);});
+  document.getElementById('treasureTotal').textContent=resources.length;
+
   buildBoard();
   let resizeTimer;
-  window.addEventListener('resize',()=>{
-    clearTimeout(resizeTimer);
-    resizeTimer=setTimeout(buildBoard, 120);
-  });
-  setInterval(moveMonsters, 1500);
+  window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(buildBoard,120);});
+  setInterval(moveMonsters,1500);
 })();
 </script>
 </body>
