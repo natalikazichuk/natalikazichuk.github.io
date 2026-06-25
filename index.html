@@ -48,7 +48,16 @@
   /* ── ШАПКА ── */
   .topbar{position:relative;display:flex;align-items:center;justify-content:space-between;
     padding:14px clamp(16px,4vw,48px);}
-  .brand{display:flex;align-items:center;gap:14px}
+  .brand{display:flex;align-items:center;gap:14px;text-decoration:none;cursor:pointer}
+  .logo-img{width:clamp(44px,6vw,60px);height:auto;display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,.4))}
+  .hero-logo-link{display:inline-block;text-decoration:none;max-width:100%;transition:transform .18s}
+  .hero-logo-link:hover{transform:translateY(-3px)}
+  .hero-logo{max-width:min(640px,88vw);width:100%;height:auto;display:block;margin:0 auto;
+    filter:drop-shadow(0 8px 24px rgba(0,0,0,.5))}
+  .hero-logo-link.ph::after{content:'Великий логотип — додай logo-big.png';
+    display:block;padding:clamp(40px,9vh,80px) 30px;border:2px dashed rgba(242,199,92,.75);
+    border-radius:20px;color:#FBEFD0;font-family:'Playfair Display',serif;
+    font-size:clamp(1.05rem,3vw,1.6rem);background:rgba(13,28,54,.45)}
   .brand .logo{width:clamp(44px,6vw,60px);height:clamp(44px,6vw,60px);flex-shrink:0;
     filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))}
   .brand-text{line-height:1}
@@ -81,15 +90,18 @@
   /* ── КАРТКИ ── */
   .cards{display:flex;align-items:stretch;justify-content:center;gap:0;
     margin:clamp(28px,5vh,48px) auto 0;max-width:820px;position:relative}
-  .card{flex:1;text-decoration:none;color:#fff;text-align:center;
-    border:3px solid var(--gold);border-radius:22px;padding:30px 26px 26px;
-    box-shadow:0 14px 34px rgba(0,0,0,.38);transition:transform .18s,box-shadow .18s;
+  .card{flex:1;text-decoration:none;color:#fff;text-align:center;position:relative;
+    border:2px solid rgba(242,199,92,.85);border-radius:22px;padding:30px 26px 26px;
+    backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);
+    box-shadow:0 14px 34px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.16);
+    transition:transform .18s,box-shadow .18s,border-color .18s;
     display:flex;flex-direction:column;align-items:center;gap:8px}
   .card:first-child{border-top-right-radius:14px;border-bottom-right-radius:14px}
   .card:last-child{border-top-left-radius:14px;border-bottom-left-radius:14px}
-  .card.blue{background:linear-gradient(165deg,#27518c,#102a54)}
-  .card.green{background:linear-gradient(165deg,#2f8451,#16432a)}
-  .card:hover{transform:translateY(-5px);box-shadow:0 20px 44px rgba(0,0,0,.5)}
+  .card.blue{background:linear-gradient(165deg,rgba(39,81,140,.58),rgba(16,40,82,.62))}
+  .card.green{background:linear-gradient(165deg,rgba(47,132,81,.56),rgba(20,62,40,.62))}
+  .card:hover{transform:translateY(-6px);border-color:#FFE7A0;
+    box-shadow:0 22px 46px rgba(0,0,0,.5), 0 0 0 1px rgba(242,199,92,.5), inset 0 1px 0 rgba(255,255,255,.22)}
   .card .ic{width:clamp(52px,8vw,68px);height:clamp(52px,8vw,68px);
     filter:drop-shadow(0 3px 5px rgba(0,0,0,.4));margin-bottom:4px}
   .card .ctitle{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.8rem)}
@@ -140,8 +152,11 @@
 
   <!-- ── ШАПКА ── -->
   <header class="topbar">
-    <div class="brand">
-      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+    <!-- МАЛИЙ ЛОГОТИП: заміни src="logo-small.png" та href за потреби -->
+    <a class="brand" href="index.html">
+      <img class="logo-img" src="logo-small.png" alt="School Kingdoms"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <svg class="logo" style="display:none" viewBox="0 0 64 64" aria-hidden="true">
         <path d="M32 3 L57 12 L57 31 C57 47 46 57 32 61 C18 57 7 47 7 31 L7 12 Z"
               fill="url(#gold)" stroke="#7a5512" stroke-width="2.5"/>
         <path d="M18 25 Q32 21 32 25 L32 41 Q32 37 18 41 Z" fill="#13315f"/>
@@ -152,34 +167,25 @@
         <div class="brand-name">School <b>Kingdoms</b></div>
         <div class="brand-sub">Моє королівство знань</div>
       </div>
-    </div>
-    <a class="btn-login" href="auth.html?mode=login">
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="5" y="11" width="14" height="9" rx="2" fill="#FFE7A0"/>
-        <path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="#FFE7A0" stroke-width="2" fill="none"/>
+    </a>
+    <a class="btn-login" href="auth.html?mode=register">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 5v14M5 12h14" stroke="#FFE7A0" stroke-width="2.4" stroke-linecap="round" fill="none"/>
       </svg>
-      Увійти
+      Створити сім'ю
     </a>
   </header>
 
   <!-- ── ГЕРОЙ ── -->
   <main class="hero">
-    <h1 class="hero-title">Твої знання.<br>Твоє королівство.</h1>
-
-    <div class="crown-div">
-      <span class="line"></span>
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M8 46 L14 20 L26 36 L32 14 L38 36 L50 20 L56 46 Z" fill="url(#gold)" stroke="#7a5512" stroke-width="2"/>
-        <rect x="8" y="46" width="48" height="7" rx="2" fill="url(#gold)" stroke="#7a5512" stroke-width="2"/>
-      </svg>
-      <span class="line"></span>
-    </div>
-
-    <p class="hero-sub">Навчайся, виконуй завдання, розвивай здібності<br>та будуй своє королівство знань!</p>
-    <p class="hero-tag">Кожен день — нова пригода!</p>
+    <!-- ВЕЛИКИЙ ЛОГОТИП: заміни src="logo-big.png" та href за потреби -->
+    <a class="hero-logo-link" href="index.html">
+      <img class="hero-logo" src="logo-big.png" alt="School Kingdoms — Твої знання. Твоє королівство."
+           onerror="this.style.display='none';this.parentElement.classList.add('ph')">
+    </a>
 
     <div class="cards">
-      <a class="card blue" href="auth.html?mode=register">
+      <a class="card blue" href="auth.html?mode=login">
         <svg class="ic" viewBox="0 0 64 64" aria-hidden="true">
           <path d="M32 6 L54 13 L54 30 C54 43 44 52 32 56 C20 52 10 43 10 30 L10 13 Z"
                 fill="url(#gold)" stroke="#7a5512" stroke-width="2.5"/>
@@ -189,20 +195,20 @@
             <circle cx="44" cy="27" r="4"/><path d="M37 40 a7 7 0 0 1 14 0 Z"/>
           </g>
         </svg>
-        <div class="ctitle">Створити сім'ю</div>
-        <div class="cdesc">Створи родину, додай дітей і почніть навчальну пригоду разом!</div>
+        <div class="ctitle">Вхід — Батьки</div>
+        <div class="cdesc">Керуй завданнями та дивись прогрес дітей.</div>
       </a>
 
       <div class="or">або</div>
 
-      <a class="card green" href="auth.html?mode=login">
+      <a class="card green" href="auth.html?mode=login&next=child">
         <svg class="ic" viewBox="0 0 64 64" aria-hidden="true">
-          <path d="M15 57 L15 25 Q15 8 32 8 Q49 8 49 25 L49 57 Z" fill="url(#wood)" stroke="#4a2f15" stroke-width="3"/>
-          <path d="M21 53 L21 27 Q21 15 32 15 Q43 15 43 27 L43 53 Z" fill="none" stroke="#3a2410" stroke-width="2.4"/>
-          <circle cx="39" cy="35" r="2.6" fill="#FFE7A0" stroke="#7a5512" stroke-width="1"/>
+          <path d="M40 8 L42 14 L48 16 L42 18 L40 24 L38 18 L32 16 L38 14 Z" fill="url(#gold)"/>
+          <circle cx="28" cy="26" r="10" fill="url(#gold)" stroke="#7a5512" stroke-width="2.5"/>
+          <path d="M10 58 a18 18 0 0 1 36 0 Z" fill="url(#gold)" stroke="#7a5512" stroke-width="2.5"/>
         </svg>
-        <div class="ctitle">Вхід</div>
-        <div class="cdesc">Увійди у свій акаунт та продовжуй свою пригоду!</div>
+        <div class="ctitle">Вхід — Дитина</div>
+        <div class="cdesc">Обери свій профіль і вирушай у пригоду!</div>
       </a>
     </div>
 

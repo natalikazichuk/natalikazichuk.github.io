@@ -33,7 +33,7 @@
 import { initializeApp }
   from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import {
-  getAuth, setPersistence, browserLocalPersistence,
+  getAuth, setPersistence, browserLocalPersistence, browserSessionPersistence,
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
   signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
@@ -141,8 +141,13 @@ const SK = {
     return uid;
   },
 
-  async login(email, password) {
+  // remember=true (за замовч.) → сесія зберігається між візитами (local);
+  // remember=false → лише до закриття вкладки (session).
+  async login(email, password, remember) {
     SK.parentDocId = null;
+    try {
+      await setPersistence(auth, remember === false ? browserSessionPersistence : browserLocalPersistence);
+    } catch (e) {}
     const cred = await signInWithEmailAndPassword(auth, email, password);
     return cred.user.uid;
   },
@@ -166,8 +171,10 @@ const SK = {
     const ids = (p && Array.isArray(p.data.children)) ? p.data.children : [];
     const out = {};
     await Promise.all(ids.map(async (id) => {
-      const s = await getDoc(doc(db, 'users', id));
-      if (s.exists()) out[id] = s.data();
+      try {
+        const s = await getDoc(doc(db, 'users', id));
+        if (s.exists()) out[id] = s.data();
+      } catch (e) { /* недоступну/відсутню дитину пропускаємо, не валимо весь список */ }
     }));
     return out;
   },
