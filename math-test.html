@@ -52,10 +52,11 @@
 </style>
 </head>
 <body>
+  <script type="module" src="firebase-config.js"></script>
 
 <!-- BACK BAR -->
 <div class="back-bar">
-  <a class="back-btn" href="child.html?view=child-academy">← До кабінету</a>
+  <a class="back-btn" href="index.html?view=child-academy">← До кабінету</a>
   <span class="back-bar-title">Академія Героїв · Математика</span>
 </div>
 
@@ -107,13 +108,14 @@
       <div style="color:#FFD54F;font-weight:800;font-size:22px">⚡ <span id="res-xp-earned"></span></div>
       <div style="color:#9B8FCC;font-size:13px" id="res-xp-total"></div>
     </div>
+    <div id="res-hero" style="display:none;color:#6EE86E;font-weight:800;font-size:15px;margin-bottom:12px;line-height:1.4"></div>
     <p id="res-fail-note" style="display:none;color:#9B8FCC;font-size:14px;margin-bottom:14px;line-height:1.4">
       XP за цей рівень обнулилися. Пройди весь рівень без помилок!
     </p>
     <button class="btn-main" id="res-btn-main"></button>
     <button class="btn-ghost" id="res-btn-menu" style="display:none">До меню рівнів</button>
     <br>
-    <a href="child.html?view=child-academy" style="display:inline-block;margin-top:10px;color:#9B8FCC;font-size:13px;text-decoration:underline">← До кабінету</a>
+    <a href="index.html?view=child-academy" style="display:inline-block;margin-top:10px;color:#9B8FCC;font-size:13px;text-decoration:underline">← До кабінету</a>
   </div>
 </div>
 
@@ -322,10 +324,37 @@ function submitAnswer(ans,btnEl){
   }
 }
 
+// ── ЗВ'ЯЗОК З ГЕРОЄМ (Firebase) ──
+// Цей файл = тест math_basic. taskId можна передати через ?taskId=... (з завдання батьків).
+const TEST_ID='math_basic';
+const TASK_ID=new URLSearchParams(location.search).get('taskId')||null;
+
+function awardHero(){
+  try{
+    if(!(window.SK && typeof window.SK.completeTest==='function')) return;
+    window.SK.completeTest(TEST_ID, TASK_ID?{taskId:TASK_ID}:{})
+      .then(r=>{
+        if(!r) return;
+        const el=document.getElementById('res-hero');
+        if(!el) return;
+        const bits=[];
+        if(r.stat==='accuracy' && r.statValue!=null)
+          bits.push(`🎯 Точність героя: ${r.statValue}${r.statMax?('/'+r.statMax):''}`);
+        else if(r.stat && r.statValue!=null)
+          bits.push(`✨ ${r.stat}: ${r.statValue}`);
+        if(r.xpReward) bits.push(`⚡ +${r.xpReward} XP герою`);
+        if(r.coinsReward) bits.push(`🪙 +${r.coinsReward}`);
+        if(bits.length){ el.textContent=bits.join(' · '); el.style.display='block'; }
+      })
+      .catch(()=>{});
+  }catch(e){}
+}
+
 // ── RESULT ──
 function showResult(win){
   const lv=LEVELS[activeLevel-1];
   showScreen("result");
+  document.getElementById("res-hero").style.display="none";
   document.getElementById("result-card").style.border=`2px solid ${win?"#FFD700":"#5040A0"}`;
   document.getElementById("res-emoji").textContent=win?"🎉":"💪";
   document.getElementById("res-h2").textContent=win?"Вітаю!":"Ой, помилка!";
@@ -336,7 +365,7 @@ function showResult(win){
   document.getElementById("res-xp-earned").textContent=`+${earnedXp} XP`;
   document.getElementById("res-fail-note").style.display=win?"none":"block";
 
-  if(win){totalXp+=earnedXp;if(activeLevel>=unlocked+1)unlocked=activeLevel;save();}
+  if(win){totalXp+=earnedXp;if(activeLevel>=unlocked+1)unlocked=activeLevel;save();awardHero();}
   document.getElementById("res-xp-total").textContent=`Всього: ${totalXp} XP`;
 
   const btnMain=document.getElementById("res-btn-main");
