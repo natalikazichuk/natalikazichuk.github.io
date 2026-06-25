@@ -191,18 +191,19 @@ const SK = {
     const childId = childRef.id;
 
     const cls = Number(p.class != null ? p.class : p.grade) || 1;
+    const pin = Number(p.pin) || 0;
     await setDoc(childRef, {
       name: p.name || 'Дитина',
       login: p.login || '',
       avatar: p.avatar || 'boy1',
       class: cls,
-      pin: Number(p.pin) || 0,
+      pin: pin,
       role: 'child',
       parentUID: parent.id
     });
     await setDoc(doc(db, 'heroes', childId), defaultHero(childId, cls));
     await updateDoc(doc(db, 'users', parent.id), { children: arrayUnion(childId) });
-    return childId;
+    return { childId, pin };
   },
 
   // Перевірка PIN дитини за іменем або логіном (у межах поточних батьків)

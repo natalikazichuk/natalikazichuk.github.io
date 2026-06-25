@@ -1060,6 +1060,10 @@
         <input class="form-input" type="text" placeholder="Наприклад: Оксана" id="regName">
       </div>
       <div class="form-group">
+        <label>Прізвище сім'ї</label>
+        <input class="form-input" type="text" placeholder="Наприклад: Казичук" id="regFamily">
+      </div>
+      <div class="form-group">
         <label>Роль у сім'ї</label>
         <select class="form-select" id="regRole">
           <option value="mama">👩 Мама</option>
@@ -1200,16 +1204,18 @@ async function doLogin() {
 }
 
 async function doRegister() {
-  const name  = document.getElementById('regName').value.trim();
-  const role  = document.getElementById('regRole').value;
-  const email = document.getElementById('regEmail').value.trim();
-  const pass  = document.getElementById('regPass').value;
-  if (!name)  { showToast('⚠️ Введіть ім\'я'); return; }
-  if (!email) { showToast('⚠️ Введіть email'); return; }
+  const name   = document.getElementById('regName').value.trim();
+  const family = document.getElementById('regFamily').value.trim();
+  const role   = document.getElementById('regRole').value;
+  const email  = document.getElementById('regEmail').value.trim();
+  const pass   = document.getElementById('regPass').value;
+  if (!name)   { showToast('⚠️ Введіть ім\'я'); return; }
+  if (!family) { showToast('⚠️ Введіть прізвище сім\'ї'); return; }
+  if (!email)  { showToast('⚠️ Введіть email'); return; }
   if (!pass || pass.length < 6) { showToast('⚠️ Пароль — мінімум 6 символів'); return; }
   if (!window.SK) { showToast('⚠️ Firebase ще завантажується, спробуйте за мить'); return; }
   try {
-    await SK.registerFamily({ parentName: name, parentRole: role, email, password: pass });
+    await SK.registerFamily({ parentName: name, familyName: family, parentRole: role, email, password: pass });
     showToast('🎉 Сім\'ю створено! Тепер додайте дитину.');
     openAddChild();
   } catch (e) {
@@ -1277,7 +1283,7 @@ async function submitAddChild() {
     const pin = await genUniquePinClient();                 // генеруємо PIN тут — гарантовано є що показати
     const res = await SK.addChild({ name, birthYear: Number(year), grade: Number(grade), pin });
     const childId = (res && res.childId) ? res.childId : res; // підтримка обох форматів повернення
-    const shownPin = (res && res.pin) ? res.pin : pin;
+    const shownPin = (res && res.pin != null) ? res.pin : pin;
     if (childId) SK.setActiveChild(childId);                 // активуємо щойно створену дитину
     document.getElementById('acPinName').textContent = 'Герой для: ' + name;
     document.getElementById('acPinValue').textContent = shownPin;
