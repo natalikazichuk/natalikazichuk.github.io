@@ -2397,11 +2397,31 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     d.xpCur     = totalXP % XP_PER_LEVEL;   // XP у межах поточного рівня
     d.xpMax     = XP_PER_LEVEL;
 
-    // ── Підтягуємо актуальні значення з Firebase (heroes/{childId}), якщо є ──
+    // ── Підтягуємо актуальні значення з Firebase (heroes/{childId} + users/{childId}), якщо є ──
     try{
       if(window.SK && SK.ready && SK.getHero){
         SK.ready.then(function(){
           if(!(SK.currentUser && SK.currentUser() && SK.activeChildId)) return;
+
+          // справжнє ім'я / клас / аватар дитини з users/{childId}
+          if(SK.getChildren){
+            SK.getChildren().then(function(kids){
+              var c = kids && kids[SK.activeChildId];
+              if(!c) return;
+              if(c.name){
+                set('chHeroHello', c.name);
+                set('chName', c.name);
+              }
+              var cls = Number(c.class || c.grade);
+              if(cls){
+                var names = {1:'Перший клас',2:'Другий клас',3:'Третій клас',4:'Четвертий клас'};
+                set('chGrade', names[cls] || (cls + ' клас'));
+              }
+              var emoji = document.getElementById('chAvaEmoji');
+              if(emoji && c.avatar && c.avatar.length <= 4 && !/^[a-z0-9]+$/i.test(c.avatar)) emoji.textContent = c.avatar;
+            }).catch(function(){});
+          }
+
           SK.getHero().then(function(h){
             if(!h) return;
             var fbTotal = (h.totalXP != null) ? h.totalXP : null;

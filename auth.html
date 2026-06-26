@@ -1139,6 +1139,10 @@
           <option value="4">4 клас</option>
         </select>
       </div>
+      <div class="form-group">
+        <label>Аватар героя</label>
+        <div class="avatar-grid" id="acAvatarGrid" style="grid-template-columns:repeat(4,1fr);gap:8px"></div>
+      </div>
       <button class="auth-btn" id="acSubmitBtn" onclick="submitAddChild()">Створити героя →</button>
     </div>
 
@@ -1252,6 +1256,26 @@ function friendlyAuthError(e) {
   return (e && e.message) || 'помилка';
 }
 
+/* ── Аватари для вибору при створенні дитини ── */
+var AC_AVATARS = ['🦁','🦊','🐯','🐱','🐻','🐼','🦄','🐲','🦋','🐬','🐧','🦉','🐰','🐶','🐸','🐵'];
+var acSelectedAvatar = '🦁';
+
+function renderAcAvatars() {
+  var grid = document.getElementById('acAvatarGrid');
+  if (!grid) return;
+  grid.innerHTML = AC_AVATARS.map(function(em, i){
+    return '<div class="avatar-option' + (em === acSelectedAvatar ? ' selected' : '') +
+      '" onclick="selectAcAvatar(this,\'' + em + '\')" style="padding:10px 4px">' +
+      '<span class="emoji" style="margin-bottom:0">' + em + '</span></div>';
+  }).join('');
+}
+
+function selectAcAvatar(el, em) {
+  acSelectedAvatar = em;
+  document.querySelectorAll('#acAvatarGrid .avatar-option').forEach(function(a){ a.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
 /* ── Поп-ап «Додай дитину» ── */
 function openAddChild() {
   document.getElementById('addChildStep1').style.display = 'block';
@@ -1259,6 +1283,8 @@ function openAddChild() {
   document.getElementById('acName').value = '';
   document.getElementById('acYear').value = '';
   document.getElementById('acGrade').value = '1';
+  acSelectedAvatar = '🦁';
+  renderAcAvatars();
   document.getElementById('addChildModal').classList.add('open');
 }
 function closeAddChild() {
@@ -1299,7 +1325,7 @@ async function submitAddChild() {
   btn.disabled = true; btn.textContent = 'Створюємо…';
   try {
     const pin = await genUniquePinClient();                 // генеруємо PIN тут — гарантовано є що показати
-    const res = await SK.addChild({ name, birthYear: Number(year), grade: Number(grade), pin });
+    const res = await SK.addChild({ name, birthYear: Number(year), grade: Number(grade), pin, avatar: acSelectedAvatar });
     const childId = (res && res.childId) ? res.childId : res; // підтримка обох форматів повернення
     const shownPin = (res && res.pin != null) ? res.pin : pin;
     if (childId) SK.setActiveChild(childId);                 // активуємо щойно створену дитину
