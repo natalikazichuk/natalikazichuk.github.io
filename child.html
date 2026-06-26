@@ -1135,6 +1135,12 @@
         .ch-wallet{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
         .ch-w{display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:4px 11px;font-weight:900;font-size:.85rem}
         .ch-w.g{color:var(--gold)}.ch-w.d{color:#8fd9ff}.ch-w.a{color:#ffcf66}
+        /* XP-шкала рівня героя */
+        .ch-xp{flex:1;min-width:160px;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:4px 6px 4px 10px}
+        .ch-xp .lvl{flex:0 0 auto;display:flex;align-items:center;gap:4px;font-weight:900;font-size:.82rem;color:#c9b8ff}
+        .ch-xp .xp-track{flex:1;height:9px;background:rgba(0,0,0,.4);border-radius:6px;overflow:hidden;position:relative}
+        .ch-xp .xp-fill{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,#a78bfa,#7c63ff);transition:width .9s}
+        .ch-xp .xp-num{flex:0 0 auto;font-size:.72rem;font-weight:800;color:#b9a8ef;font-family:Inter,sans-serif;white-space:nowrap}
         .ch-stat{background:var(--navy);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px}
         .ch-stat .h{display:flex;align-items:center;gap:8px;margin-bottom:8px}
         .ch-stat .em{font-size:1.5rem}
@@ -1197,6 +1203,11 @@
                 <span class="ch-w g">🪙 <span id="chCoins">540</span></span>
                 <span class="ch-w d">💎 <span id="chGems">35</span></span>
                 <span class="ch-w a">🏆 <span id="chAch">24</span></span>
+                <div class="ch-xp" title="Досвід до наступного рівня">
+                  <span class="lvl">⚡ <span id="chLevel">1</span> рівень</span>
+                  <span class="xp-track"><span class="xp-fill" id="chXpFill"></span></span>
+                  <span class="xp-num"><span id="chXpCur">0</span>/<span id="chXpMax">100</span> XP</span>
+                </div>
               </div>
             </div>
 
@@ -2362,8 +2373,8 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
       agi:Math.min(10,1+Math.floor(world/15)),
       mp:Math.min(26,Math.min(20,10+Math.floor(logic/12))+Math.min(6,Math.floor(eng/25))),
       acc:Math.min(10,1+Math.floor(math/15)),
-      coins:total, gems:Math.max(35,stars), ach:stars, xpCur:total%3000, xpMax:3000
-    } : {hp:50,agi:1,mp:10,acc:1,coins:540,gems:35,ach:24,xpCur:2450,xpMax:3000};
+      coins:total, gems:Math.max(35,stars), ach:stars, totalXP:total
+    } : {hp:50,agi:1,mp:10,acc:1,coins:0,gems:35,ach:0,totalXP:0};
 
     // ── Health і ХР за новою логікою 1 класу (модуль sk-progress.js) ──
     // Health = 50 + рівні частки з +50 за завдання рідної мови (по мірі виконання).
@@ -2372,15 +2383,44 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
       if(window.SKProgress){
         var sp = SKProgress.snapshot();
         d.hp = sp.health;       // 50..100, розподілено між завданнями української
-        d.xpCur = sp.xp;        // реальний ХР: виконані вправи квестів
+        d.totalXP = sp.xp;      // реальний сумарний ХР: виконані вправи квестів
         set('chHpXp', sp.ukrXP);     // ХР рідної мови — поряд зі здоров'ям
         SKProgress.saveDebounced();  // → SK.saveHeroStats({health, xp})
       }
     }catch(e){}
 
+    // ── Рівень і XP-шкала: рахуємо локально (XP_PER_LEVEL = 100), як у Firebase ──
+    var XP_PER_LEVEL = 100;
+    var totalXP = (d.totalXP != null) ? d.totalXP : (d.xpCur || 0);
+    var level   = Math.floor(totalXP / XP_PER_LEVEL) + 1;
+    d.level     = level;
+    d.xpCur     = totalXP % XP_PER_LEVEL;   // XP у межах поточного рівня
+    d.xpMax     = XP_PER_LEVEL;
+
+    // ── Підтягуємо актуальні значення з Firebase (heroes/{childId}), якщо є ──
+    try{
+      if(window.SK && SK.ready && SK.getHero){
+        SK.ready.then(function(){
+          if(!(SK.currentUser && SK.currentUser() && SK.activeChildId)) return;
+          SK.getHero().then(function(h){
+            if(!h) return;
+            var fbTotal = (h.totalXP != null) ? h.totalXP : null;
+            // беремо більше з локального та збереженого, щоб не «відкотити» прогрес
+            var useTotal = (fbTotal != null) ? Math.max(fbTotal, totalXP) : totalXP;
+            var lvl = Math.floor(useTotal / XP_PER_LEVEL) + 1;
+            set('chLevel', lvl);
+            set('chXpCur', useTotal % XP_PER_LEVEL);
+            set('chXpMax', XP_PER_LEVEL);
+            setw('chXpFill', useTotal % XP_PER_LEVEL, XP_PER_LEVEL);
+            if(h.coins != null) set('chCoins', h.coins);
+          }).catch(function(){});
+        });
+      }
+    }catch(e){}
+
     set('chHeroHello',prof.name); set('chName',prof.name);
     set('chTitle','🎖️ '+prof.title); set('chGrade',prof.grade);
-    set('chXpCur',d.xpCur); set('chXpMax',d.xpMax); setw('chXpFill',d.xpCur,d.xpMax);
+    set('chLevel',d.level); set('chXpCur',d.xpCur); set('chXpMax',d.xpMax); setw('chXpFill',d.xpCur,d.xpMax);
     set('chCoins',d.coins); set('chGems',d.gems); set('chAch',d.ach);
     set('chHp',d.hp); setw('chHpBar',d.hp,100);
     set('chAgi',d.agi); setw('chAgiBar',d.agi,10);
