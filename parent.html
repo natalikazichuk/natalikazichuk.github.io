@@ -1065,7 +1065,7 @@
       <div class="sidebar-bottom">
         <div class="family-badge">
           <div class="family-name">🏠 Родина Казичук</div>
-          <div class="family-id">SPARK-8472</div>
+          <div class="family-id" id="sidebarFamilyId">…</div>
         </div>
         <div class="role-switcher" style="margin: 0 8px 8px">
           <button class="role-btn active" id="roleParentBtn" onclick="showPage('dashboard',null)">👩 Мама</button>
@@ -1085,7 +1085,7 @@
         <div class="page-header">
           <div>
             <div class="page-title">🏠 Кабінет батьків</div>
-            <div class="page-sub">Субота, 14 червня 2025 · Родина Казичук</div>
+            <div class="page-sub" id="dashboardPageSub">Завантаження…</div>
           </div>
           <button class="btn-primary" onclick="openTaskModal()">+ Нове завдання</button>
         </div>
@@ -1152,31 +1152,7 @@
 
             <div class="card">
               <div class="card-title">Рейтинг тижня <span class="card-title-action" onclick="showPage('rating', null)">Повний рейтинг →</span></div>
-              <div class="rating-item" onclick="openChildProfile('sasho')" style="cursor:pointer">
-                <div class="rating-rank rank-1">1</div>
-                <span style="font-size:1.5rem;margin:0 4px">🦁</span>
-                <div class="rating-info">
-                  <div class="rating-name">Сашко</div>
-                  <div class="rating-score">⭐ 340 балів · 🪙 120 монет</div>
-                </div>
-                <div style="color:var(--gold);font-weight:800;font-size:0.9rem">👑</div>
-              </div>
-              <div class="rating-item" onclick="openChildProfile('olechka')" style="cursor:pointer">
-                <div class="rating-rank rank-2">2</div>
-                <span style="font-size:1.5rem;margin:0 4px">🦋</span>
-                <div class="rating-info">
-                  <div class="rating-name">Олечка</div>
-                  <div class="rating-score">⭐ 290 балів · 🪙 85 монет</div>
-                </div>
-              </div>
-              <div class="rating-item" onclick="openChildProfile('volodya')" style="cursor:pointer">
-                <div class="rating-rank rank-3">3</div>
-                <span style="font-size:1.5rem;margin:0 4px">🐬</span>
-                <div class="rating-info">
-                  <div class="rating-name">Володя</div>
-                  <div class="rating-score">⭐ 180 балів · 🪙 35 монет</div>
-                </div>
-              </div>
+              <div id="dashboardRatingList"><div style="color:var(--text-light);font-size:0.85rem;padding:8px 0">Завантаження…</div></div>
             </div>
           </div>
 
@@ -1379,7 +1355,7 @@
         <div class="page-header">
           <div>
             <div class="page-title">🏆 Рейтинг</div>
-            <div class="page-sub">Родина Казичук · Червень 2025</div>
+            <div class="page-sub" id="ratingPageSub">Завантаження…</div>
           </div>
         </div>
         <div class="content-grid">
@@ -1458,9 +1434,9 @@
           <div class="card">
             <div class="card-title">Family ID</div>
             <div style="text-align:center;padding:20px 0">
-              <div style="font-size:2.5rem;font-weight:900;letter-spacing:0.15em;color:var(--coral)">SPARK-8472</div>
+              <div id="familyIdDisplay" style="font-size:2.5rem;font-weight:900;letter-spacing:0.15em;color:var(--coral)">…</div>
               <div style="font-size:0.8rem;color:var(--text-light);font-family:Inter,sans-serif;margin-top:8px">Поділіться цим кодом для приєднання до сім'ї</div>
-              <button class="btn-secondary" style="margin-top:16px" onclick="showToast('📋 ID скопійовано!')">Скопіювати ID</button>
+              <button class="btn-secondary" style="margin-top:16px" onclick="copyFamilyId()">Скопіювати ID</button>
             </div>
           </div>
         </div>
@@ -1842,24 +1818,91 @@ async function refreshFamilyUI() {
     const fam = await SK.getFamily();           // { parent, children }
     const parent = fam.parent || {};
     const children = fam.children || {};
+
+    // Ім'я родини
     const famName = parent.name ? ('Родина · ' + parent.name) : (u.email || 'Моя сім\'я');
+    const shortFamName = parent.name || 'Моя сім\'я';
+
+    // Sidebar: назва родини
     const badge = document.querySelector('.family-badge .family-name');
     if (badge) badge.textContent = '🏠 ' + famName;
+
+    // Family ID — перші 8 символів UID великими літерами
+    const rawFamId = u.uid ? u.uid.slice(0, 8).toUpperCase() : '--------';
+    const sidebarId = document.getElementById('sidebarFamilyId');
+    if (sidebarId) sidebarId.textContent = rawFamId;
+    const familyIdDisplay = document.getElementById('familyIdDisplay');
+    if (familyIdDisplay) familyIdDisplay.textContent = rawFamId;
+    // зберігаємо для кнопки копіювання
+    window._currentFamilyId = rawFamId;
+
+    // Dashboard subtitle: дата + назва родини
+    const dashSub = document.getElementById('dashboardPageSub');
+    if (dashSub) {
+      const now = new Date();
+      const days = ['Неділя','Понеділок','Вівторок','Середа','Четвер','П\'ятниця','Субота'];
+      const months = ['Січня','Лютого','Березня','Квітня','Травня','Червня','Липня','Серпня','Вересня','Жовтня','Листопада','Грудня'];
+      dashSub.textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear() + ' · ' + shortFamName;
+    }
+
+    // Rating subtitle
+    const ratingSub = document.getElementById('ratingPageSub');
+    if (ratingSub) {
+      const now = new Date();
+      const months = ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+      ratingSub.textContent = shortFamName + ' · ' + months[now.getMonth()] + ' ' + now.getFullYear();
+    }
+
+    // Family page subtitle
     const sub = document.getElementById('familyPageSub');
-    if (sub) sub.textContent = (u.email || '') + ' · ' + (parent.name ? parent.name : 'Моя сім\'я');
-    renderFamilyMembers(parent, children, u);
-    // кнопка ролі дитини — ім'я першої дитини
+    if (sub) sub.textContent = (u.email || '') + ' · ' + shortFamName;
+
+    // Кнопка ролі дитини — ім'я першої дитини
     const ids = Object.keys(children);
     const childBtn = document.getElementById('roleChildBtn');
     if (childBtn && ids.length) {
       const c = children[ids[0]];
       childBtn.textContent = (c.avatar || '🙂') + ' ' + (c.name || 'Дитина');
     }
+
+    renderFamilyMembers(parent, children, u);
+    renderDashboardRating(children);
   } catch (e) { console.warn('[family] refresh:', e); }
 }
 
-function familyMemberRow(icon, name, sub, right) {
-  return `<div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px">
+function renderDashboardRating(children) {
+  const box = document.getElementById('dashboardRatingList');
+  if (!box) return;
+  const ranks = ['rank-1','rank-2','rank-3'];
+  const crowns = ['👑','',''];
+  const sorted = Object.entries(children)
+    .map(([id, c]) => ({ id, c }))
+    .sort((a, b) => ((b.c.xp || b.c.currentXP || 0) - (a.c.xp || a.c.currentXP || 0)));
+  if (!sorted.length) { box.innerHTML = '<div style="color:var(--text-light);font-size:0.85rem;padding:8px 0">Немає дітей</div>'; return; }
+  box.innerHTML = sorted.slice(0, 3).map(({ id, c }, i) => `
+    <div class="rating-item" onclick="openChildProfile('${id}')" style="cursor:pointer">
+      <div class="rating-rank ${ranks[i] || ''}">${i + 1}</div>
+      <span style="font-size:1.5rem;margin:0 4px">${escapeHtml(c.avatar || '🙂')}</span>
+      <div class="rating-info">
+        <div class="rating-name">${escapeHtml(c.name || 'Дитина')}</div>
+        <div class="rating-score">⭐ ${c.xp || c.currentXP || 0} балів · 🪙 ${c.coins || 0} монет</div>
+      </div>
+      ${crowns[i] ? `<div style="color:var(--gold);font-weight:800;font-size:0.9rem">${crowns[i]}</div>` : ''}
+    </div>`).join('');
+}
+
+function copyFamilyId() {
+  const id = window._currentFamilyId || '';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(id).then(function(){ showToast('📋 ID скопійовано!'); }).catch(function(){ showToast('ID: ' + id); });
+  } else {
+    showToast('ID: ' + id);
+  }
+}
+
+function familyMemberRow(icon, name, sub, right, childId) {
+  const clickAttr = childId ? `onclick="openChildProfile('${childId}')" style="cursor:pointer"` : 'style=""';
+  return `<div ${clickAttr} style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px${childId ? ';cursor:pointer' : ''}" onmouseover="${childId ? "this.style.background='rgba(255,255,255,0.07)'" : ''}" onmouseout="${childId ? "this.style.background='rgba(255,255,255,0.03)'" : ''}">
     <span style="font-size:2rem">${escapeHtml(icon)}</span>
     <div style="flex:1">
       <div style="font-weight:800">${escapeHtml(name)}</div>
@@ -1876,12 +1919,12 @@ function renderFamilyMembers(parent, children, user) {
   const pIcon = parent.role === 'tato' ? '👨' : '👩';
   const pRole = parent.role === 'tato' ? 'Тато' : 'Мама';
   const pName = parent.name || (user && user.email) || 'Батьки';
-  html += familyMemberRow(pIcon, pName, pRole + ' · Повний доступ', '<span class="task-status status-done">Активна</span>');
+  html += familyMemberRow(pIcon, pName, pRole + ' · Повний доступ', '<span class="task-status status-done">Активна</span>', null);
   Object.keys(children).forEach(id => {
     const c = children[id] || {};
     const sub = (c.age ? c.age + ' років · ' : '') + 'PIN: ' + (c.pin || '----');
     const coins = (c.coins != null ? c.coins : 0);
-    html += familyMemberRow(c.avatar || '🙂', c.name || 'Дитина', sub, '<span class="task-badge">' + coins + ' 🪙</span>');
+    html += familyMemberRow(c.avatar || '🙂', c.name || 'Дитина', sub, '<span class="task-badge">' + coins + ' 🪙</span>', id);
   });
   if (!Object.keys(children).length) {
     html += '<div class="auth-sub" style="text-align:center;padding:8px">Ще немає дітей. Натисніть «+ Дитина».</div>';
@@ -2334,36 +2377,6 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
   });
 });
 </script><script>
-const CHILDREN_DATA = {
-  sasho: {
-    name: 'Сашко', avatar: '🦁', age: 7, grade: 1,
-    xp: 340, coins: 120, tasksCompleted: 12,
-    achievements: ['👑 Чемпіон тижня','🧮 Математик','🔥 5 днів поспіль','⭐ Перший тест'],
-    tasks: [
-      {name:'🧮 Тест: Математика 1 клас', coins:25, status:'▶️ Виконати'},
-      {name:'📚 Читання 20 хв', coins:10, status:'⏳ В процесі'},
-      {name:'✏️ Прописи', coins:15, status:'✅ Здано'},
-    ]
-  },
-  olechka: {
-    name: 'Олечка', avatar: '🦋', age: 9, grade: 3,
-    xp: 290, coins: 85, tasksCompleted: 9,
-    achievements: ['🌺 Відмінниця','📚 Книголюб','🎨 Творча'],
-    tasks: [
-      {name:'📖 Читання розділу', coins:15, status:'⏳ В процесі'},
-      {name:'🌍 Природознавство', coins:20, status:'▶️ Виконати'},
-    ]
-  },
-  volodya: {
-    name: 'Володя', avatar: '🐬', age: 6, grade: 1,
-    xp: 180, coins: 35, tasksCompleted: 5,
-    achievements: ['🚀 Новачок','💪 Старається'],
-    tasks: [
-      {name:'🧮 Тест: Математика 1 клас', coins:25, status:'▶️ Виконати'},
-    ]
-  }
-};
-
 // Grade suggestion based on age
 function suggestedGrade(age) {
   if (age <= 7) return 1;
@@ -2374,49 +2387,46 @@ function suggestedGrade(age) {
 }
 
 function openChildProfile(childId) {
-  const c = CHILDREN_DATA[childId];
-  if (!c) return;
-  const suggested = suggestedGrade(c.age);
-  const gradeHint = suggested !== c.grade ? ` (підказка: ${suggested} кл. за віком)` : '';
+  // використовуємо реальні Firebase дані з familyChildren
+  const c = familyChildren[childId];
+  if (!c) { showToast('⚠️ Дані дитини не знайдено'); return; }
 
-  const tasksHtml = c.tasks.map(t => `
-    <div class="cp-task-item">
-      <div class="cp-task-name">${t.name}</div>
-      <div class="cp-task-coins">+${t.coins} 🪙</div>
-    </div>`).join('');
+  const grade = Number(c.class || c.grade || 1);
+  const age = c.age ? Number(c.age) : null;
+  const suggested = age ? suggestedGrade(age) : grade;
+  const gradeHint = (age && suggested !== grade) ? ` (підказка: ${suggested} кл. за віком)` : '';
 
-  const achHtml = c.achievements.map(a => `<span class="cp-ach">${a}</span>`).join('');
+  const achievements = Array.isArray(c.achievements) ? c.achievements : [];
+  const achHtml = achievements.length
+    ? achievements.map(a => `<span class="cp-ach">${escapeHtml(String(a))}</span>`).join('')
+    : '<span style="color:#9B8FCC;font-size:0.85rem">Поки немає досягнень</span>';
 
   document.getElementById('childProfileContent').innerHTML = `
     <button class="cp-modal-close" onclick="closeChildProfile()">✕</button>
     <div class="cp-modal-header">
-      <div class="cp-modal-avatar">${c.avatar}</div>
+      <div class="cp-modal-avatar">${escapeHtml(c.avatar || '🙂')}</div>
       <div>
-        <div class="cp-modal-name">${c.name}</div>
-        <div class="cp-modal-meta">${c.age} років</div>
+        <div class="cp-modal-name">${escapeHtml(c.name || 'Дитина')}</div>
+        <div class="cp-modal-meta">${age ? age + ' років' : ''}</div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
           <select class="cp-grade-select" onchange="changeChildGrade('${childId}',this.value)" title="Клас дитини${gradeHint}">
-            ${[1,2,3,4].map(g=>`<option value="${g}" ${c.grade===g?'selected':''}>${g} клас</option>`).join('')}
+            ${[1,2,3,4].map(g=>`<option value="${g}" ${grade===g?'selected':''}>${g} клас</option>`).join('')}
           </select>
-          ${suggested !== c.grade ? `<span style="font-size:0.72rem;color:#FFB300">💡 ${suggested} кл. за віком</span>` : ''}
+          ${(age && suggested !== grade) ? `<span style="font-size:0.72rem;color:#FFB300">💡 ${suggested} кл. за віком</span>` : ''}
         </div>
       </div>
     </div>
     <div class="cp-section">
       <div class="cp-section-title">Характеристики</div>
       <div class="cp-stats-row">
-        <div class="cp-stat-box"><div class="cp-stat-val">⭐ ${c.xp}</div><div class="cp-stat-lbl">балів XP</div></div>
-        <div class="cp-stat-box"><div class="cp-stat-val">🪙 ${c.coins}</div><div class="cp-stat-lbl">монет</div></div>
-        <div class="cp-stat-box"><div class="cp-stat-val">📚 ${c.tasksCompleted}</div><div class="cp-stat-lbl">завдань</div></div>
+        <div class="cp-stat-box"><div class="cp-stat-val">⭐ ${c.xp || c.currentXP || 0}</div><div class="cp-stat-lbl">балів XP</div></div>
+        <div class="cp-stat-box"><div class="cp-stat-val">🪙 ${c.coins || 0}</div><div class="cp-stat-lbl">монет</div></div>
+        <div class="cp-stat-box"><div class="cp-stat-val">📚 ${c.testsCompleted || 0}</div><div class="cp-stat-lbl">завдань</div></div>
       </div>
     </div>
-    <div class="cp-section">
+    <div class="cp-section" style="border-bottom:none">
       <div class="cp-section-title">Досягнення</div>
       <div class="cp-achievements">${achHtml}</div>
-    </div>
-    <div class="cp-section" style="border-bottom:none">
-      <div class="cp-section-title">Активні завдання</div>
-      ${tasksHtml || '<div style="color:#9B8FCC;font-size:0.85rem">Завдань немає</div>'}
     </div>`;
 
   document.getElementById('childProfileModal').classList.add('open');
@@ -2426,9 +2436,23 @@ function closeChildProfile() {
   document.getElementById('childProfileModal').classList.remove('open');
 }
 
-function changeChildGrade(childId, grade) {
-  CHILDREN_DATA[childId].grade = parseInt(grade);
-  showToast(`✅ Клас ${CHILDREN_DATA[childId].name} змінено на ${grade} клас`);
+async function changeChildGrade(childId, grade) {
+  const c = familyChildren[childId];
+  if (!c) return;
+  // оновлюємо локально
+  familyChildren[childId] = Object.assign({}, c, { class: parseInt(grade) });
+  showToast(`✅ Клас ${escapeHtml(c.name || 'дитини')} змінено на ${grade} клас`);
+  // зберігаємо у Firebase
+  try {
+    if (window.SK && SK.ready) {
+      await SK.ready;
+      const { getFirestore, doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js');
+      // використовуємо SK напряму якщо є метод updateChild
+      if (typeof SK.updateChild === 'function') {
+        await SK.updateChild(childId, { class: parseInt(grade) });
+      }
+    }
+  } catch(e) { console.warn('[changeGrade]', e); }
 }
 </script>
 <script>
