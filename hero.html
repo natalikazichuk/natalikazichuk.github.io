@@ -322,7 +322,7 @@ a{color:inherit;text-decoration:none}
       <div class="info-row"><span class="ic">🎖️</span><span class="k">Титул:</span><span class="v" id="heroTitle">Лицар Знань</span></div>
       <div class="info-row"><span class="ic">🆙</span><span class="k">Рівень:</span><span class="v" id="heroLevel">1</span></div>
       <div class="xp-wrap">
-        <div class="xp-line"><span class="ic">⭐</span><span class="k">XP:</span><span class="v"><span id="xpCur">2450</span> / <span id="xpMax">3000</span></span></div>
+        <div class="xp-line"><span class="ic">⭐</span><span class="k">XP:</span><span class="v"><span id="xpCur">50</span> / <span id="xpMax">100</span></span></div>
         <div class="xp-bar"><span id="xpFill" style="width:81%"></span></div>
       </div>
       <div class="info-row"><span class="ic">🪙</span><span class="k">Монети:</span><span class="v" id="coins2">540</span></div>
@@ -516,16 +516,16 @@ function saveProfile(){ try{ localStorage.setItem('sk_hero_profile',JSON.stringi
 /* підсумкові числа: реальні, якщо є дані; інакше демо як на концепті */
 const data = hasData ? {
   hp, agi, mp, acc,
-  level: Math.floor(totalXP/3000)+1,
+  level: Math.floor(totalXP/100)+1,
   coins: totalXP,
   gems: Math.max(profile.gems||0, Math.floor(stars)),
   achievements: stars,
-  xpCur: totalXP % 3000, xpMax: 3000,
+  xpCur: totalXP % 100, xpMax: 100,
   medals: stars, tests: passed, langs: langs||1,
   books: profile.books, sport: profile.sport
 } : {
   hp:50, agi:1, mp:10, acc:1, level:1, coins:540, gems:35, achievements:24,
-  xpCur:2450, xpMax:3000, medals:24, tests:320, langs:2, books:18, sport:15
+  xpCur:50, xpMax:100, medals:24, tests:320, langs:2, books:18, sport:15
 };
 
 // заблоковані стати 1 класу — стартові значення з шаблону героя
@@ -604,7 +604,7 @@ render();
       if(h.mana!=null){ $('mpCur').textContent=h.mana; $('mpBar').style.width=pct(h.mana,20)+'%'; }
       if(h.accuracy!=null){ $('accCur').textContent=h.accuracy; $('accBar').style.width=pct(h.accuracy,10)+'%'; var ma=$('m20Acc'); if(ma) ma.textContent=h.accuracy; }
       if(h.level!=null && $('heroLevel')) $('heroLevel').textContent=h.level;
-      if(h.xp!=null){ $('xpCur').textContent=h.xp%3000; $('xpFill').style.width=pct(h.xp%3000,3000)+'%'; }
+      if(h.xp!=null){ $("xpCur").textContent=h.xp%100; $("xpFill").style.width=pct(h.xp%100,100)+"%"; }
       if(h.coins!=null){ $('w-coins').textContent=h.coins; $('coins2').textContent=h.coins; }
       if(h.name){ $('heroName').textContent=h.name; $('avatarMini').textContent=(h.name||'🧒').trim().charAt(0).toUpperCase()||'🧒'; }
       if(h.title) $('heroTitle').textContent=h.title;

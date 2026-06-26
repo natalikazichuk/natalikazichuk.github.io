@@ -1748,8 +1748,7 @@ async function doChildLogin() {
   if (!/^\d{4}$/.test(pin)) { showToast('⚠️ Введіть 4-значний PIN'); return; }
   const c = familyChildren[selectedChildId];
   if (!c || String(c.pin) !== pin) { showToast('❌ Невірний PIN'); clearChildPin(); return; }
-  SK.setActiveChild(selectedChildId);
-  SK.activeHeroId = c.heroID || null;
+  await switchActiveChild(selectedChildId);
   window.location.href = 'child.html';
 }
 
@@ -1829,16 +1828,32 @@ function renderFamilyMembers(parent, children, user) {
   box.innerHTML = html;
 }
 
-// якщо активної дитини ще немає — обираємо першу (для збереження прогресу)
+// Перемикання дитини з ізоляцією прогресу:
+// зберігаємо попередню → чистимо localStorage → вантажимо прогрес нової.
+async function switchActiveChild(newId) {
+  if (!window.SK || !newId) return;
+  try {
+    const prev = SK.activeChildId;
+    if (prev && prev !== newId) { try { await SK.pushLocal(prev); } catch (e) {} }
+    SK.setActiveChild(newId);
+    SK.activeHeroId = null;
+    try { await SK.pullLocal(newId); } catch (e) {}   // чистить чуже й тягне свій прогрес
+  } catch (e) { console.warn('[role] switchActiveChild:', e); }
+}
+
+// якщо активної дитини ще немає — обираємо першу; у будь-якому разі
+// підтягуємо прогрес саме активної дитини (інакше всі бачать спільний localStorage).
 async function ensureActiveChild() {
   try {
     if (!window.SK) return;
     await SK.ready;
     if (!(SK.currentUser && SK.currentUser())) return;
-    if (SK.activeChildId) return;
-    const children = await SK.getChildren();
-    const ids = Object.keys(children || {});
-    if (ids.length) SK.setActiveChild(ids[0]);
+    if (!SK.activeChildId) {
+      const children = await SK.getChildren();
+      const ids = Object.keys(children || {});
+      if (ids.length) SK.setActiveChild(ids[0]);
+    }
+    if (SK.activeChildId) { try { await SK.pullLocal(SK.activeChildId); } catch (e) {} }
   } catch (e) { console.warn('[role] ensureActiveChild:', e); }
 }
 
@@ -2397,34 +2412,14 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     d.xpCur     = totalXP % XP_PER_LEVEL;   // XP у межах поточного рівня
     d.xpMax     = XP_PER_LEVEL;
 
-    // ── Підтягуємо актуальні значення з Firebase (heroes/{childId} + users/{childId}), якщо є ──
+    // ── Підтягуємо актуальні значення з Firebase (heroes/{childId}), якщо є ──
     try{
       if(window.SK && SK.ready && SK.getHero){
         SK.ready.then(function(){
           if(!(SK.currentUser && SK.currentUser() && SK.activeChildId)) return;
-
-          // справжнє ім'я / клас / аватар дитини з users/{childId}
-          if(SK.getChildren){
-            SK.getChildren().then(function(kids){
-              var c = kids && kids[SK.activeChildId];
-              if(!c) return;
-              if(c.name){
-                set('chHeroHello', c.name);
-                set('chName', c.name);
-              }
-              var cls = Number(c.class || c.grade);
-              if(cls){
-                var names = {1:'Перший клас',2:'Другий клас',3:'Третій клас',4:'Четвертий клас'};
-                set('chGrade', names[cls] || (cls + ' клас'));
-              }
-              var emoji = document.getElementById('chAvaEmoji');
-              if(emoji && c.avatar && c.avatar.length <= 4 && !/^[a-z0-9]+$/i.test(c.avatar)) emoji.textContent = c.avatar;
-            }).catch(function(){});
-          }
-
           SK.getHero().then(function(h){
             if(!h) return;
-            var fbTotal = (h.totalXP != null) ? h.totalXP : null;
+            var fbTotal = (h.xp != null) ? h.xp : ((h.totalXP != null) ? h.totalXP : null);
             // беремо більше з локального та збереженого, щоб не «відкотити» прогрес
             var useTotal = (fbTotal != null) ? Math.max(fbTotal, totalXP) : totalXP;
             var lvl = Math.floor(useTotal / XP_PER_LEVEL) + 1;
@@ -2433,6 +2428,22 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
             set('chXpMax', XP_PER_LEVEL);
             setw('chXpFill', useTotal % XP_PER_LEVEL, XP_PER_LEVEL);
             if(h.coins != null) set('chCoins', h.coins);
+            if(h.title) set('chTitle', '🎖️ ' + h.title);   // титул героя з Firebase
+          }).catch(function(){});
+
+          // ── Профіль активної дитини: ім'я, аватар, клас (а не хардкод «Сашко») ──
+          if(SK.getActiveChild) SK.getActiveChild().then(function(c){
+            if(!c) return;
+            var GRADES = {1:'Перший клас',2:'Другий клас',3:'Третій клас',4:'Четвертий клас'};
+            if(c.name){ set('chHeroHello', c.name); set('chName', c.name); }
+            if(c.grade != null) set('chGrade', GRADES[c.grade] || (c.grade + ' клас'));
+            // аватар-емодзі, якщо немає завантаженого фото
+            if(c.avatar){
+              var em=document.getElementById('chAvaEmoji');
+              var img=document.getElementById('chAvaImg');
+              var hasPhoto=false; try{ hasPhoto=!!localStorage.getItem('sk_hero_avatar'); }catch(e){}
+              if(em && !hasPhoto){ em.textContent=c.avatar; em.style.display=''; if(img) img.style.display='none'; }
+            }
           }).catch(function(){});
         });
       }
@@ -2504,7 +2515,9 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
   if(typeof showPage==='function') showPage(view==='child-academy'?'child-academy':'child-dashboard', null);
   if(window.SK && SK.ready){ SK.ready.then(function(){
     if(!(SK.currentUser && SK.currentUser())){ location.href='auth.html?mode=login&next=child'; return; }
-    if(typeof ensureActiveChild==='function') ensureActiveChild();
+    if(typeof ensureActiveChild==='function'){
+      ensureActiveChild().then(function(){ if(typeof renderChildHero==='function') renderChildHero(); });
+    }
   }); }
 })();
 </script>
