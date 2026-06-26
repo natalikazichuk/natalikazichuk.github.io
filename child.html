@@ -2443,7 +2443,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
   var view=new URLSearchParams(location.search).get('view');
   if(typeof showPage==='function') showPage(view==='child-academy'?'child-academy':'child-dashboard', null);
   if(window.SK && SK.ready){ SK.ready.then(function(){
-    if(!(SK.currentUser && SK.currentUser())){ location.href='auth.html?mode=child'; return; }
+    if(!(SK.currentUser && SK.currentUser())){ location.href='auth.html?mode=login&next=child'; return; }
     if(typeof ensureActiveChild==='function') ensureActiveChild();
   }); }
 })();
