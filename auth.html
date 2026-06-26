@@ -1059,10 +1059,6 @@
         <label>Пароль</label>
         <input class="form-input" type="password" placeholder="••••••••" id="loginPass">
       </div>
-      <label style="display:flex;align-items:center;gap:8px;margin:4px 0 16px;font-size:.9rem;color:var(--text-mid);cursor:pointer;font-family:'Inter',sans-serif">
-        <input type="checkbox" id="rememberMe" checked style="width:18px;height:18px;accent-color:var(--coral);cursor:pointer">
-        Залишатись в системі
-      </label>
       <button class="auth-btn" onclick="doLogin()">Увійти</button>
       <div class="auth-switch">Немає акаунта? <a onclick="switchForm('register')">Зареєструватись</a></div>
       <div class="auth-switch" style="margin-top:8px">Вхід для дитини: <a onclick="switchForm('child')">Дитячий кабінет</a></div>
@@ -1208,12 +1204,10 @@ function switchForm(form) {
 async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass  = document.getElementById('loginPass').value;
-  const rememberEl = document.getElementById('rememberMe');
-  const remember = rememberEl ? rememberEl.checked : true;
   if (!email || !pass) { showToast('⚠️ Введіть email і пароль'); return; }
   if (!window.SK) { showToast('⚠️ Firebase ще завантажується, спробуйте за мить'); return; }
   try {
-    await SK.login(email, pass, remember);
+    await SK.login(email, pass, true);
     if (window.__authNext === 'child') {           // дитина: після входу батьків → вибір профілю + PIN
       switchForm('child');
       renderChildAvatars();
