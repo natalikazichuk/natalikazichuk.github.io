@@ -133,6 +133,24 @@
     .or{margin:-16px auto}
     .video{flex-direction:row}
   }
+
+  /* ── БІЧНА ВКЛАДКА: перехід на сторінку героя ── */
+  .side-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:30;
+    text-decoration:none;color:#fff;
+    background:linear-gradient(180deg,#27518c,#16356a);
+    border:2px solid var(--gold);border-right:none;border-radius:16px 0 0 16px;
+    padding:16px 9px;box-shadow:-4px 6px 18px rgba(0,0,0,.42);
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    font-weight:800;font-size:.92rem;letter-spacing:.02em;
+    transition:transform .15s,box-shadow .15s}
+  .side-tab:hover{transform:translateY(-50%) translateX(-3px);
+    box-shadow:-9px 8px 24px rgba(0,0,0,.55);border-color:#FFE7A0}
+  .side-tab .st-ic{font-size:1.5rem;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+  .side-tab .st-label{writing-mode:vertical-rl;text-orientation:mixed}
+  @media(max-width:680px){
+    .side-tab{padding:12px 7px;font-size:.82rem}
+    .side-tab .st-ic{font-size:1.25rem}
+  }
 </style>
 </head>
 <body>
@@ -140,6 +158,12 @@
   <div class="stars"></div>
   <div class="moon"></div>
   <div class="bg-img"></div>
+
+  <!-- ── БІЧНА ВКЛАДКА: перехід на сторінку героя ── -->
+  <a class="side-tab" href="hero.html" aria-label="Сторінка героя">
+    <span class="st-ic" aria-hidden="true">🛡️</span>
+    <span class="st-label">Сторінка героя</span>
+  </a>
 
   <svg width="0" height="0" style="position:absolute"><defs>
     <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
