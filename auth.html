@@ -1415,7 +1415,7 @@ async function doChildLogin() {
   if (!c || String(c.pin) !== pin) { showToast('❌ Невірний PIN'); clearChildPin(); return; }
   SK.setActiveChild(selectedChildId);
   SK.activeHeroId = selectedChildId;   // герой має той самий ID, що й дитина
-  window.location.href = 'child.html';
+  window.location.href = 'hero.html';
 }
 
 function showApp() {

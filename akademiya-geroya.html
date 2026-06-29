@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎓 Академія Героїв — SchoolKingdom</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F1B2D; --navy-mid:#1A2E47;
+    --chrome:#16294f; --chrome2:#1e3a6b; --gold:#FFD166; --gold2:#e0a42a;
+    --white:#fff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Nunito',sans-serif;color:var(--white);
+    background:radial-gradient(120% 90% at 50% 0%,#1d3358 0%,#14233c 45%,var(--navy) 100%);
+    min-height:100vh;-webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  .disp{font-family:'Fredoka One',cursive;font-weight:400}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
+
+  /* ───── TOP BAR ───── */
+  .topbar{
+    background:linear-gradient(180deg,var(--chrome2),var(--chrome));
+    border-bottom:3px solid var(--gold2);
+    display:flex;align-items:center;gap:14px;padding:9px 18px;color:#fff;
+    position:sticky;top:0;z-index:30;box-shadow:0 4px 18px rgba(0,0,0,.25);
+  }
+  .topbar .logo{display:flex;align-items:center;gap:10px}
+  .topbar .crest{font-size:1.7rem;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+  .topbar .name b{font-size:1.02rem;line-height:1}
+  .topbar .name small{display:block;font-size:.62rem;letter-spacing:.14em;opacity:.75;text-transform:uppercase}
+  .topbar .back{
+    margin-left:auto;display:inline-flex;align-items:center;gap:7px;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);
+    padding:8px 14px;border-radius:12px;font-weight:800;font-size:.85rem;transition:.15s;
+  }
+  .topbar .back:hover{background:rgba(255,255,255,.2)}
+
+  /* ───── PAGE ───── */
+  .wrap{max-width:940px;margin:0 auto;padding:26px 18px 60px}
+  .page-title{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--gold);text-shadow:0 2px 6px rgba(0,0,0,.3);margin-bottom:4px}
+
+  /* ===== ACADEMY STYLES ===== */
+  .ac-eyebrow{font-weight:800;font-size:.72rem;letter-spacing:.18em;color:var(--gold);opacity:.9;margin-bottom:4px;}
+  .ac-subtitle{font-size:.95rem;line-height:1.45;opacity:.8;margin:0 0 24px;}
+  .ac-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;max-width:900px;}
+  details.ac-card{background:#2a2150;border:2px solid rgba(140,160,255,.28);border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.35);overflow:hidden;}
+  details.ac-card summary{list-style:none;cursor:pointer;background:#2d2658;padding:16px 18px;display:flex;align-items:center;gap:12px;border-left:8px solid var(--ac-accent,var(--gold));}
+  details.ac-card summary::-webkit-details-marker{display:none;}
+  .ac-sum-icon{font-size:30px;line-height:1;flex-shrink:0;}
+  .ac-sum-titles{flex:1 1 auto;min-width:0;}
+  .ac-subject-name{font-family:'Nunito',sans-serif;font-size:1.08rem;color:#fff;display:block;font-weight:800;}
+  .ac-pill{font-size:.68rem;font-weight:800;letter-spacing:.03em;padding:3px 9px;border-radius:999px;display:inline-block;margin-top:3px;}
+  .ac-pill.ready{background:rgba(120,220,150,.18);color:#9be6b0;}
+  .ac-pill.soon{background:rgba(255,255,255,.1);color:#6f6a8a;}
+  .ac-arrow{font-size:18px;color:#cfd4ff;transition:transform .25s ease;flex-shrink:0;}
+  details.ac-card[open] .ac-arrow{transform:rotate(180deg);}
+  .ac-panel{background:#251f4a;padding:16px 18px 20px;}
+  .ac-panel-heading{font-weight:800;font-size:.78rem;letter-spacing:.04em;color:#c3c8f0;margin:0 0 8px;display:flex;align-items:center;gap:6px;}
+  .ac-chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  a.ac-chip{display:inline-flex;align-items:center;gap:5px;font-size:.85rem;font-weight:700;padding:8px 13px;border-radius:11px;text-decoration:none;background:var(--ac-accent,var(--gold));color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.3);transition:filter .15s,transform .1s;}
+  a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
+  .ac-empty{font-size:.85rem;font-style:italic;color:#9ea3c8;margin:0 0 14px;}
+
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <a class="logo" href="index.html" aria-label="На головну">
+    <span class="crest">🛡️</span>
+    <span class="name"><b>SchoolKingdom</b><small>My Skills Kingdom</small></span>
+  </a>
+  <a class="back" href="hero.html">← До героя</a>
+</header>
+
+<!-- PAGE -->
+<main class="wrap">
+  <div class="page-title">🎓 Академія Героїв</div>
+  <div id="academy-root"></div>
+</main>
+
+<script>
+// ===== ACADEMY =====
+(function(){
+  const subjects = [
+    {id:'math',icon:'🧮',name:'Математика',accent:'#5C6BC0',
+      trainings:[{label:'Вивчаю цифри',href:'learn-math-numbers.html'},{label:'Вивчаю цифри 10–20',href:'learn-numbers-10-20.html'}],
+      quests:[{label:'1 клас — 20 рівнів 🧮',href:'math-test.html'},{label:'Додавання до 10',href:'addition-test-10.html'},{label:'Віднімання до 10',href:'subtraction-test-10.html'},{label:'Додавання до 20',href:'addition-test-20.html'},{label:'Віднімання до 20',href:'subtraction-test-20.html'},{label:'Множення',href:'multiplication-test.html'}]},
+    {id:'ukr',icon:'🌺',name:'Українська мова',accent:'#D6577A',
+      trainings:[{label:'Вивчаю букви Абетки',href:'learn-ukrainian-letters.html'}],
+      quests:[{label:'Правопис слів',href:'spelling-test.html'}]},
+    {id:'eng',icon:'🌍',name:'English',accent:'#3FB6A8',
+      trainings:[{label:'Learn ABC',href:'learn-english-letters.html'}],
+      quests:[{label:'Тест A1 · 10 рівнів',href:'english-test.html'}]},
+    {id:'logic',icon:'🧩',name:'Світ логіки',accent:'#8B6FCE',
+      trainings:[],
+      quests:[{label:'Логіка і пам\'ять',href:'logic-memory-test.html'}]},
+    {id:'geo',icon:'🗺️',name:'Географія',accent:'#E0954E',
+      trainings:[],
+      quests:[{label:'Міста України',href:'learn-cities-ukraine.html'}]}
+  ];
+
+  function chipHtml(t, accent){
+    return `<a class="ac-chip" href="${t.href}" target="_blank" style="--ac-accent:${accent}">▶ ${t.label}</a>`;
+  }
+
+  function cardHtml(s){
+    const hasAny = s.trainings.length>0||s.quests.length>0;
+    const pill = hasAny
+      ? `<span class="ac-pill ready">✅ Доступно</span>`
+      : `<span class="ac-pill soon">🔒 Скоро</span>`;
+    const tr = s.trainings.length
+      ? `<div class="ac-chip-row">${s.trainings.map(t=>chipHtml(t,s.accent)).join('')}</div>`
+      : `<p class="ac-empty">Тренажера ще немає.</p>`;
+    const qu = s.quests.length
+      ? `<div class="ac-chip-row">${s.quests.map(t=>chipHtml(t,s.accent)).join('')}</div>`
+      : `<p class="ac-empty">Квестів ще немає.</p>`;
+    return `
+      <details class="ac-card" style="--ac-accent:${s.accent}">
+        <summary>
+          <span class="ac-sum-icon">${s.icon}</span>
+          <span class="ac-sum-titles">
+            <span class="ac-subject-name">${s.name}</span>
+            ${pill}
+          </span>
+          <span class="ac-arrow">▾</span>
+        </summary>
+        <div class="ac-panel">
+          <p class="ac-panel-heading">🎯 Тренування</p>${tr}
+          <p class="ac-panel-heading">🏆 Квести</p>${qu}
+        </div>
+      </details>`;
+  }
+
+  function renderAcademy(){
+    const root = document.getElementById('academy-root');
+    if(!root) return;
+    root.innerHTML = `
+      <div class="ac-eyebrow">LEARN &amp; PLAY</div>
+      <p class="ac-subtitle">Шляхи знань Героя. Обери предмет і виконуй квести!</p>
+      <div class="ac-grid">${subjects.map(cardHtml).join('')}</div>`;
+  }
+
+  document.addEventListener('DOMContentLoaded', renderAcademy);
+})();
+</script>
+</body>
+</html>

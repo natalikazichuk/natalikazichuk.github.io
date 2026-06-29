@@ -257,6 +257,16 @@ a{color:inherit;text-decoration:none}
 .m20-count b{color:var(--acc);font-family:'Fredoka One',cursive}
 .m20-go{background:var(--acc);color:#06281f;font-weight:900;text-decoration:none;padding:9px 18px;border-radius:12px;font-size:.92rem;transition:transform .15s,box-shadow .15s}
 .m20-go:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(78,205,196,.4)}
+/* ── Посилання на Академію Героїв ── */
+.academy-link{display:flex;align-items:center;gap:14px;margin-top:16px;
+  background:linear-gradient(135deg,#2a4f86,#1a335f);border:2px solid var(--gold2);
+  border-radius:18px;padding:14px 16px;color:#fff;transition:transform .15s,box-shadow .15s}
+.academy-link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.academy-link .ic{font-size:2rem;flex-shrink:0;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+.academy-link .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.academy-link .tx b{font-family:'Fredoka One',cursive;font-weight:400;font-size:1.12rem;color:var(--gold)}
+.academy-link .tx small{font-size:.8rem;font-weight:700;opacity:.9;line-height:1.35}
+.academy-link .go{font-size:1.1rem;color:var(--gold);flex-shrink:0}
 </style>
 <script type="module" src="firebase-config.js"></script>
 </head>
@@ -269,11 +279,11 @@ a{color:inherit;text-decoration:none}
     <span class="name"><b>SchoolKingdom</b><small>My Skills Kingdom</small></span>
   </div>
   <nav class="topnav">
-    <a href="index.html"><span class="ic">🏠</span>Головна</a>
+    <a href="hero.html"><span class="ic">🏠</span>Головна</a>
     <a href="akademiya-geroya.html"><span class="ic">📜</span>Квести</a>
     <a href="akademiya-geroya.html"><span class="ic">📖</span>Тренування</a>
     <a href="index.html"><span class="ic">📚</span>Бібліотека</a>
-    <a href="learnplaymoi_svit.html"><span class="ic">🌍</span>Мій Світ</a>
+    <a href="learn_play_moi_svit.html"><span class="ic">🌍</span>Мій Світ</a>
     <a href="index.html"><span class="ic">🏆</span>Зал Слави</a>
   </nav>
   <div class="wallet">
@@ -361,31 +371,41 @@ a{color:inherit;text-decoration:none}
 
       <div class="stat agi">
         <div class="stat-head"><span class="stat-emoji">🪶</span>
-          <div><div class="stat-name">Спритність (Agility)</div><div class="stat-val"><span id="agiCur">1</span> / 10</div></div></div>
-        <div class="bar"><span id="agiBar" style="width:10%"></span></div>
+          <div><div class="stat-name">Спритність (Agility)</div><div class="stat-val"><span id="agiCur">1</span> / 100</div></div></div>
+        <div class="bar"><span id="agiBar" style="width:1%"></span></div>
         <div class="meta"><span class="lbl">Впливає</span><b>ЯДС</b>
           <span class="lbl">Показує</span>швидкість, ухилення, ініціативу</div>
-        <div class="foot">Розвивається до 10</div>
+        <div class="foot">Розвивається до 100</div>
       </div>
 
       <div class="stat mp">
         <div class="stat-head"><span class="stat-emoji">🔵</span>
-          <div><div class="stat-name">Мана (MP)</div><div class="stat-val"><span id="mpCur">10</span> / 20</div></div></div>
-        <div class="bar"><span id="mpBar" style="width:50%"></span></div>
+          <div><div class="stat-name">Мана (MP)</div><div class="stat-val"><span id="mpCur">10</span> / 100</div></div></div>
+        <div class="bar"><span id="mpBar" style="width:10%"></span></div>
         <div class="meta"><span class="lbl">Впливає</span><b>Логіка, Пам'ять, English</b>
           <span class="lbl">Показує</span>запас магічної енергії</div>
-        <div class="foot note">До 20 за 100% логіки і пам'яті · +30% English · Макс: 26 MP</div>
+        <div class="foot note">Розвивається до 100</div>
       </div>
 
       <div class="stat acc">
         <div class="stat-head"><span class="stat-emoji">🎯</span>
-          <div><div class="stat-name">Точність (Accuracy)</div><div class="stat-val"><span id="accCur">1</span> / 10</div></div></div>
-        <div class="bar"><span id="accBar" style="width:10%"></span></div>
+          <div><div class="stat-name">Точність (Accuracy)</div><div class="stat-val"><span id="accCur">1</span> / 100</div></div></div>
+        <div class="bar"><span id="accBar" style="width:1%"></span></div>
         <div class="meta"><span class="lbl">Впливає</span><b>Математика</b>
           <span class="lbl">Показує</span>шанс влучання, уважність</div>
-        <div class="foot">Розвивається до 10</div>
+        <div class="foot">Розвивається до 100</div>
       </div>
     </div>
+
+    <!-- ПОСИЛАННЯ НА АКАДЕМІЮ ГЕРОЇВ -->
+    <a class="academy-link" href="akademiya-geroya.html">
+      <span class="ic">🎓</span>
+      <span class="tx">
+        <b>Академія Героїв</b>
+        <small>Обери предмет, тренуйся та виконуй квести — і прокачуй характеристики ✨</small>
+      </span>
+      <span class="go">▶</span>
+    </a>
 
     <!-- ВІДЖЕТ: прогрес тесту «20 рівнів» (Математика → Точність) -->
     <section class="m20-card">
@@ -395,7 +415,7 @@ a{color:inherit;text-decoration:none}
           <div class="m20-title">Тест «20 рівнів» — Математика</div>
           <div class="m20-sub">Математика прокачує <b>Точність</b> героя 🎯</div>
         </div>
-        <div class="m20-acc-badge">🎯 Точність: <b id="m20Acc">1</b> / 10</div>
+        <div class="m20-acc-badge">🎯 Точність: <b id="m20Acc">1</b> / 100</div>
       </div>
 
       <div class="m20-segs" id="m20Segs"></div>
@@ -431,7 +451,7 @@ a{color:inherit;text-decoration:none}
         <span class="compass">🧭</span>
         <h3>Пригоди</h3>
         <p>Відправляйся у подорож та відкривай нові землі!</p>
-        <a class="go" href="learnplaymoi_svit.html">Вирушити</a>
+        <a class="go" href="learn_play_moi_svit.html">Вирушити</a>
       </div>
     </div>
   </main>
@@ -439,12 +459,12 @@ a{color:inherit;text-decoration:none}
 
 <!-- BOTTOM NAV -->
 <nav class="botnav">
-  <a href="index.html"><span class="ic">🏠</span>Головна</a>
+  <a href="hero.html"><span class="ic">🏠</span>Головна</a>
   <a href="akademiya-geroya.html"><span class="ic">📜</span>Квести</a>
-  <a class="active" href="learnplaymoi_svit.html"><span class="ic">🧭</span>Пригоди</a>
+  <a class="active" href="learn_play_moi_svit.html"><span class="ic">🧭</span>Пригоди</a>
   <a href="akademiya-geroya.html"><span class="ic">📖</span>Тренування</a>
   <a href="index.html"><span class="ic">📚</span>Бібліотека</a>
-  <a href="learnplaymoi_svit.html"><span class="ic">🌍</span>Мій Світ</a>
+  <a href="learn_play_moi_svit.html"><span class="ic">🌍</span>Мій Світ</a>
   <button id="settingsBtn"><span class="ic">⚙️</span>Налашт.</button>
 </nav>
 
@@ -495,10 +515,10 @@ const hasData = totalXP>0;
 
 /* характеристики з реального XP (формули — налаштовуються) */
 const hp  = Math.min(100, 50 + Math.floor(ukrXP/10));      // +1 HP / 10 XP укр. мови
-const agi = Math.min(10,  1 + Math.floor(worldXP/15));     // ЯДС / світ
-const mpBase = Math.min(20, 10 + Math.floor(logicXP/12));  // логіка + пам'ять
-const mp  = Math.min(26, mpBase + Math.min(6, Math.floor(engXP/25))); // + English бонус
-const acc = Math.min(10,  1 + Math.floor(mathXP/15));      // математика
+const agi = Math.min(100,  1 + Math.floor(worldXP/15));     // ЯДС / світ
+const mpBase = Math.min(100, 10 + Math.floor(logicXP/12));  // логіка + пам'ять
+const mp  = Math.min(100, mpBase + Math.min(6, Math.floor(engXP/25))); // + English бонус
+const acc = Math.min(100,  1 + Math.floor(mathXP/15));      // математика
 
 const stars = sumStars(store);
 const passed = levelsPassed(store);
@@ -560,9 +580,9 @@ function render(){
 
   // active stats
   $('hpCur').textContent=data.hp;  $('hpBar').style.width=pct(data.hp,100)+'%';
-  $('agiCur').textContent=data.agi; $('agiBar').style.width=pct(data.agi,10)+'%';
-  $('mpCur').textContent=data.mp;  $('mpBar').style.width=pct(data.mp,20)+'%';
-  $('accCur').textContent=data.acc; $('accBar').style.width=pct(data.acc,10)+'%';
+  $('agiCur').textContent=data.agi; $('agiBar').style.width=pct(data.agi,100)+'%';
+  $('mpCur').textContent=data.mp;  $('mpBar').style.width=pct(data.mp,100)+'%';
+  $('accCur').textContent=data.acc; $('accBar').style.width=pct(data.acc,100)+'%';
 
   // ── віджет «20 рівнів»: математика → точність ──
   $('m20Acc').textContent=data.acc;              // той самий показник, що й Точність/головна
@@ -595,14 +615,14 @@ render();
 (function(){
   if(!window.SK || !window.SK.ready) return;
   window.SK.ready.then(async function(u){
-    if(!u) return;
+    if(!u){ location.href='auth.html?mode=login&next=child'; return; }
     try{
       const h = await window.SK.getHero();
       if(!h) return;
       if(h.health!=null){ $('hpCur').textContent=h.health; $('hpBar').style.width=pct(h.health,100)+'%'; }
-      if(h.agility!=null){ $('agiCur').textContent=h.agility; $('agiBar').style.width=pct(h.agility,10)+'%'; }
-      if(h.mana!=null){ $('mpCur').textContent=h.mana; $('mpBar').style.width=pct(h.mana,20)+'%'; }
-      if(h.accuracy!=null){ $('accCur').textContent=h.accuracy; $('accBar').style.width=pct(h.accuracy,10)+'%'; var ma=$('m20Acc'); if(ma) ma.textContent=h.accuracy; }
+      if(h.agility!=null){ $('agiCur').textContent=h.agility; $('agiBar').style.width=pct(h.agility,100)+'%'; }
+      if(h.mana!=null){ $('mpCur').textContent=h.mana; $('mpBar').style.width=pct(h.mana,100)+'%'; }
+      if(h.accuracy!=null){ $('accCur').textContent=h.accuracy; $('accBar').style.width=pct(h.accuracy,100)+'%'; var ma=$('m20Acc'); if(ma) ma.textContent=h.accuracy; }
       if(h.level!=null && $('heroLevel')) $('heroLevel').textContent=h.level;
       if(h.xp!=null){ $("xpCur").textContent=h.xp%100; $("xpFill").style.width=pct(h.xp%100,100)+"%"; }
       if(h.coins!=null){ $('w-coins').textContent=h.coins; $('coins2').textContent=h.coins; }
