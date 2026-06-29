@@ -1299,9 +1299,6 @@
         <div class="nav-item" onclick="showPage('rating', this)">
           <span class="nav-icon">🏆</span> Рейтинг
         </div>
-        <div class="nav-item" onclick="showPage('child-academy', this)">
-          <span class="nav-icon">🎓</span> Академія Героїв
-        </div>
 
       </div>
 
@@ -1841,16 +1838,6 @@
           </div>
         </div>
 
-        <!-- АКАДЕМІЯ ГЕРОЇВ -->
-        <div onclick="showPage('child-academy', null)" style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(78,205,196,.18),rgba(167,139,250,.18));border:1px solid rgba(78,205,196,.4);border-radius:16px;padding:14px 16px;margin-bottom:18px;cursor:pointer;transition:.15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-          <span style="font-size:2rem;flex-shrink:0">🎓</span>
-          <div style="flex:1;min-width:0">
-            <div style="font-family:'Fredoka One',Inter,sans-serif;font-size:1.05rem;color:#fff;line-height:1.1">Академія Героїв</div>
-            <div style="font-size:.78rem;color:var(--mint);font-weight:700;margin-top:2px">Обери предмет, виконуй квести й прокачуй характеристики ✨</div>
-          </div>
-          <span style="font-size:1.2rem;color:var(--mint);flex-shrink:0">▶️</span>
-        </div>
-
         <!-- 4 BLOCKS -->
         <div class="content-grid">
           <div>
@@ -1887,7 +1874,7 @@
                   <div class="ch-bar"><span id="chBookBar" style="background:#a78bfa;width:38%"></span></div>
                 </div>
               </div>
-              <div class="ch-link" style="margin-top:12px" onclick="showPage('child-academy', null)">📖 Читати далі ▶️</div>
+              <div class="ch-link" style="margin-top:12px">📖 Читати далі ▶️</div>
             </div>
           </div>
 
@@ -2089,18 +2076,6 @@
             </a>
           </div>
         </div>
-      </div>
-
-      <!-- CHILD ACADEMY -->
-      <div id="page-child-academy" class="page-content" style="display:none">
-        <div class="page-header">
-          <div>
-            <div class="page-title">🎓 Академія Героїв</div>
-            <div class="page-sub">Обери предмет, пройди тренування та виконуй квести!</div>
-          </div>
-        </div>
-
-        <div id="academy-root" style="position:relative;z-index:1"></div>
       </div>
 
     </main>
@@ -2391,13 +2366,6 @@ function showApp() {
   document.getElementById('landing').style.display = 'none';
   document.getElementById('appInterface').style.display = 'block';
 
-  // If returning from an external page (e.g. math test), restore child view
-  const params = new URLSearchParams(window.location.search);
-  const view = params.get('view');
-  if (view === 'child-academy') {
-    switchRole('child');
-    showPage('child-academy', null);
-  }
 }
 
 // Авто-вхід у застосунок: відновлення сесії сім'ї або повернення з квесту
@@ -2923,104 +2891,6 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     }
   });
 });
-</script>
-<style>
-/* ===== ACADEMY STYLES ===== */
-.ac-eyebrow{font-weight:800;font-size:.72rem;letter-spacing:.18em;color:var(--gold);opacity:.9;margin-bottom:4px;}
-.ac-subtitle{font-size:.95rem;line-height:1.45;opacity:.8;margin:0 0 24px;}
-.ac-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;max-width:900px;}
-details.ac-card{background:#2a2150;border:2px solid rgba(140,160,255,.28);border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.35);overflow:hidden;}
-details.ac-card summary{list-style:none;cursor:pointer;background:#2d2658;padding:16px 18px;display:flex;align-items:center;gap:12px;border-left:8px solid var(--ac-accent,var(--gold));}
-details.ac-card summary::-webkit-details-marker{display:none;}
-.ac-sum-icon{font-size:30px;line-height:1;flex-shrink:0;}
-.ac-sum-titles{flex:1 1 auto;min-width:0;}
-.ac-subject-name{font-family:'Nunito',sans-serif;font-size:1.08rem;color:#fff;display:block;font-weight:800;}
-.ac-pill{font-size:.68rem;font-weight:800;letter-spacing:.03em;padding:3px 9px;border-radius:999px;display:inline-block;margin-top:3px;}
-.ac-pill.ready{background:rgba(120,220,150,.18);color:#9be6b0;}
-.ac-pill.soon{background:rgba(255,255,255,.1);color:#6f6a8a;}
-.ac-arrow{font-size:18px;color:#cfd4ff;transition:transform .25s ease;flex-shrink:0;}
-details.ac-card[open] .ac-arrow{transform:rotate(180deg);}
-.ac-panel{background:#251f4a;padding:16px 18px 20px;}
-.ac-panel-heading{font-weight:800;font-size:.78rem;letter-spacing:.04em;color:#c3c8f0;margin:0 0 8px;display:flex;align-items:center;gap:6px;}
-.ac-chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
-a.ac-chip{display:inline-flex;align-items:center;gap:5px;font-size:.85rem;font-weight:700;padding:8px 13px;border-radius:11px;text-decoration:none;background:var(--ac-accent,var(--gold));color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.3);transition:filter .15s,transform .1s;}
-a.ac-chip:hover{filter:brightness(1.12);transform:translateY(-1px);}
-.ac-empty{font-size:.85rem;font-style:italic;color:#9ea3c8;margin:0 0 14px;}
-</style>
-
-<script>
-// ===== ACADEMY =====
-(function(){
-  const subjects = [
-    {id:'math',icon:'🧮',name:'Математика',accent:'#5C6BC0',
-      trainings:[{label:'Вивчаю цифри',href:'learn-math-numbers.html'},{label:'Вивчаю цифри 10–20',href:'learn-numbers-10-20.html'}],
-      quests:[{label:'1 клас — 20 рівнів 🧮',href:'math-test.html'},{label:'Додавання',href:'addition-test.html'},{label:'Віднімання',href:'subtraction-test.html'},{label:'Додавання до 20',href:'addition-test-20.html'},{label:'Віднімання до 20',href:'subtraction-test-20.html'},{label:'Множення',href:'multiplication-test.html'}]},
-    {id:'ukr',icon:'🌺',name:'Українська мова',accent:'#D6577A',
-      trainings:[{label:'Вивчаю букви Абетки',href:'learn-ukrainian-letters.html'}],
-      quests:[{label:'Правопис слів',href:'spelling-test.html'}]},
-    {id:'eng',icon:'🌍',name:'English',accent:'#3FB6A8',
-      trainings:[{label:'Learn ABC',href:'learn-english-letters.html'}],
-      quests:[{label:'Тест A1 · 10 рівнів',href:'english-test.html'}]},
-    {id:'logic',icon:'🧩',name:'Світ логіки',accent:'#8B6FCE',
-      trainings:[],
-      quests:[{label:'Логіка і пам\'ять',href:'logic-memory-test.html'}]},
-    {id:'geo',icon:'🗺️',name:'Географія',accent:'#E0954E',
-      trainings:[],
-      quests:[{label:'Столиці світу',href:'capitals-test.html'}]}
-  ];
-
-  function chipHtml(t, accent){
-    if(t.onclick){
-      return `<a class="ac-chip" href="#" style="--ac-accent:${accent}" onclick="event.preventDefault();${t.onclick}">▶ ${t.label}</a>`;
-    }
-    return `<a class="ac-chip" href="${t.href}" target="_blank" style="--ac-accent:${accent}">▶ ${t.label}</a>`;
-  }
-
-  function cardHtml(s){
-    const hasAny = s.trainings.length>0||s.quests.length>0;
-    const pill = hasAny
-      ? `<span class="ac-pill ready">✅ Доступно</span>`
-      : `<span class="ac-pill soon">🔒 Скоро</span>`;
-    const tr = s.trainings.length
-      ? `<div class="ac-chip-row">${s.trainings.map(t=>chipHtml(t,s.accent)).join('')}</div>`
-      : `<p class="ac-empty">Тренажера ще немає.</p>`;
-    const qu = s.quests.length
-      ? `<div class="ac-chip-row">${s.quests.map(t=>chipHtml(t,s.accent)).join('')}</div>`
-      : `<p class="ac-empty">Квестів ще немає.</p>`;
-    return `
-      <details class="ac-card" style="--ac-accent:${s.accent}">
-        <summary>
-          <span class="ac-sum-icon">${s.icon}</span>
-          <span class="ac-sum-titles">
-            <span class="ac-subject-name">${s.name}</span>
-            ${pill}
-          </span>
-          <span class="ac-arrow">▾</span>
-        </summary>
-        <div class="ac-panel">
-          <p class="ac-panel-heading">🎯 Тренування</p>${tr}
-          <p class="ac-panel-heading">🏆 Квести</p>${qu}
-        </div>
-      </details>`;
-  }
-
-  function renderAcademy(){
-    const root = document.getElementById('academy-root');
-    if(!root||root.dataset.built) return;
-    root.dataset.built = '1';
-    root.innerHTML = `
-      <div class="ac-eyebrow">LEARN &amp; PLAY</div>
-      <p class="ac-subtitle">Шляхи знань Героя. Обери предмет і виконуй квести!</p>
-      <div class="ac-grid">${subjects.map(cardHtml).join('')}</div>`;
-  }
-
-  // Hook into showPage so academy renders when first opened
-  const _origShowPage = window.showPage;
-  window.showPage = function(pageId, navEl){
-    _origShowPage(pageId, navEl);
-    if(pageId==='child-academy') renderAcademy();
-  };
-})();
 </script>
 <script>
 /* ===== Дитяча Головна: дані героя з localStorage ===== */
