@@ -257,7 +257,7 @@
         SK.ready.then(function(){
           if (SK.currentUser && SK.currentUser()){
             // активна дитина → дитячий кабінет, інакше → батьківський
-            var dest = (SK.isChildMode && SK.isChildMode()) ? 'child.html' : 'parent.html';
+            var dest = (SK.isChildMode && SK.isChildMode()) ? 'hero.html' : 'parent.html';
             location.replace(dest);
           }
         });
